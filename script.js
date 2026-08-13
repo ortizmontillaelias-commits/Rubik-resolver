@@ -343,37 +343,37 @@ resetTimerButton.addEventListener(
   }
 );
 
-
 // ==========================================
-// THREE.JS
+// THREE.JS - RUBIK 3D
 // ==========================================
 
 import * as THREE from "three";
-
 import {
   OrbitControls
 } from "three/addons/controls/OrbitControls.js";
 
 
 // ==========================================
-// VARIABLES DEL CUBO
+// VARIABLES
 // ==========================================
 
 let cubeScene = null;
-
 let cubeCamera = null;
-
 let cubeRenderer = null;
-
 let cubeControls = null;
 
 let rubiksCube = null;
+let cubePieces = [];
 
 let selectedCubeSize = 3;
 
+let moveHistory = [];
+
+let isTurning = false;
+
 
 // ==========================================
-// BOTONES "PRACTICAR"
+// BOTONES PRACTICAR
 // ==========================================
 
 const practiceButtons =
@@ -394,7 +394,6 @@ practiceButtons.forEach(
             button.dataset.cube
           );
 
-
         openCubePractice(
           size
         );
@@ -407,12 +406,10 @@ practiceButtons.forEach(
 
 
 // ==========================================
-// ABRIR PANTALLA DEL CUBO
+// ABRIR CUBO
 // ==========================================
 
-function openCubePractice(
-  size
-) {
+function openCubePractice(size) {
 
   selectedCubeSize =
     size;
@@ -457,12 +454,18 @@ function openCubePractice(
   );
 
 
-  document
-    .querySelector(
+  const bottomNav =
+    document.querySelector(
       ".bottom-nav"
-    )
-    .style.display =
-    "none";
+    );
+
+
+  if (bottomNav) {
+
+    bottomNav.style.display =
+      "none";
+
+  }
 
 
   createRubiksCube(
@@ -473,12 +476,10 @@ function openCubePractice(
 
 
 // ==========================================
-// CREAR CUBO 3D
+// CREAR CUBO
 // ==========================================
 
-function createRubiksCube(
-  size
-) {
+function createRubiksCube(size) {
 
   const container =
     document.getElementById(
@@ -486,7 +487,17 @@ function createRubiksCube(
     );
 
 
+  if (!container) {
+    return;
+  }
+
+
   container.innerHTML = "";
+
+
+  cubePieces = [];
+
+  moveHistory = [];
 
 
   cubeScene =
@@ -538,7 +549,9 @@ function createRubiksCube(
   );
 
 
-  // LUZ
+  // ========================================
+  // LUCES
+  // ========================================
 
   const ambientLight =
     new THREE.AmbientLight(
@@ -571,7 +584,9 @@ function createRubiksCube(
   );
 
 
+  // ========================================
   // GRUPO DEL CUBO
+  // ========================================
 
   rubiksCube =
     new THREE.Group();
@@ -587,7 +602,9 @@ function createRubiksCube(
   );
 
 
-  // CONTROLES
+  // ========================================
+  // CONTROLES DE CÁMARA
+  // ========================================
 
   cubeControls =
     new OrbitControls(
@@ -621,21 +638,7 @@ function createRubiksCube(
 // CREAR PIEZAS
 // ==========================================
 
-function createCubePieces(
-  size
-) {
-
-  const colors = [
-
-    0xffffff,
-    0xffff00,
-    0xff0000,
-    0xff8800,
-    0x0000ff,
-    0x00aa00
-
-  ];
-
+function createCubePieces(size) {
 
   const start =
     -(size - 1) / 2;
@@ -668,14 +671,11 @@ function createCubePieces(
 
 
         const materials =
-          colors.map(
-            function (color) {
-
-              return new THREE.MeshStandardMaterial({
-                color: color
-              });
-
-            }
+          createStickerMaterials(
+            x,
+            y,
+            z,
+            size
           );
 
 
@@ -697,7 +697,25 @@ function createCubePieces(
         );
 
 
+        piece.userData = {
+
+          x: x,
+          y: y,
+          z: z,
+
+          originalX: x,
+          originalY: y,
+          originalZ: z
+
+        };
+
+
         rubiksCube.add(
+          piece
+        );
+
+
+        cubePieces.push(
           piece
         );
 
@@ -708,6 +726,303 @@ function createCubePieces(
   }
 
 }
+
+
+// ==========================================
+// COLORES DE LAS CARAS
+// ==========================================
+
+function createStickerMaterials(
+  x,
+  y,
+  z,
+  size
+) {
+
+  const black =
+    0x111111;
+
+
+  const white =
+    0xffffff;
+
+  const yellow =
+    0xffff00;
+
+  const red =
+    0xff0000;
+
+  const orange =
+    0xff8800;
+
+  const blue =
+    0x0066ff;
+
+  const green =
+    0x00aa00;
+
+
+  /*
+    THREE BOX MATERIALS:
+
+    0 = derecha
+    1 = izquierda
+    2 = arriba
+    3 = abajo
+    4 = frente
+    5 = atrás
+  */
+
+
+  return [
+
+    new THREE.MeshStandardMaterial({
+      color:
+        x === size - 1
+          ? red
+          : black
+    }),
+
+    new THREE.MeshStandardMaterial({
+      color:
+        x === 0
+          ? orange
+          : black
+    }),
+
+    new THREE.MeshStandardMaterial({
+      color:
+        y === size - 1
+          ? white
+          : black
+    }),
+
+    new THREE.MeshStandardMaterial({
+      color:
+        y === 0
+          ? yellow
+          : black
+    }),
+
+    new THREE.MeshStandardMaterial({
+      color:
+        z === size - 1
+          ? green
+          : black
+    }),
+
+    new THREE.MeshStandardMaterial({
+      color:
+        z === 0
+          ? blue
+          : black
+    })
+
+  ];
+
+}
+
+
+// ==========================================
+// MOVIMIENTOS DEL CUBO
+// ==========================================
+
+function rotateFace(
+  face,
+  clockwise = true
+) {
+
+  if (
+    isTurning ||
+    !rubiksCube
+  ) {
+    return;
+  }
+
+
+  isTurning = true;
+
+
+  let axis;
+  let layer;
+
+
+  if (face === "R") {
+
+    axis = "x";
+    layer = 1;
+
+  }
+
+
+  if (face === "L") {
+
+    axis = "x";
+    layer = -1;
+
+  }
+
+
+  if (face === "U") {
+
+    axis = "y";
+    layer = 1;
+
+  }
+
+
+  if (face === "D") {
+
+    axis = "y";
+    layer = -1;
+
+  }
+
+
+  if (face === "F") {
+
+    axis = "z";
+    layer = 1;
+
+  }
+
+
+  if (face === "B") {
+
+    axis = "z";
+    layer = -1;
+
+  }
+
+
+  const pieces =
+    cubePieces.filter(
+      function (piece) {
+
+        return Math.round(
+          piece.position[axis]
+        ) === layer;
+
+      }
+    );
+
+
+  const rotationGroup =
+    new THREE.Group();
+
+
+  rubiksCube.add(
+    rotationGroup
+  );
+
+
+  pieces.forEach(
+    function (piece) {
+
+      rotationGroup.attach(
+        piece
+      );
+
+    }
+  );
+
+
+  const angle =
+    clockwise
+      ? Math.PI / 2
+      : -Math.PI / 2;
+
+
+  rotationGroup.rotation[
+    axis
+  ] = angle;
+
+
+  rotationGroup.updateMatrixWorld(
+    true
+  );
+
+
+  pieces.forEach(
+    function (piece) {
+
+      rubiksCube.attach(
+        piece
+      );
+
+    }
+  );
+
+
+  rubiksCube.remove(
+    rotationGroup
+  );
+
+
+  pieces.forEach(
+    function (piece) {
+
+      piece.position.x =
+        Math.round(
+          piece.position.x
+        );
+
+      piece.position.y =
+        Math.round(
+          piece.position.y
+        );
+
+      piece.position.z =
+        Math.round(
+          piece.position.z
+        );
+
+    }
+  );
+
+
+  moveHistory.push(
+    clockwise
+      ? face
+      : face + "'"
+  );
+
+
+  isTurning = false;
+
+}
+
+
+// ==========================================
+// TECLADO
+// ==========================================
+
+document.addEventListener(
+  "keydown",
+  function (event) {
+
+    const key =
+      event.key.toUpperCase();
+
+
+    if (
+      key === "R" ||
+      key === "L" ||
+      key === "U" ||
+      key === "D" ||
+      key === "F" ||
+      key === "B"
+    ) {
+
+      rotateFace(
+        key,
+        !event.shiftKey
+      );
+
+    }
+
+  }
+);
 
 
 // ==========================================
@@ -722,27 +1037,58 @@ document
     "click",
     function () {
 
-      if (!rubiksCube) {
+      if (
+        !rubiksCube ||
+        selectedCubeSize !== 3
+      ) {
+
+        alert(
+          "El mezclador real comenzará primero con el 3×3."
+        );
+
         return;
+
       }
 
 
-      rubiksCube.rotation.x =
-        Math.random() *
-        Math.PI *
-        2;
+      const moves = [
+        "R",
+        "L",
+        "U",
+        "D",
+        "F",
+        "B"
+      ];
 
 
-      rubiksCube.rotation.y =
-        Math.random() *
-        Math.PI *
-        2;
+      moveHistory = [];
 
 
-      rubiksCube.rotation.z =
-        Math.random() *
-        Math.PI *
-        2;
+      for (
+        let i = 0;
+        i < 20;
+        i++
+      ) {
+
+        const randomMove =
+          moves[
+            Math.floor(
+              Math.random() *
+              moves.length
+            )
+          ];
+
+
+        const clockwise =
+          Math.random() > 0.5;
+
+
+        rotateFace(
+          randomMove,
+          clockwise
+        );
+
+      }
 
     }
   );
@@ -761,14 +1107,13 @@ document
     function () {
 
       alert(
-        "🧠 Modo resolver\n\n" +
-        "Próximamente podrás recibir " +
-        "los algoritmos para resolver tu " +
-        "cubo " +
-        selectedCubeSize +
-        "×" +
-        selectedCubeSize +
-        " paso a paso."
+        "🧠 Solucionador\n\n" +
+        "Movimientos registrados: " +
+        moveHistory.length +
+        "\n\n" +
+        "La siguiente etapa será " +
+        "convertir estos movimientos en " +
+        "algoritmos de resolución."
       );
 
     }
@@ -776,7 +1121,7 @@ document
 
 
 // ==========================================
-// VOLVER A INICIO
+// VOLVER
 // ==========================================
 
 document
@@ -811,12 +1156,18 @@ document
         );
 
 
-      document
-        .querySelector(
+      const bottomNav =
+        document.querySelector(
           ".bottom-nav"
-        )
-        .style.display =
-        "flex";
+        );
+
+
+      if (bottomNav) {
+
+        bottomNav.style.display =
+          "flex";
+
+      }
 
 
       const container =
@@ -825,10 +1176,18 @@ document
         );
 
 
-      container.innerHTML = "";
+      if (container) {
+
+        container.innerHTML = "";
+
+      }
 
 
       rubiksCube = null;
+
+      cubePieces = [];
+
+      moveHistory = [];
 
     }
   );
