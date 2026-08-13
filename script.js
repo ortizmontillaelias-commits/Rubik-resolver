@@ -828,6 +828,11 @@ function rotateFace(face, clockwise = true) {
       return;
   }
 
+
+  // ========================================
+  // PIEZAS DE LA CAPA
+  // ========================================
+
   const selectedPieces =
     cubePieces.filter(function (piece) {
 
@@ -839,50 +844,73 @@ function rotateFace(face, clockwise = true) {
 
     });
 
+
   if (selectedPieces.length === 0) {
     return;
   }
 
+
   turning = true;
+
+
+  // ========================================
+  // GRUPO DE GIRO
+  // ========================================
 
   const rotationGroup =
     new THREE.Group();
 
-  rubiksCube.add(rotationGroup);
+  rubiksCube.add(
+    rotationGroup
+  );
 
-  // Guardar las transformaciones
-  // originales antes del giro.
 
-  selectedPieces.forEach(function (piece) {
+  selectedPieces.forEach(
+    function (piece) {
 
-    rotationGroup.attach(piece);
+      rotationGroup.attach(
+        piece
+      );
 
-  });
+    }
+  );
 
-  const angle =
+
+  const targetAngle =
     clockwise
       ? Math.PI / 2
       : -Math.PI / 2;
 
-  // Animación
+
   const duration = 250;
 
-  const start = performance.now();
+  const startTime =
+    performance.now();
 
-  function animateTurn(now) {
+
+  // ========================================
+  // ANIMACIÓN
+  // ========================================
+
+  function animateTurn(currentTime) {
 
     const progress =
       Math.min(
-        (now - start) / duration,
+        (currentTime - startTime) /
+        duration,
         1
       );
 
-    // Suavizado
-    const smooth =
-      progress * (2 - progress);
+
+    const smoothProgress =
+      progress *
+      (2 - progress);
+
 
     rotationGroup.rotation[axis] =
-      angle * smooth;
+      targetAngle *
+      smoothProgress;
+
 
     if (progress < 1) {
 
@@ -893,47 +921,128 @@ function rotateFace(face, clockwise = true) {
       return;
     }
 
-    // ====================================
-    // FINALIZAR GIRO
-    // ====================================
+
+    // ======================================
+    // TERMINAR GIRO
+    // ======================================
 
     rotationGroup.rotation[axis] =
-      angle;
+      targetAngle;
+
 
     rotationGroup.updateMatrixWorld(
       true
     );
 
-    // Devolver las piezas
-    // conservando su transformación.
+
+    // ======================================
+    // CONSERVAR TRANSFORMACIONES
+    // ======================================
+
+    const transforms = [];
+
 
     selectedPieces.forEach(
       function (piece) {
 
-        rubiksCube.attach(piece);
+        piece.updateMatrixWorld(
+          true
+        );
+
+
+        transforms.push({
+
+          piece: piece,
+
+          position:
+            piece.getWorldPosition(
+              new THREE.Vector3()
+            ),
+
+          quaternion:
+            piece.getWorldQuaternion(
+              new THREE.Quaternion()
+            )
+
+        });
 
       }
     );
+
+
+    // Quitar piezas del grupo
+    // sin usar attach todavía.
+
+    selectedPieces.forEach(
+      function (piece) {
+
+        rotationGroup.remove(
+          piece
+        );
+
+      }
+    );
+
 
     rubiksCube.remove(
       rotationGroup
     );
 
-    // Ajustar posiciones
-    // para evitar errores de precisión.
 
-    selectedPieces.forEach(
-      function (piece) {
+    // ======================================
+    // APLICAR TRANSFORMACIÓN AL CUBO
+    // ======================================
+
+    transforms.forEach(
+      function (data) {
+
+        rubiksCube.add(
+          data.piece
+        );
+
+
+        data.piece.position.copy(
+          data.position
+        );
+
+
+        data.piece.quaternion.copy(
+          data.quaternion
+        );
+
+
+        data.piece.scale.set(
+          1,
+          1,
+          1
+        );
+
+      }
+    );
+
+
+    // ======================================
+    // REDONDEAR POSICIONES
+    // ======================================
+
+    transforms.forEach(
+      function (data) {
+
+        const piece =
+          data.piece;
+
 
         piece.position.x =
           Math.round(
             piece.position.x
           );
 
+
         piece.position.y =
           Math.round(
             piece.position.y
           );
+
 
         piece.position.z =
           Math.round(
@@ -943,15 +1052,22 @@ function rotateFace(face, clockwise = true) {
       }
     );
 
+
+    // ======================================
+    // GUARDAR MOVIMIENTO
+    // ======================================
+
     moveHistory.push(
       clockwise
         ? face
         : face + "'"
     );
 
+
     turning = false;
 
   }
+
 
   requestAnimationFrame(
     animateTurn
