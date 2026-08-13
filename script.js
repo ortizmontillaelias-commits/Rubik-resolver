@@ -775,14 +775,14 @@ window.addEventListener(
 );
 
 // ==========================================
-// MOVIMIENTOS
+// MOVIMIENTOS REALES
 // ==========================================
 
 let turning = false;
 
 function rotateFace(face, clockwise = true) {
 
-  if (!rubiksCube) {
+  if (!rubiksCube || turning) {
     return;
   }
 
@@ -828,60 +828,166 @@ function rotateFace(face, clockwise = true) {
       return;
   }
 
-  const pieces = cubePieces.filter(function (piece) {
+  const pieces = cubePieces.filter(
+    function (piece) {
 
-    return Math.abs(
-      piece.position[axis] - layer
-    ) < 0.15;
+      return Math.abs(
+        piece.position[axis] - layer
+      ) < 0.15;
 
-  });
+    }
+  );
 
   if (pieces.length === 0) {
     return;
   }
 
-  // ========================================
-  // GIRO VISUAL
-  // ========================================
+  turning = true;
 
-  const group = new THREE.Group();
+  const group =
+    new THREE.Group();
 
   rubiksCube.add(group);
 
-  pieces.forEach(function (piece) {
-    group.attach(piece);
-  });
+  pieces.forEach(
+    function (piece) {
 
-  const angle =
+      group.attach(piece);
+
+    }
+  );
+
+  const targetAngle =
     clockwise
       ? Math.PI / 2
       : -Math.PI / 2;
 
-  group.rotation[axis] = angle;
+  const duration = 300;
+  const start = performance.now();
 
-  group.updateMatrixWorld(true);
+  function animateTurn(time) {
 
-  // ========================================
-  // DEVOLVER LAS PIEZAS
-  // SIN REDONDEAR POSICIONES
-  // ========================================
+    const progress =
+      Math.min(
+        (time - start) / duration,
+        1
+      );
 
-  pieces.forEach(function (piece) {
+    const smooth =
+      progress * (2 - progress);
 
-    rubiksCube.attach(piece);
+    group.rotation[axis] =
+      targetAngle * smooth;
 
-  });
+    if (progress < 1) {
 
-  rubiksCube.remove(group);
+      requestAnimationFrame(
+        animateTurn
+      );
 
-  // ========================================
-  // GUARDAR MOVIMIENTO
-  // ========================================
+      return;
+    }
 
-  moveHistory.push(
-    clockwise
-      ? face
-      : face + "'"
+    // ======================================
+    // TERMINAR ANIMACIÓN
+    // ======================================
+
+    group.rotation[axis] =
+      targetAngle;
+
+    group.updateMatrixWorld(true);
+
+
+    // ======================================
+    // DEVOLVER PIEZAS
+    // ======================================
+
+    pieces.forEach(
+      function (piece) {
+
+        rubiksCube.attach(piece);
+
+      }
+    );
+
+
+    rubiksCube.remove(group);
+
+
+    // ======================================
+    // ACTUALIZAR POSICIONES LÓGICAS
+    // ======================================
+
+    pieces.forEach(
+      function (piece) {
+
+        const position =
+          piece.position.clone();
+
+
+        const x =
+          Math.round(position.x);
+
+
+        const y =
+          Math.round(position.y);
+
+
+        const z =
+          Math.round(position.z);
+
+
+        piece.position.set(
+          x,
+          y,
+          z
+        );
+
+
+        // Guardamos la posición
+        // lógica de la pieza.
+
+        const newX =
+          x + center;
+
+        const newY =
+          y + center;
+
+        const newZ =
+          z + center;
+
+
+        piece.userData.gridX =
+          Math.round(newX);
+
+        piece.userData.gridY =
+          Math.round(newY);
+
+        piece.userData.gridZ =
+          Math.round(newZ);
+
+      }
+    );
+
+
+    // ======================================
+    // GUARDAR MOVIMIENTO
+    // ======================================
+
+    moveHistory.push(
+      clockwise
+        ? face
+        : face + "'"
+    );
+
+
+    turning = false;
+
+  }
+
+
+  requestAnimationFrame(
+    animateTurn
   );
 
 }
