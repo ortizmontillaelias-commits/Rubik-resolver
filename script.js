@@ -782,14 +782,15 @@ let turning = false;
 
 function rotateFace(face, clockwise = true) {
 
-  if (!rubiksCube || turning) return;
+  if (!rubiksCube) {
+    return;
+  }
 
   const size = selectedCubeSize;
+  const center = (size - 1) / 2;
 
   let axis;
   let layer;
-
-  const center = (size - 1) / 2;
 
   switch (face) {
 
@@ -827,263 +828,63 @@ function rotateFace(face, clockwise = true) {
       return;
   }
 
+  const pieces = cubePieces.filter(function (piece) {
+
+    return Math.abs(
+      piece.position[axis] - layer
+    ) < 0.15;
+
+  });
+
+  if (pieces.length === 0) {
+    return;
+  }
 
   // ========================================
-  // PIEZAS DE LA CAPA
+  // GIRO VISUAL
   // ========================================
 
-  const pieces = cubePieces.filter(
-    function (piece) {
-
-      return (
-        Math.abs(
-          piece.userData[axis] - layer
-        ) < 0.01
-      );
-
-    }
-  );
-
-
-  if (!pieces.length) return;
-
-
-  turning = true;
-
-
-  // ========================================
-  // GRUPO TEMPORAL
-  // ========================================
-
-  const group =
-    new THREE.Group();
+  const group = new THREE.Group();
 
   rubiksCube.add(group);
 
+  pieces.forEach(function (piece) {
+    group.attach(piece);
+  });
 
-  pieces.forEach(
-    function (piece) {
-
-      group.attach(piece);
-
-    }
-  );
-
-
-  // ========================================
-  // ROTACIÓN
-  // ========================================
-
-  const targetAngle =
+  const angle =
     clockwise
       ? Math.PI / 2
       : -Math.PI / 2;
 
+  group.rotation[axis] = angle;
 
-  const duration = 250;
+  group.updateMatrixWorld(true);
 
-  const start =
-    performance.now();
+  // ========================================
+  // DEVOLVER LAS PIEZAS
+  // SIN REDONDEAR POSICIONES
+  // ========================================
 
+  pieces.forEach(function (piece) {
 
-  function animateTurn(time) {
+    rubiksCube.attach(piece);
 
-    const progress =
-      Math.min(
-        (time - start) / duration,
-        1
-      );
+  });
 
+  rubiksCube.remove(group);
 
-    const smooth =
-      progress * (2 - progress);
+  // ========================================
+  // GUARDAR MOVIMIENTO
+  // ========================================
 
-
-    group.rotation[axis] =
-      targetAngle * smooth;
-
-
-    if (progress < 1) {
-
-      requestAnimationFrame(
-        animateTurn
-      );
-
-      return;
-
-    }
-
-
-    // ======================================
-    // TERMINAR ANIMACIÓN
-    // ======================================
-
-    group.rotation[axis] =
-      targetAngle;
-
-
-    group.updateMatrixWorld(true);
-
-
-    // ======================================
-    // ACTUALIZAR COORDENADAS LÓGICAS
-    // ======================================
-
-    pieces.forEach(
-      function (piece) {
-
-        const x =
-          piece.userData.gridX;
-
-        const y =
-          piece.userData.gridY;
-
-        const z =
-          piece.userData.gridZ;
-
-
-        let newX = x;
-        let newY = y;
-        let newZ = z;
-
-
-        const max =
-          size - 1;
-
-
-        if (axis === "x") {
-
-          if (clockwise) {
-
-            newY = max - z;
-            newZ = y;
-
-          } else {
-
-            newY = z;
-            newZ = max - y;
-
-          }
-
-        }
-
-
-        if (axis === "y") {
-
-          if (clockwise) {
-
-            newX = z;
-            newZ = max - x;
-
-          } else {
-
-            newX = max - z;
-            newZ = x;
-
-          }
-
-        }
-
-
-        if (axis === "z") {
-
-          if (clockwise) {
-
-            newX = max - y;
-            newY = x;
-
-          } else {
-
-            newX = y;
-            newY = max - x;
-
-          }
-
-        }
-
-
-        piece.userData.gridX =
-          newX;
-
-        piece.userData.gridY =
-          newY;
-
-        piece.userData.gridZ =
-          newZ;
-
-
-        const newCenter =
-          (size - 1) / 2;
-
-
-        // ==================================
-        // POSICIÓN EXACTA
-        // ==================================
-
-        piece.position.set(
-
-          newX - newCenter,
-
-          newY - newCenter,
-
-          newZ - newCenter
-
-        );
-
-
-        // ==================================
-        // ORIENTACIÓN
-        // ==================================
-
-        piece.rotation[axis] =
-          Math.round(
-            piece.rotation[axis] /
-            (Math.PI / 2)
-          ) *
-          (Math.PI / 2);
-
-      }
-    );
-
-
-    // ======================================
-    // LIMPIAR GRUPO
-    // ======================================
-
-    pieces.forEach(
-      function (piece) {
-
-        rubiksCube.add(piece);
-
-      }
-    );
-
-
-    rubiksCube.remove(group);
-
-
-    // ======================================
-    // GUARDAR MOVIMIENTO
-    // ======================================
-
-    moveHistory.push(
-      clockwise
-        ? face
-        : face + "'"
-    );
-
-
-    turning = false;
-
-  }
-
-
-  requestAnimationFrame(
-    animateTurn
+  moveHistory.push(
+    clockwise
+      ? face
+      : face + "'"
   );
 
 }
-
 // ==========================================
 // TECLADO
 // ==========================================
