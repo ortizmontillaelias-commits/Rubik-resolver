@@ -395,3 +395,349 @@ practiceButtons.forEach(
 
   }
 );
+
+// ==========================================
+// CUBO 3D - BASE DEL SIMULADOR
+// ==========================================
+
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+let cubeScene;
+let cubeCamera;
+let cubeRenderer;
+let cubeControls;
+let rubiksCube;
+
+
+// Crear el cubo 3D
+function createRubiksCube() {
+
+  const container =
+    document.getElementById("homePage");
+
+  if (!container) {
+    return;
+  }
+
+
+  // Contenedor
+  const cubeArea =
+    document.createElement("div");
+
+  cubeArea.id = "rubiks3DArea";
+
+  cubeArea.innerHTML = `
+    <div class="cube3d-title">
+      <h2>Practica tu cubo</h2>
+      <p>Arrastra para girar la vista</p>
+    </div>
+
+    <div id="rubiks3D"></div>
+
+    <div class="cube3d-controls">
+
+      <button id="scrambleButton">
+        🔀 Mezclar
+      </button>
+
+      <button id="solveButton">
+        🧠 Resolver
+      </button>
+
+    </div>
+  `;
+
+
+  container.prepend(cubeArea);
+
+
+  // ESCENA
+  cubeScene =
+    new THREE.Scene();
+
+  cubeScene.background =
+    new THREE.Color(0x020617);
+
+
+  // CÁMARA
+  cubeCamera =
+    new THREE.PerspectiveCamera(
+      45,
+      1,
+      0.1,
+      100
+    );
+
+  cubeCamera.position.set(
+    5,
+    5,
+    7
+  );
+
+
+  // RENDER
+  cubeRenderer =
+    new THREE.WebGLRenderer({
+      antialias: true
+    });
+
+
+  cubeRenderer.setPixelRatio(
+    window.devicePixelRatio
+  );
+
+  cubeRenderer.setSize(
+    350,
+    350
+  );
+
+
+  document
+    .getElementById("rubiks3D")
+    .appendChild(
+      cubeRenderer.domElement
+    );
+
+
+  // LUZ
+  const ambientLight =
+    new THREE.AmbientLight(
+      0xffffff,
+      2
+    );
+
+  cubeScene.add(
+    ambientLight
+  );
+
+
+  const directionalLight =
+    new THREE.DirectionalLight(
+      0xffffff,
+      3
+    );
+
+  directionalLight.position.set(
+    5,
+    8,
+    6
+  );
+
+  cubeScene.add(
+    directionalLight
+  );
+
+
+  // CONTROLES
+  cubeControls =
+    new OrbitControls(
+      cubeCamera,
+      cubeRenderer.domElement
+    );
+
+  cubeControls.enableDamping =
+    true;
+
+  cubeControls.enablePan =
+    false;
+
+
+  // CREAR CUBO
+  rubiksCube =
+    new THREE.Group();
+
+  cubeScene.add(
+    rubiksCube
+  );
+
+
+  createCubePieces();
+
+
+  // BOTÓN MEZCLAR
+  document
+    .getElementById("scrambleButton")
+    .addEventListener(
+      "click",
+      scrambleCube
+    );
+
+
+  // BOTÓN RESOLVER
+  document
+    .getElementById("solveButton")
+    .addEventListener(
+      "click",
+      showSolveMessage
+    );
+
+
+  animateCube();
+
+}
+
+
+// ==========================================
+// CREAR LAS 27 PIEZAS
+// ==========================================
+
+function createCubePieces() {
+
+  const colors = [
+    0xffffff,
+    0xffff00,
+    0xff0000,
+    0xff8800,
+    0x0000ff,
+    0x00aa00
+  ];
+
+
+  for (
+    let x = -1;
+    x <= 1;
+    x++
+  ) {
+
+    for (
+      let y = -1;
+      y <= 1;
+      y++
+    ) {
+
+      for (
+        let z = -1;
+        z <= 1;
+        z++
+      ) {
+
+        const geometry =
+          new THREE.BoxGeometry(
+            0.95,
+            0.95,
+            0.95
+          );
+
+
+        const materials =
+          colors.map(
+            function (color) {
+
+              return new THREE.MeshStandardMaterial({
+                color: color
+              });
+
+            }
+          );
+
+
+        const piece =
+          new THREE.Mesh(
+            geometry,
+            materials
+          );
+
+
+        piece.position.set(
+          x,
+          y,
+          z
+        );
+
+
+        rubiksCube.add(
+          piece
+        );
+
+      }
+
+    }
+
+  }
+
+}
+
+
+// ==========================================
+// MEZCLAR
+// ==========================================
+
+function scrambleCube() {
+
+  if (!rubiksCube) {
+    return;
+  }
+
+
+  rubiksCube.rotation.x =
+    Math.random() * Math.PI * 2;
+
+  rubiksCube.rotation.y =
+    Math.random() * Math.PI * 2;
+
+  rubiksCube.rotation.z =
+    Math.random() * Math.PI * 2;
+
+}
+
+
+// ==========================================
+// RESOLVER
+// ==========================================
+
+function showSolveMessage() {
+
+  alert(
+    "🧠 Modo resolver\n\n" +
+    "Aquí añadiremos los algoritmos " +
+    "para guiar al usuario paso a paso."
+  );
+
+}
+
+
+// ==========================================
+// ANIMACIÓN
+// ==========================================
+
+function animateCube() {
+
+  requestAnimationFrame(
+    animateCube
+  );
+
+
+  if (cubeControls) {
+    cubeControls.update();
+  }
+
+
+  if (
+    cubeRenderer &&
+    cubeScene &&
+    cubeCamera
+  ) {
+
+    cubeRenderer.render(
+      cubeScene,
+      cubeCamera
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// INICIAR CUBO
+// ==========================================
+
+window.addEventListener(
+  "load",
+  function () {
+
+    createRubiksCube();
+
+  }
+);
