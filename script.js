@@ -782,15 +782,14 @@ let turning = false;
 
 function rotateFace(face, clockwise = true) {
 
-  if (!rubiksCube || turning) {
-    return;
-  }
+  if (!rubiksCube || turning) return;
 
   const size = selectedCubeSize;
-  const center = (size - 1) / 2;
 
   let axis;
   let layer;
+
+  const center = (size - 1) / 2;
 
   switch (face) {
 
@@ -833,48 +832,47 @@ function rotateFace(face, clockwise = true) {
   // PIEZAS DE LA CAPA
   // ========================================
 
-  const selectedPieces =
-    cubePieces.filter(function (piece) {
+  const pieces = cubePieces.filter(
+    function (piece) {
 
       return (
         Math.abs(
-          piece.position[axis] - layer
-        ) < 0.15
+          piece.userData[axis] - layer
+        ) < 0.01
       );
 
-    });
+    }
+  );
 
 
-  if (selectedPieces.length === 0) {
-    return;
-  }
+  if (!pieces.length) return;
 
 
   turning = true;
 
 
   // ========================================
-  // GRUPO DE GIRO
+  // GRUPO TEMPORAL
   // ========================================
 
-  const rotationGroup =
+  const group =
     new THREE.Group();
 
-  rubiksCube.add(
-    rotationGroup
-  );
+  rubiksCube.add(group);
 
 
-  selectedPieces.forEach(
+  pieces.forEach(
     function (piece) {
 
-      rotationGroup.attach(
-        piece
-      );
+      group.attach(piece);
 
     }
   );
 
+
+  // ========================================
+  // ROTACIÓN
+  // ========================================
 
   const targetAngle =
     clockwise
@@ -884,32 +882,25 @@ function rotateFace(face, clockwise = true) {
 
   const duration = 250;
 
-  const startTime =
+  const start =
     performance.now();
 
 
-  // ========================================
-  // ANIMACIÓN
-  // ========================================
-
-  function animateTurn(currentTime) {
+  function animateTurn(time) {
 
     const progress =
       Math.min(
-        (currentTime - startTime) /
-        duration,
+        (time - start) / duration,
         1
       );
 
 
-    const smoothProgress =
-      progress *
-      (2 - progress);
+    const smooth =
+      progress * (2 - progress);
 
 
-    rotationGroup.rotation[axis] =
-      targetAngle *
-      smoothProgress;
+    group.rotation[axis] =
+      targetAngle * smooth;
 
 
     if (progress < 1) {
@@ -919,138 +910,156 @@ function rotateFace(face, clockwise = true) {
       );
 
       return;
+
     }
 
 
     // ======================================
-    // TERMINAR GIRO
+    // TERMINAR ANIMACIÓN
     // ======================================
 
-    rotationGroup.rotation[axis] =
+    group.rotation[axis] =
       targetAngle;
 
 
-    rotationGroup.updateMatrixWorld(
-      true
-    );
+    group.updateMatrixWorld(true);
 
 
     // ======================================
-    // CONSERVAR TRANSFORMACIONES
+    // ACTUALIZAR COORDENADAS LÓGICAS
     // ======================================
 
-    const transforms = [];
-
-
-    selectedPieces.forEach(
+    pieces.forEach(
       function (piece) {
 
-        piece.updateMatrixWorld(
-          true
+        const x =
+          piece.userData.gridX;
+
+        const y =
+          piece.userData.gridY;
+
+        const z =
+          piece.userData.gridZ;
+
+
+        let newX = x;
+        let newY = y;
+        let newZ = z;
+
+
+        const max =
+          size - 1;
+
+
+        if (axis === "x") {
+
+          if (clockwise) {
+
+            newY = max - z;
+            newZ = y;
+
+          } else {
+
+            newY = z;
+            newZ = max - y;
+
+          }
+
+        }
+
+
+        if (axis === "y") {
+
+          if (clockwise) {
+
+            newX = z;
+            newZ = max - x;
+
+          } else {
+
+            newX = max - z;
+            newZ = x;
+
+          }
+
+        }
+
+
+        if (axis === "z") {
+
+          if (clockwise) {
+
+            newX = max - y;
+            newY = x;
+
+          } else {
+
+            newX = y;
+            newY = max - x;
+
+          }
+
+        }
+
+
+        piece.userData.gridX =
+          newX;
+
+        piece.userData.gridY =
+          newY;
+
+        piece.userData.gridZ =
+          newZ;
+
+
+        const newCenter =
+          (size - 1) / 2;
+
+
+        // ==================================
+        // POSICIÓN EXACTA
+        // ==================================
+
+        piece.position.set(
+
+          newX - newCenter,
+
+          newY - newCenter,
+
+          newZ - newCenter
+
         );
 
 
-        transforms.push({
+        // ==================================
+        // ORIENTACIÓN
+        // ==================================
 
-          piece: piece,
-
-          position:
-            piece.getWorldPosition(
-              new THREE.Vector3()
-            ),
-
-          quaternion:
-            piece.getWorldQuaternion(
-              new THREE.Quaternion()
-            )
-
-        });
+        piece.rotation[axis] =
+          Math.round(
+            piece.rotation[axis] /
+            (Math.PI / 2)
+          ) *
+          (Math.PI / 2);
 
       }
     );
 
 
-    // Quitar piezas del grupo
-    // sin usar attach todavía.
+    // ======================================
+    // LIMPIAR GRUPO
+    // ======================================
 
-    selectedPieces.forEach(
+    pieces.forEach(
       function (piece) {
 
-        rotationGroup.remove(
-          piece
-        );
+        rubiksCube.add(piece);
 
       }
     );
 
 
-    rubiksCube.remove(
-      rotationGroup
-    );
-
-
-    // ======================================
-    // APLICAR TRANSFORMACIÓN AL CUBO
-    // ======================================
-
-    transforms.forEach(
-      function (data) {
-
-        rubiksCube.add(
-          data.piece
-        );
-
-
-        data.piece.position.copy(
-          data.position
-        );
-
-
-        data.piece.quaternion.copy(
-          data.quaternion
-        );
-
-
-        data.piece.scale.set(
-          1,
-          1,
-          1
-        );
-
-      }
-    );
-
-
-    // ======================================
-    // REDONDEAR POSICIONES
-    // ======================================
-
-    transforms.forEach(
-      function (data) {
-
-        const piece =
-          data.piece;
-
-
-        piece.position.x =
-          Math.round(
-            piece.position.x
-          );
-
-
-        piece.position.y =
-          Math.round(
-            piece.position.y
-          );
-
-
-        piece.position.z =
-          Math.round(
-            piece.position.z
-          );
-
-      }
-    );
+    rubiksCube.remove(group);
 
 
     // ======================================
