@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CubeMaster</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <section id="loginScreen" class="screen active">
+
+    <div class="login-card">
+
+      <div class="logo">
+        <span>◆</span> CubeMaster
+      </div>
+
+      <p class="subtitle">
+        Domina el cubo. Mejora tu tiempo.
+      </p>
+
+      <input
+        id="emailInput"
+        type="email"
+        placeholder="Correo electrónico"
+      >
+
+      <button id="loginButton" class="primary-button">
+        Ingresar
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- APLICACIÓN -->
+  <section id="appScreen">
+
+    <header class="header">
+
+      <div>
+        <h2>CubeMaster</h2>
+        <p>Tu espacio para practicar</p>
+      </div>
+
+      <div class="header-logo">◆</div>
+
+    </header>
+
+
+    <!-- INICIO -->
+    <main id="homePage" class="page active-page">
+
+      <div class="title">
+        <h1>Mis cubos</h1>
+        <p>Elige un cubo para practicar</p>
+      </div>
+
+
+      <div class="cube-grid">
+
+
+        <!-- 2x2 -->
+        <div class="cube-card">
+
+          <div class="cube cube-2x2">
+            <i></i><i></i>
+            <i></i><i></i>
+          </div>
+
+          <h3>2×2</h3>
+          <p>Principiante</p>
+
+          <button class="practice-button">
+            Practicar
+          </button>
+
+        </div>
+
+
+        <!-- 3x3 -->
+        <div class="cube-card">
+
+          <div class="cube cube-3x3">
+            <i></i><i></i><i></i>
+            <i></i><i></i><i></i>
+            <i></i><i></i><i></i>
+          </div>
+
+          <h3>3×3</h3>
+          <p>Clásico</p>
+
+          <button class="practice-button">
+            Practicar
+          </button>
+
+        </div>
+
+
+        <!-- 4x4 -->
+        <div class="cube-card">
+
+          <div class="cube cube-4x4">
+            <i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>4×4</h3>
+          <p>Avanzado</p>
+
+          <button class="practice-button">
+            Practicar
+          </button>
+
+        </div>
+
+
+        <!-- 5x5 -->
+        <div class="cube-card">
+
+          <div class="cube cube-5x5">
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>5×5</h3>
+          <p>Experto</p>
+
+          <button class="practice-button">
+            Practicar
+          </button>
+
+        </div>
+
+
+        <!-- 6x6 -->
+        <div class="cube-card">
+
+          <div class="cube cube-6x6">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>6×6</h3>
+          <p>Experto</p>
+
+          <button class="practice-button">
+            Practicar
+          </button>
+
+        </div>
+
+
+        <!-- 7x7 -->
+        <div class="cube-card">
+
+          <div class="cube cube-7x7">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>7×7</h3>
+          <p>Profesional</p>
+
+          <button class="practice-button">
+            Practicar
+          </button>
+
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <!-- TEMPORIZADOR -->
+    <main id="timerPage" class="page">
+
+      <div class="timer-container">
+
+        <span class="section-label">
+          TEMPORIZADOR
+        </span>
+
+        <h1>Practica tus tiempos</h1>
+
+        <div id="timerDisplay">
+          00:00.00
+        </div>
+
+        <p id="timerStatus">
+          Presiona iniciar para comenzar
+        </p>
+
+        <div class="timer-buttons">
+
+          <button id="startTimer" class="primary-button">
+            Iniciar
+          </button>
+
+          <button id="stopTimer" class="secondary-button">
+            Detener
+          </button>
+
+          <button id="resetTimer" class="secondary-button">
+            Reiniciar
+          </button>
+
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <!-- PERFIL -->
+    <main id="profilePage" class="page">
+
+      <div class="profile-card">
+
+        <div id="profileAvatar">
+          U
+        </div>
+
+        <h1 id="profileName">
+          Usuario
+        </h1>
+
+        <p id="profileEmail">
+          usuario@email.com
+        </p>
+
+        <div class="statistics">
+
+          <div>
+            <strong>6</strong>
+            <span>Cubos</span>
+          </div>
+
+          <div>
+            <strong>0</strong>
+            <span>Solves</span>
+          </div>
+
+          <div>
+            <strong>--</strong>
+            <span>Mejor tiempo</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <!-- MENÚ INFERIOR -->
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-button active"
+        data-page="homePage">
+
+        <span>⌂</span>
+        <small>Inicio</small>
+
+      </button>
+
+
+      <button
+        class="nav-button"
+        data-page="timerPage">
+
+        <span>⏱</span>
+        <small>Temporizador</small>
+
+      </button>
+
+
+      <button
+        class="nav-button"
+        data-page="profilePage">
+
+        <span>♙</span>
+        <small>Perfil</small>
+
+      </button>
+
+    </nav>
+
+  </section>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
