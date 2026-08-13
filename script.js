@@ -1067,6 +1067,164 @@ document.addEventListener(
 // MEZCLAR
 // ==========================================
 
+let scrambleRunning = false;
+
+function generateScramble(size) {
+
+  const moves = [
+    "R",
+    "L",
+    "U",
+    "D",
+    "F",
+    "B"
+  ];
+
+  const modifiers = [
+    "",
+    "'"
+  ];
+
+  let length;
+
+  if (size === 2) {
+    length = 9;
+  } else if (size === 3) {
+    length = 20;
+  } else if (size === 4) {
+    length = 40;
+  } else if (size === 5) {
+    length = 50;
+  } else if (size === 6) {
+    length = 60;
+  } else {
+    length = 70;
+  }
+
+  const scramble = [];
+
+  let previousMove = null;
+
+  while (scramble.length < length) {
+
+    const move =
+      moves[
+        Math.floor(
+          Math.random() *
+          moves.length
+        )
+      ];
+
+    // Evitar dos movimientos
+    // consecutivos de la misma cara
+
+    if (move === previousMove) {
+      continue;
+    }
+
+    const modifier =
+      modifiers[
+        Math.floor(
+          Math.random() *
+          modifiers.length
+        )
+      ];
+
+    scramble.push(
+      move + modifier
+    );
+
+    previousMove = move;
+  }
+
+  return scramble;
+}
+
+
+// ==========================================
+// EJECUTAR SCRAMBLE
+// ==========================================
+
+async function executeScramble(scramble) {
+
+  if (scrambleRunning) {
+    return;
+  }
+
+  scrambleRunning = true;
+
+  moveHistory = [];
+
+  for (const move of scramble) {
+
+    const face =
+      move.charAt(0);
+
+    const clockwise =
+      !move.includes("'");
+
+    rotateFace(
+      face,
+      clockwise
+    );
+
+    // Esperar a que termine
+    // la animación del movimiento
+
+    await waitForTurn();
+
+    await new Promise(
+      function (resolve) {
+
+        setTimeout(
+          resolve,
+          80
+        );
+
+      }
+    );
+  }
+
+  scrambleRunning = false;
+}
+
+
+// ==========================================
+// ESPERAR MOVIMIENTO
+// ==========================================
+
+function waitForTurn() {
+
+  return new Promise(
+    function (resolve) {
+
+      function check() {
+
+        if (!turning) {
+
+          resolve();
+
+          return;
+
+        }
+
+        requestAnimationFrame(
+          check
+        );
+
+      }
+
+      check();
+
+    }
+  );
+}
+
+
+// ==========================================
+// BOTÓN MEZCLAR
+// ==========================================
+
 const scrambleButton =
   document.getElementById(
     "scrambleButton"
@@ -1083,75 +1241,22 @@ if (scrambleButton) {
         return;
       }
 
-
-      const moves = [
-        "R",
-        "L",
-        "U",
-        "D",
-        "F",
-        "B"
-      ];
-
-
-      moveHistory = [];
-
-
-      let amount;
-
-
-      if (
-        selectedCubeSize === 2
-      ) {
-
-        amount = 10;
-
-      } else if (
-        selectedCubeSize === 3
-      ) {
-
-        amount = 20;
-
-      } else {
-
-        amount = 30;
-
+      if (scrambleRunning) {
+        return;
       }
 
-
-      for (
-        let i = 0;
-        i < amount;
-        i++
-      ) {
-
-        const randomMove =
-          moves[
-            Math.floor(
-              Math.random() *
-              moves.length
-            )
-          ];
-
-
-        const clockwise =
-          Math.random() > 0.5;
-
-
-        rotateFace(
-          randomMove,
-          clockwise
+      const scramble =
+        generateScramble(
+          selectedCubeSize
         );
 
-      }
+      console.log(
+        "Scramble:",
+        scramble.join(" ")
+      );
 
-
-      alert(
-        "Cubo " +
-        selectedCubeSize +
-        "×" +
-        selectedCubeSize +
-        " mezclado."
+      executeScramble(
+        scramble
       );
 
     }
