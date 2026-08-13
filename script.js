@@ -774,46 +774,190 @@ window.addEventListener(
   resizeRubiksCube
 );
 
-
 // ==========================================
 // MOVIMIENTOS
 // ==========================================
-//
-// IMPORTANTE:
-// Por ahora NO deformamos las piezas.
-// Guardamos los movimientos para el
-// solucionador que construiremos después.
-//
 
-function rotateFace(
-  face,
-  clockwise = true
-) {
+let turning = false;
 
-  if (!rubiksCube) {
+function rotateFace(face, clockwise = true) {
+
+  if (!rubiksCube || turning) {
     return;
   }
 
+  const size = selectedCubeSize;
+  const center = (size - 1) / 2;
 
-  moveHistory.push(
+  let axis;
+  let layer;
+
+  switch (face) {
+
+    case "R":
+      axis = "x";
+      layer = center;
+      break;
+
+    case "L":
+      axis = "x";
+      layer = -center;
+      break;
+
+    case "U":
+      axis = "y";
+      layer = center;
+      break;
+
+    case "D":
+      axis = "y";
+      layer = -center;
+      break;
+
+    case "F":
+      axis = "z";
+      layer = center;
+      break;
+
+    case "B":
+      axis = "z";
+      layer = -center;
+      break;
+
+    default:
+      return;
+  }
+
+  const selectedPieces =
+    cubePieces.filter(function (piece) {
+
+      return (
+        Math.abs(
+          piece.position[axis] - layer
+        ) < 0.15
+      );
+
+    });
+
+  if (selectedPieces.length === 0) {
+    return;
+  }
+
+  turning = true;
+
+  const rotationGroup =
+    new THREE.Group();
+
+  rubiksCube.add(rotationGroup);
+
+  // Guardar las transformaciones
+  // originales antes del giro.
+
+  selectedPieces.forEach(function (piece) {
+
+    rotationGroup.attach(piece);
+
+  });
+
+  const angle =
     clockwise
-      ? face
-      : face + "'"
-  );
+      ? Math.PI / 2
+      : -Math.PI / 2;
 
+  // Animación
+  const duration = 250;
 
-  console.log(
-    "Movimiento:",
-    clockwise
-      ? face
-      : face + "'",
-    "Cubo:",
-    selectedCubeSize + "×" +
-    selectedCubeSize
+  const start = performance.now();
+
+  function animateTurn(now) {
+
+    const progress =
+      Math.min(
+        (now - start) / duration,
+        1
+      );
+
+    // Suavizado
+    const smooth =
+      progress * (2 - progress);
+
+    rotationGroup.rotation[axis] =
+      angle * smooth;
+
+    if (progress < 1) {
+
+      requestAnimationFrame(
+        animateTurn
+      );
+
+      return;
+    }
+
+    // ====================================
+    // FINALIZAR GIRO
+    // ====================================
+
+    rotationGroup.rotation[axis] =
+      angle;
+
+    rotationGroup.updateMatrixWorld(
+      true
+    );
+
+    // Devolver las piezas
+    // conservando su transformación.
+
+    selectedPieces.forEach(
+      function (piece) {
+
+        rubiksCube.attach(piece);
+
+      }
+    );
+
+    rubiksCube.remove(
+      rotationGroup
+    );
+
+    // Ajustar posiciones
+    // para evitar errores de precisión.
+
+    selectedPieces.forEach(
+      function (piece) {
+
+        piece.position.x =
+          Math.round(
+            piece.position.x
+          );
+
+        piece.position.y =
+          Math.round(
+            piece.position.y
+          );
+
+        piece.position.z =
+          Math.round(
+            piece.position.z
+          );
+
+      }
+    );
+
+    moveHistory.push(
+      clockwise
+        ? face
+        : face + "'"
+    );
+
+    turning = false;
+
+  }
+
+  requestAnimationFrame(
+    animateTurn
   );
 
 }
-
 
 // ==========================================
 // TECLADO
