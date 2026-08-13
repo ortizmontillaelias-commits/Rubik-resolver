@@ -1241,6 +1241,120 @@ document
     }
   );
 
+  // ==========================================
+// VOLVER A INICIO
+// ==========================================
+
+const backToHomeButton =
+  document.getElementById(
+    "backToHome"
+  );
+
+if (backToHomeButton) {
+
+  backToHomeButton.addEventListener(
+    "click",
+    function () {
+
+      // Ocultar todas las páginas
+
+      document
+        .querySelectorAll(".page")
+        .forEach(
+          function (page) {
+
+            page.classList.remove(
+              "active-page"
+            );
+
+          }
+        );
+
+
+      // Mostrar inicio
+
+      const homePage =
+        document.getElementById(
+          "homePage"
+        );
+
+
+      if (homePage) {
+
+        homePage.classList.add(
+          "active-page"
+        );
+
+      }
+
+
+      // Mostrar navegación inferior
+
+      const bottomNav =
+        document.querySelector(
+          ".bottom-nav"
+        );
+
+
+      if (bottomNav) {
+
+        bottomNav.style.display =
+          "flex";
+
+      }
+
+
+      // Limpiar el cubo
+
+      const container =
+        document.getElementById(
+          "rubiks3D"
+        );
+
+
+      if (container) {
+
+        container.innerHTML = "";
+
+      }
+
+
+      // Liberar recursos
+
+      if (cubeControls) {
+
+        cubeControls.dispose();
+
+        cubeControls = null;
+
+      }
+
+
+      if (cubeRenderer) {
+
+        cubeRenderer.dispose();
+
+        cubeRenderer = null;
+
+      }
+
+
+      cubeScene = null;
+
+      cubeCamera = null;
+
+      rubiksCube = null;
+
+      cubePieces = [];
+
+      moveHistory = [];
+
+      isTurning = false;
+
+    }
+  );
+
+}
 
 // ==========================================
 // ANIMACIÓN
