@@ -58,21 +58,15 @@ function login() {
   }
 
 
-  // Ocultar login
-
   document
     .getElementById("loginScreen")
     .classList.add("hidden");
 
 
-  // Mostrar aplicación
-
   document
     .getElementById("appScreen")
     .classList.add("active");
 
-
-  // Datos del perfil
 
   document
     .getElementById("profileEmail")
@@ -120,8 +114,6 @@ navigationButtons.forEach(
           button.dataset.page;
 
 
-        // Ocultar todas las páginas
-
         pages.forEach(
           function (page) {
 
@@ -132,8 +124,6 @@ navigationButtons.forEach(
           }
         );
 
-
-        // Quitar selección
 
         navigationButtons.forEach(
           function (nav) {
@@ -146,16 +136,12 @@ navigationButtons.forEach(
         );
 
 
-        // Mostrar página
-
         document
           .getElementById(pageId)
           .classList.add(
             "active-page"
           );
 
-
-        // Activar botón
 
         button.classList.add(
           "active"
@@ -217,8 +203,6 @@ const resetTimerButton =
   );
 
 
-// Formatear tiempo
-
 function formatTime(
   milliseconds
 ) {
@@ -261,8 +245,6 @@ function formatTime(
 }
 
 
-// Actualizar temporizador
-
 function updateTimer() {
 
   elapsedTime =
@@ -277,8 +259,6 @@ function updateTimer() {
 
 }
 
-
-// Iniciar
 
 startTimerButton.addEventListener(
   "click",
@@ -311,8 +291,6 @@ startTimerButton.addEventListener(
 );
 
 
-// Detener
-
 stopTimerButton.addEventListener(
   "click",
   function () {
@@ -338,8 +316,6 @@ stopTimerButton.addEventListener(
   }
 );
 
-
-// Reiniciar
 
 resetTimerButton.addEventListener(
   "click",
@@ -369,52 +345,35 @@ resetTimerButton.addEventListener(
 
 
 // ==========================================
-// BOTONES DE CUBOS
-// ==========================================
-
-const practiceButtons =
-  document.querySelectorAll(
-    ".practice-button"
-  );
-
-
-practiceButtons.forEach(
-  function (button) {
-
-    button.addEventListener(
-      "click",
-      function () {
-
-        alert(
-          "Modo de práctica seleccionado.\n\n" +
-          "El cubo 3D interactivo lo añadiremos en el siguiente paso."
-        );
-
-      }
-    );
-
-  }
-);
-
-// ==========================================
-// CUBO 3D
+// THREE.JS
 // ==========================================
 
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+import {
+  OrbitControls
+} from "three/addons/controls/OrbitControls.js";
+
+
+// ==========================================
+// VARIABLES DEL CUBO
+// ==========================================
 
 let cubeScene = null;
+
 let cubeCamera = null;
+
 let cubeRenderer = null;
+
 let cubeControls = null;
+
 let rubiksCube = null;
 
 let selectedCubeSize = 3;
 
 
 // ==========================================
-// BOTONES PRACTICAR
+// BOTONES "PRACTICAR"
 // ==========================================
 
 const practiceButtons =
@@ -435,7 +394,10 @@ practiceButtons.forEach(
             button.dataset.cube
           );
 
-        openCubePractice(size);
+
+        openCubePractice(
+          size
+        );
 
       }
     );
@@ -445,18 +407,15 @@ practiceButtons.forEach(
 
 
 // ==========================================
-// ABRIR CUBO
+// ABRIR PANTALLA DEL CUBO
 // ==========================================
 
-function openCubePractice(size) {
+function openCubePractice(
+  size
+) {
 
-  selectedCubeSize = size;
-
-
-  const homePage =
-    document.getElementById(
-      "homePage"
-    );
+  selectedCubeSize =
+    size;
 
 
   const practicePage =
@@ -478,10 +437,10 @@ function openCubePractice(size) {
     size;
 
 
-  // Ocultar páginas
-
   document
-    .querySelectorAll(".page")
+    .querySelectorAll(
+      ".page"
+    )
     .forEach(
       function (page) {
 
@@ -493,42 +452,39 @@ function openCubePractice(size) {
     );
 
 
-  // Mostrar cubo
-
   practicePage.classList.add(
     "active-page"
   );
 
 
-  // Ocultar navegación inferior
-
   document
     .querySelector(
       ".bottom-nav"
     )
-    .style.display = "none";
+    .style.display =
+    "none";
 
 
-  // Crear cubo
-
-  createRubiksCube(size);
+  createRubiksCube(
+    size
+  );
 
 }
 
 
 // ==========================================
-// CREAR CUBO
+// CREAR CUBO 3D
 // ==========================================
 
-function createRubiksCube(size) {
+function createRubiksCube(
+  size
+) {
 
   const container =
     document.getElementById(
       "rubiks3D"
     );
 
-
-  // Limpiar cubo anterior
 
   container.innerHTML = "";
 
@@ -590,6 +546,7 @@ function createRubiksCube(size) {
       2
     );
 
+
   cubeScene.add(
     ambientLight
   );
@@ -601,28 +558,29 @@ function createRubiksCube(size) {
       3
     );
 
+
   directionalLight.position.set(
     5,
     8,
     6
   );
 
+
   cubeScene.add(
     directionalLight
   );
 
 
-  // GRUPO DEL RUBIK
+  // GRUPO DEL CUBO
 
   rubiksCube =
     new THREE.Group();
+
 
   cubeScene.add(
     rubiksCube
   );
 
-
-  // CREAR PIEZAS
 
   createCubePieces(
     size
@@ -641,12 +599,14 @@ function createRubiksCube(size) {
   cubeControls.enableDamping =
     true;
 
+
   cubeControls.enablePan =
     false;
 
 
   cubeControls.minDistance =
     size + 2;
+
 
   cubeControls.maxDistance =
     size * 5;
@@ -658,10 +618,12 @@ function createRubiksCube(size) {
 
 
 // ==========================================
-// PIEZAS
+// CREAR PIEZAS
 // ==========================================
 
-function createCubePieces(size) {
+function createCubePieces(
+  size
+) {
 
   const colors = [
 
@@ -673,9 +635,6 @@ function createCubePieces(size) {
     0x00aa00
 
   ];
-
-
-  const spacing = 1;
 
 
   const start =
@@ -729,14 +688,11 @@ function createCubePieces(size) {
 
         piece.position.set(
 
-          start +
-          x * spacing,
+          start + x,
 
-          start +
-          y * spacing,
+          start + y,
 
-          start +
-          z * spacing
+          start + z
 
         );
 
@@ -805,9 +761,10 @@ document
     function () {
 
       alert(
-        "🧠 Próximamente\n\n" +
-        "Aquí colocaremos los algoritmos " +
-        "para ayudarte a resolver el cubo " +
+        "🧠 Modo resolver\n\n" +
+        "Próximamente podrás recibir " +
+        "los algoritmos para resolver tu " +
+        "cubo " +
         selectedCubeSize +
         "×" +
         selectedCubeSize +
@@ -819,7 +776,7 @@ document
 
 
 // ==========================================
-// VOLVER
+// VOLVER A INICIO
 // ==========================================
 
 document
@@ -831,7 +788,9 @@ document
     function () {
 
       document
-        .querySelectorAll(".page")
+        .querySelectorAll(
+          ".page"
+        )
         .forEach(
           function (page) {
 
@@ -856,10 +815,9 @@ document
         .querySelector(
           ".bottom-nav"
         )
-        .style.display = "flex";
+        .style.display =
+        "flex";
 
-
-      // Limpiar cubo
 
       const container =
         document.getElementById(
