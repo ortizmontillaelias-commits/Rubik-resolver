@@ -789,43 +789,66 @@ function rotateFace(face, clockwise = true) {
       return;
   }
 
-  const pieces = cubePieces.filter(function (piece) {
 
-    const gridAxis =
-      axis === "x"
-        ? piece.userData.gridX
-        : axis === "y"
-          ? piece.userData.gridY
-          : piece.userData.gridZ;
+  // ========================================
+  // BUSCAR PIEZAS
+  // ========================================
 
-    return Math.abs(
-      gridAxis - (layer + center)
-    ) < 0.01;
+  const pieces =
+    cubePieces.filter(function (piece) {
 
-  });
+      const gridValue =
+        axis === "x"
+          ? piece.userData.gridX
+          : axis === "y"
+            ? piece.userData.gridY
+            : piece.userData.gridZ;
+
+      return Math.abs(
+        gridValue - (layer + center)
+      ) < 0.01;
+
+    });
+
 
   if (pieces.length === 0) {
     return;
   }
 
+
   turning = true;
+
+
+  // ========================================
+  // GRUPO DE ROTACIÓN
+  // ========================================
 
   const group =
     new THREE.Group();
 
   rubiksCube.add(group);
 
+
   pieces.forEach(function (piece) {
+
     group.attach(piece);
+
   });
+
 
   const targetAngle =
     clockwise
       ? Math.PI / 2
       : -Math.PI / 2;
 
+
   const duration = 300;
   const start = performance.now();
+
+
+  // ========================================
+  // ANIMACIÓN
+  // ========================================
 
   function animateTurn(time) {
 
@@ -835,11 +858,14 @@ function rotateFace(face, clockwise = true) {
         1
       );
 
+
     const smooth =
       progress * (2 - progress);
 
+
     group.rotation[axis] =
       targetAngle * smooth;
+
 
     if (progress < 1) {
 
@@ -848,15 +874,23 @@ function rotateFace(face, clockwise = true) {
       );
 
       return;
+
     }
+
+
+    // ======================================
+    // FINALIZAR GIRO
+    // ======================================
 
     group.rotation[axis] =
       targetAngle;
 
+
     group.updateMatrixWorld(true);
 
+
     // ======================================
-    // ACTUALIZAR CUADRÍCULA
+    // ACTUALIZAR POSICIONES LÓGICAS
     // ======================================
 
     pieces.forEach(function (piece) {
@@ -877,6 +911,9 @@ function rotateFace(face, clockwise = true) {
       let newY = y;
       let newZ = z;
 
+
+      // GIRO EN X
+
       if (axis === "x") {
 
         if (clockwise) {
@@ -892,6 +929,9 @@ function rotateFace(face, clockwise = true) {
         }
 
       }
+
+
+      // GIRO EN Y
 
       if (axis === "y") {
 
@@ -909,6 +949,9 @@ function rotateFace(face, clockwise = true) {
 
       }
 
+
+      // GIRO EN Z
+
       if (axis === "z") {
 
         if (clockwise) {
@@ -925,31 +968,41 @@ function rotateFace(face, clockwise = true) {
 
       }
 
+
       piece.userData.gridX = newX;
       piece.userData.gridY = newY;
       piece.userData.gridZ = newZ;
 
+
+      // ==================================
+      // IMPORTANTE:
+      // conservar la ROTACIÓN de la pieza
+      // ==================================
+
+      rubiksCube.attach(piece);
+
+
       // Posición exacta
 
       piece.position.set(
+
         newX - center,
+
         newY - center,
+
         newZ - center
+
       );
 
     });
 
+
     // ======================================
-    // DEVOLVER PIEZAS
+    // ELIMINAR GRUPO
     // ======================================
-
-    pieces.forEach(function (piece) {
-
-      rubiksCube.add(piece);
-
-    });
 
     rubiksCube.remove(group);
+
 
     // ======================================
     // GUARDAR MOVIMIENTO
@@ -961,9 +1014,11 @@ function rotateFace(face, clockwise = true) {
         : face + "'"
     );
 
+
     turning = false;
 
   }
+
 
   requestAnimationFrame(
     animateTurn
