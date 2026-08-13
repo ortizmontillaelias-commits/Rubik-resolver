@@ -1266,19 +1266,179 @@ if (scrambleButton) {
 
 
 // ==========================================
-// RESOLVER
+// RESOLVER CUBO
 // ==========================================
 
 const solveButton =
   document.getElementById("solveButton");
 
+let solvingCube = false;
+
+
+// ==========================================
+// INVERTIR MOVIMIENTO
+// ==========================================
+
+function inverseMove(move) {
+
+  if (move.endsWith("'")) {
+
+    return move.charAt(0);
+
+  }
+
+  return move + "'";
+
+}
+
+
+// ==========================================
+// RESOLVER MOVIMIENTOS
+// ==========================================
+
+async function solveCube() {
+
+  if (!rubiksCube) {
+
+    alert(
+      "Primero abre un cubo."
+    );
+
+    return;
+
+  }
+
+
+  if (solvingCube) {
+
+    return;
+
+  }
+
+
+  if (scrambleRunning || turning) {
+
+    alert(
+      "Espera a que termine la mezcla."
+    );
+
+    return;
+
+  }
+
+
+  if (moveHistory.length === 0) {
+
+    alert(
+      "El cubo todavía no tiene movimientos registrados."
+    );
+
+    return;
+
+  }
+
+
+  solvingCube = true;
+
+
+  // ========================================
+  // COPIAR HISTORIAL
+  // ========================================
+
+  const history =
+    [...moveHistory];
+
+
+  // ========================================
+  // INVERTIR LOS MOVIMIENTOS
+  // ========================================
+
+  const solution =
+    history
+      .reverse()
+      .map(
+        function (move) {
+
+          return inverseMove(
+            move
+          );
+
+        }
+      );
+
+
+  console.log(
+    "Solución:",
+    solution.join(" ")
+  );
+
+
+  // ========================================
+  // EJECUTAR SOLUCIÓN
+  // ========================================
+
+  for (
+    const move of solution
+  ) {
+
+    const face =
+      move.charAt(0);
+
+
+    const clockwise =
+      !move.endsWith("'");
+
+
+    rotateFace(
+      face,
+      clockwise
+    );
+
+
+    await waitForTurn();
+
+
+    await new Promise(
+      function (resolve) {
+
+        setTimeout(
+          resolve,
+          120
+        );
+
+      }
+    );
+
+  }
+
+
+  // ========================================
+  // TERMINÓ
+  // ========================================
+
+  solvingCube = false;
+
+
+  moveHistory = [];
+
+
+  alert(
+    "✅ ¡Cubo resuelto!"
+  );
+
+}
+  
+
+// ==========================================
+// BOTÓN RESOLVER
+// ==========================================
+
 if (solveButton) {
 
-  solveButton.onclick = function () {
-
-    alert("🧠 El botón RESOLVER funciona.");
-
-  };
+  solveButton.addEventListener(
+    "click",
+    solveCube
+  );
 
 }
 

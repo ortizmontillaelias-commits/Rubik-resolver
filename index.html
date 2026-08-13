@@ -52,161 +52,315 @@
 
     </header>
 
+
     <!-- INICIO -->
-<main id="homePage" class="page active-page">
+    <main id="homePage" class="page active-page">
 
-  <div class="title">
-    <h1>Mis cubos</h1>
-    <p>Elige un cubo para practicar</p>
-  </div>
+      <div class="title">
 
-  <div class="cube-grid">
+        <h1>Mis cubos</h1>
 
-    <div class="cube-card">
-      <div class="cube cube-2x2">
-        <i></i><i></i>
-        <i></i><i></i>
+        <p>
+          Elige un cubo para practicar
+        </p>
+
       </div>
 
-      <h3>2×2</h3>
-      <p>Principiante</p>
 
-      <button class="practice-button" data-cube="2">
-        Practicar
-      </button>
-    </div>
+      <div class="cube-grid">
 
 
-    <div class="cube-card">
-      <div class="cube cube-3x3">
-        <i></i><i></i><i></i>
-        <i></i><i></i><i></i>
-        <i></i><i></i><i></i>
+        <!-- 2x2 -->
+        <div class="cube-card">
+
+          <div class="cube cube-2x2">
+            <i></i><i></i>
+            <i></i><i></i>
+          </div>
+
+          <h3>2×2</h3>
+
+          <p>Principiante</p>
+
+          <button
+            class="practice-button"
+            data-cube="2">
+
+            Practicar
+
+          </button>
+
+        </div>
+
+
+        <!-- 3x3 -->
+        <div class="cube-card">
+
+          <div class="cube cube-3x3">
+            <i></i><i></i><i></i>
+            <i></i><i></i><i></i>
+            <i></i><i></i><i></i>
+          </div>
+
+          <h3>3×3</h3>
+
+          <p>Clásico</p>
+
+          <button
+            class="practice-button"
+            data-cube="3">
+
+            Practicar
+
+          </button>
+
+        </div>
+
+
+        <!-- 4x4 -->
+        <div class="cube-card">
+
+          <div class="cube cube-4x4">
+            <i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>4×4</h3>
+
+          <p>Avanzado</p>
+
+          <button
+            class="practice-button"
+            data-cube="4">
+
+            Practicar
+
+          </button>
+
+        </div>
+
+
+        <!-- 5x5 -->
+        <div class="cube-card">
+
+          <div class="cube cube-5x5">
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>5×5</h3>
+
+          <p>Experto</p>
+
+          <button
+            class="practice-button"
+            data-cube="5">
+
+            Practicar
+
+          </button>
+
+        </div>
+
+
+        <!-- 6x6 -->
+        <div class="cube-card">
+
+          <div class="cube cube-6x6">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>6×6</h3>
+
+          <p>Experto</p>
+
+          <button
+            class="practice-button"
+            data-cube="6">
+
+            Practicar
+
+          </button>
+
+        </div>
+
+
+        <!-- 7x7 -->
+        <div class="cube-card">
+
+          <div class="cube cube-7x7">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <h3>7×7</h3>
+
+          <p>Profesional</p>
+
+          <button
+            class="practice-button"
+            data-cube="7">
+
+            Practicar
+
+          </button>
+
+        </div>
+
       </div>
 
-      <h3>3×3</h3>
-      <p>Clásico</p>
-
-      <button class="practice-button" data-cube="3">
-        Practicar
-      </button>
-    </div>
+    </main>
 
 
-    <div class="cube-card">
-      <div class="cube cube-4x4">
-        <i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i>
+    <!-- ==========================================
+         PRACTICAR CUBO
+         ========================================== -->
+
+    <main
+      id="cubePracticePage"
+      class="page"
+    >
+
+      <div class="cube-practice-header">
+
+        <button
+          id="backToHome"
+          class="secondary-button"
+        >
+          ← Volver
+        </button>
+
+
+        <div>
+
+          <h1 id="selectedCubeTitle">
+            Cubo 3×3
+          </h1>
+
+          <p>
+            Practica y mejora tus tiempos
+          </p>
+
+        </div>
+
       </div>
 
-      <h3>4×4</h3>
-      <p>Avanzado</p>
 
-      <button class="practice-button" data-cube="4">
-        Practicar
-      </button>
-    </div>
+      <!-- CUBO 3D -->
+
+      <div id="rubiks3D"></div>
 
 
-    <div class="cube-card">
-      <div class="cube cube-5x5">
-        <i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i>
+      <!-- ACCIONES -->
+
+      <div class="cube-actions">
+
+        <button
+          id="scrambleButton"
+          class="primary-button"
+        >
+          🔀 Mezclar
+        </button>
+
+
+        <button
+          id="solveButton"
+          class="primary-button"
+        >
+          🧠 Resolver
+        </button>
+
       </div>
 
-      <h3>5×5</h3>
-      <p>Experto</p>
 
-      <button class="practice-button" data-cube="5">
-        Practicar
-      </button>
-    </div>
+      <!-- ======================================
+           PANEL DEL SOLUCIONADOR
+           ====================================== -->
+
+      <div
+        id="cubeInputPanel"
+        class="cube-input-panel hidden"
+      >
+
+        <div class="solver-card">
+
+          <div class="solver-icon">
+            🧠
+          </div>
 
 
-    <div class="cube-card">
-      <div class="cube cube-6x6">
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
+          <h2>
+            Resolver mi cubo
+          </h2>
+
+
+          <p>
+            Introduce el estado de tu cubo físico
+            para que CubeMaster pueda analizarlo
+            y ayudarte a resolverlo.
+          </p>
+
+
+          <div class="solver-selected-cube">
+
+            <span>
+              Cubo seleccionado
+            </span>
+
+            <strong
+              id="solverCubeSize"
+            >
+              3×3
+            </strong>
+
+          </div>
+
+
+          <button
+            id="startCubeInput"
+            class="primary-button"
+          >
+            🎨 Introducir colores
+          </button>
+
+
+          <button
+            id="closeCubeInput"
+            class="secondary-button"
+          >
+            ← Volver
+          </button>
+
+        </div>
+
       </div>
 
-      <h3>6×6</h3>
-      <p>Experto</p>
-
-      <button class="practice-button" data-cube="6">
-        Practicar
-      </button>
-    </div>
+    </main>
 
 
-    <div class="cube-card">
-      <div class="cube cube-7x7">
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
+    <!-- ==========================================
+         TEMPORIZADOR
+         ========================================== -->
 
-      <h3>7×7</h3>
-      <p>Profesional</p>
-
-      <button class="practice-button" data-cube="7">
-        Practicar
-      </button>
-    </div>
-
-  </div>
-
-</main>
-
-
-<!-- PRACTICAR CUBO -->
-<main id="cubePracticePage" class="page">
-
-  <div class="cube-practice-header">
-
-    <button id="backToHome" class="secondary-button">
-      ← Volver
-    </button>
-
-    <div>
-      <h1 id="selectedCubeTitle">Cubo 3×3</h1>
-      <p>Practica y mejora tus tiempos</p>
-    </div>
-
-  </div>
-
-
-  <div id="rubiks3D"></div>
-
-
-  <div class="cube-actions">
-
-    <button id="scrambleButton" class="primary-button">
-      🔀 Mezclar
-    </button>
-
-    <button id="solveButton" class="primary-button">
-      🧠 Resolver
-    </button>
-
-  </div>
-
-</main>
-
-    <!-- TEMPORIZADOR -->
-    <main id="timerPage" class="page">
+    <main
+      id="timerPage"
+      class="page"
+    >
 
       <div class="timer-container">
 
@@ -214,7 +368,9 @@
           TEMPORIZADOR
         </span>
 
-        <h1>Practica tus tiempos</h1>
+        <h1>
+          Practica tus tiempos
+        </h1>
 
         <div id="timerDisplay">
           00:00.00
@@ -224,17 +380,29 @@
           Presiona iniciar para comenzar
         </p>
 
+
         <div class="timer-buttons">
 
-          <button id="startTimer" class="primary-button">
+          <button
+            id="startTimer"
+            class="primary-button"
+          >
             Iniciar
           </button>
 
-          <button id="stopTimer" class="secondary-button">
+
+          <button
+            id="stopTimer"
+            class="secondary-button"
+          >
             Detener
           </button>
 
-          <button id="resetTimer" class="secondary-button">
+
+          <button
+            id="resetTimer"
+            class="secondary-button"
+          >
             Reiniciar
           </button>
 
@@ -245,8 +413,14 @@
     </main>
 
 
-    <!-- PERFIL -->
-    <main id="profilePage" class="page">
+    <!-- ==========================================
+         PERFIL
+         ========================================== -->
+
+    <main
+      id="profilePage"
+      class="page"
+    >
 
       <div class="profile-card">
 
@@ -262,21 +436,45 @@
           usuario@email.com
         </p>
 
+
         <div class="statistics">
 
           <div>
-            <strong>6</strong>
-            <span>Cubos</span>
+
+            <strong>
+              6
+            </strong>
+
+            <span>
+              Cubos
+            </span>
+
           </div>
 
-          <div>
-            <strong>0</strong>
-            <span>Solves</span>
-          </div>
 
           <div>
-            <strong>--</strong>
-            <span>Mejor tiempo</span>
+
+            <strong>
+              0
+            </strong>
+
+            <span>
+              Solves
+            </span>
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              --
+            </strong>
+
+            <span>
+              Mejor tiempo
+            </span>
+
           </div>
 
         </div>
@@ -286,35 +484,50 @@
     </main>
 
 
-    <!-- MENÚ INFERIOR -->
+    <!-- ==========================================
+         MENÚ INFERIOR
+         ========================================== -->
+
     <nav class="bottom-nav">
 
       <button
         class="nav-button active"
-        data-page="homePage">
+        data-page="homePage"
+      >
 
         <span>⌂</span>
-        <small>Inicio</small>
+
+        <small>
+          Inicio
+        </small>
 
       </button>
 
 
       <button
         class="nav-button"
-        data-page="timerPage">
+        data-page="timerPage"
+      >
 
         <span>⏱</span>
-        <small>Temporizador</small>
+
+        <small>
+          Temporizador
+        </small>
 
       </button>
 
 
       <button
         class="nav-button"
-        data-page="profilePage">
+        data-page="profilePage"
+      >
 
         <span>♙</span>
-        <small>Perfil</small>
+
+        <small>
+          Perfil
+        </small>
 
       </button>
 
@@ -322,16 +535,32 @@
 
   </section>
 
-  <script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-  }
-}
-</script>
 
-  <script type="module" src="script.js"></script>
+  <!-- ==========================================
+       THREE.JS
+       ========================================== -->
+
+  <script type="importmap">
+
+  {
+    "imports": {
+
+      "three":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+
+      "three/addons/":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+
+    }
+  }
+
+  </script>
+
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
 
 </body>
 </html>
