@@ -666,3 +666,102 @@ input:focus {
   }
 
 }
+
+/* ==========================================
+   PANTALLA DEL CUBO 3D
+========================================== */
+
+#cubePracticePage {
+  max-width: 1150px;
+  margin: auto;
+}
+
+.cube-practice-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.cube-practice-header h1 {
+  font-size: 30px;
+}
+
+.cube-practice-header p {
+  margin-top: 5px;
+  color: var(--gray);
+}
+
+
+/* CUBO 3D */
+
+#rubiks3D {
+  width: 100%;
+  min-height: 430px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(22, 140, 255, 0.12),
+      transparent 60%
+    );
+
+  border: 1px solid var(--border);
+  border-radius: 25px;
+
+  overflow: hidden;
+}
+
+
+/* BOTONES DEL CUBO */
+
+.cube-actions {
+  max-width: 500px;
+
+  margin: 25px auto 0;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 15px;
+}
+
+.cube-actions .primary-button {
+  width: 100%;
+}
+
+
+/* BOTÓN VOLVER */
+
+.cube-practice-header
+.secondary-button {
+  width: auto;
+}
+
+
+/* MÓVIL */
+
+@media (max-width: 600px) {
+
+  .cube-practice-header {
+    align-items: flex-start;
+  }
+
+  .cube-practice-header h1 {
+    font-size: 23px;
+  }
+
+  #rubiks3D {
+    min-height: 350px;
+  }
+
+  .cube-actions {
+    grid-template-columns: 1fr;
+  }
+
+}

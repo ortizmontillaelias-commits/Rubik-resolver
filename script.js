@@ -397,86 +397,169 @@ practiceButtons.forEach(
 );
 
 // ==========================================
-// CUBO 3D - BASE DEL SIMULADOR
+// CUBO 3D
 // ==========================================
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-let cubeScene;
-let cubeCamera;
-let cubeRenderer;
-let cubeControls;
-let rubiksCube;
+
+let cubeScene = null;
+let cubeCamera = null;
+let cubeRenderer = null;
+let cubeControls = null;
+let rubiksCube = null;
+
+let selectedCubeSize = 3;
 
 
-// Crear el cubo 3D
-function createRubiksCube() {
+// ==========================================
+// BOTONES PRACTICAR
+// ==========================================
+
+const practiceButtons =
+  document.querySelectorAll(
+    ".practice-button"
+  );
+
+
+practiceButtons.forEach(
+  function (button) {
+
+    button.addEventListener(
+      "click",
+      function () {
+
+        const size =
+          Number(
+            button.dataset.cube
+          );
+
+        openCubePractice(size);
+
+      }
+    );
+
+  }
+);
+
+
+// ==========================================
+// ABRIR CUBO
+// ==========================================
+
+function openCubePractice(size) {
+
+  selectedCubeSize = size;
+
+
+  const homePage =
+    document.getElementById(
+      "homePage"
+    );
+
+
+  const practicePage =
+    document.getElementById(
+      "cubePracticePage"
+    );
+
+
+  const title =
+    document.getElementById(
+      "selectedCubeTitle"
+    );
+
+
+  title.textContent =
+    "Cubo " +
+    size +
+    "×" +
+    size;
+
+
+  // Ocultar páginas
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      function (page) {
+
+        page.classList.remove(
+          "active-page"
+        );
+
+      }
+    );
+
+
+  // Mostrar cubo
+
+  practicePage.classList.add(
+    "active-page"
+  );
+
+
+  // Ocultar navegación inferior
+
+  document
+    .querySelector(
+      ".bottom-nav"
+    )
+    .style.display = "none";
+
+
+  // Crear cubo
+
+  createRubiksCube(size);
+
+}
+
+
+// ==========================================
+// CREAR CUBO
+// ==========================================
+
+function createRubiksCube(size) {
 
   const container =
-    document.getElementById("homePage");
-
-  if (!container) {
-    return;
-  }
+    document.getElementById(
+      "rubiks3D"
+    );
 
 
-  // Contenedor
-  const cubeArea =
-    document.createElement("div");
+  // Limpiar cubo anterior
 
-  cubeArea.id = "rubiks3DArea";
-
-  cubeArea.innerHTML = `
-    <div class="cube3d-title">
-      <h2>Practica tu cubo</h2>
-      <p>Arrastra para girar la vista</p>
-    </div>
-
-    <div id="rubiks3D"></div>
-
-    <div class="cube3d-controls">
-
-      <button id="scrambleButton">
-        🔀 Mezclar
-      </button>
-
-      <button id="solveButton">
-        🧠 Resolver
-      </button>
-
-    </div>
-  `;
+  container.innerHTML = "";
 
 
-  container.prepend(cubeArea);
-
-
-  // ESCENA
   cubeScene =
     new THREE.Scene();
 
+
   cubeScene.background =
-    new THREE.Color(0x020617);
+    new THREE.Color(
+      0x020617
+    );
 
 
-  // CÁMARA
   cubeCamera =
     new THREE.PerspectiveCamera(
       45,
-      1,
+      container.clientWidth /
+      container.clientHeight,
       0.1,
       100
     );
 
+
   cubeCamera.position.set(
-    5,
-    5,
-    7
+    size + 3,
+    size + 3,
+    size + 4
   );
 
 
-  // RENDER
   cubeRenderer =
     new THREE.WebGLRenderer({
       antialias: true
@@ -487,20 +570,20 @@ function createRubiksCube() {
     window.devicePixelRatio
   );
 
+
   cubeRenderer.setSize(
-    350,
-    350
+    container.clientWidth,
+    container.clientHeight
   );
 
 
-  document
-    .getElementById("rubiks3D")
-    .appendChild(
-      cubeRenderer.domElement
-    );
+  container.appendChild(
+    cubeRenderer.domElement
+  );
 
 
   // LUZ
+
   const ambientLight =
     new THREE.AmbientLight(
       0xffffff,
@@ -529,21 +612,8 @@ function createRubiksCube() {
   );
 
 
-  // CONTROLES
-  cubeControls =
-    new OrbitControls(
-      cubeCamera,
-      cubeRenderer.domElement
-    );
+  // GRUPO DEL RUBIK
 
-  cubeControls.enableDamping =
-    true;
-
-  cubeControls.enablePan =
-    false;
-
-
-  // CREAR CUBO
   rubiksCube =
     new THREE.Group();
 
@@ -552,25 +622,34 @@ function createRubiksCube() {
   );
 
 
-  createCubePieces();
+  // CREAR PIEZAS
+
+  createCubePieces(
+    size
+  );
 
 
-  // BOTÓN MEZCLAR
-  document
-    .getElementById("scrambleButton")
-    .addEventListener(
-      "click",
-      scrambleCube
+  // CONTROLES
+
+  cubeControls =
+    new OrbitControls(
+      cubeCamera,
+      cubeRenderer.domElement
     );
 
 
-  // BOTÓN RESOLVER
-  document
-    .getElementById("solveButton")
-    .addEventListener(
-      "click",
-      showSolveMessage
-    );
+  cubeControls.enableDamping =
+    true;
+
+  cubeControls.enablePan =
+    false;
+
+
+  cubeControls.minDistance =
+    size + 2;
+
+  cubeControls.maxDistance =
+    size * 5;
 
 
   animateCube();
@@ -579,44 +658,53 @@ function createRubiksCube() {
 
 
 // ==========================================
-// CREAR LAS 27 PIEZAS
+// PIEZAS
 // ==========================================
 
-function createCubePieces() {
+function createCubePieces(size) {
 
   const colors = [
+
     0xffffff,
     0xffff00,
     0xff0000,
     0xff8800,
     0x0000ff,
     0x00aa00
+
   ];
 
 
+  const spacing = 1;
+
+
+  const start =
+    -(size - 1) / 2;
+
+
   for (
-    let x = -1;
-    x <= 1;
+    let x = 0;
+    x < size;
     x++
   ) {
 
     for (
-      let y = -1;
-      y <= 1;
+      let y = 0;
+      y < size;
       y++
     ) {
 
       for (
-        let z = -1;
-        z <= 1;
+        let z = 0;
+        z < size;
         z++
       ) {
 
         const geometry =
           new THREE.BoxGeometry(
-            0.95,
-            0.95,
-            0.95
+            0.92,
+            0.92,
+            0.92
           );
 
 
@@ -640,9 +728,16 @@ function createCubePieces() {
 
 
         piece.position.set(
-          x,
-          y,
-          z
+
+          start +
+          x * spacing,
+
+          start +
+          y * spacing,
+
+          start +
+          z * spacing
+
         );
 
 
@@ -663,38 +758,122 @@ function createCubePieces() {
 // MEZCLAR
 // ==========================================
 
-function scrambleCube() {
+document
+  .getElementById(
+    "scrambleButton"
+  )
+  .addEventListener(
+    "click",
+    function () {
 
-  if (!rubiksCube) {
-    return;
-  }
+      if (!rubiksCube) {
+        return;
+      }
 
 
-  rubiksCube.rotation.x =
-    Math.random() * Math.PI * 2;
+      rubiksCube.rotation.x =
+        Math.random() *
+        Math.PI *
+        2;
 
-  rubiksCube.rotation.y =
-    Math.random() * Math.PI * 2;
 
-  rubiksCube.rotation.z =
-    Math.random() * Math.PI * 2;
+      rubiksCube.rotation.y =
+        Math.random() *
+        Math.PI *
+        2;
 
-}
+
+      rubiksCube.rotation.z =
+        Math.random() *
+        Math.PI *
+        2;
+
+    }
+  );
 
 
 // ==========================================
 // RESOLVER
 // ==========================================
 
-function showSolveMessage() {
+document
+  .getElementById(
+    "solveButton"
+  )
+  .addEventListener(
+    "click",
+    function () {
 
-  alert(
-    "🧠 Modo resolver\n\n" +
-    "Aquí añadiremos los algoritmos " +
-    "para guiar al usuario paso a paso."
+      alert(
+        "🧠 Próximamente\n\n" +
+        "Aquí colocaremos los algoritmos " +
+        "para ayudarte a resolver el cubo " +
+        selectedCubeSize +
+        "×" +
+        selectedCubeSize +
+        " paso a paso."
+      );
+
+    }
   );
 
-}
+
+// ==========================================
+// VOLVER
+// ==========================================
+
+document
+  .getElementById(
+    "backToHome"
+  )
+  .addEventListener(
+    "click",
+    function () {
+
+      document
+        .querySelectorAll(".page")
+        .forEach(
+          function (page) {
+
+            page.classList.remove(
+              "active-page"
+            );
+
+          }
+        );
+
+
+      document
+        .getElementById(
+          "homePage"
+        )
+        .classList.add(
+          "active-page"
+        );
+
+
+      document
+        .querySelector(
+          ".bottom-nav"
+        )
+        .style.display = "flex";
+
+
+      // Limpiar cubo
+
+      const container =
+        document.getElementById(
+          "rubiks3D"
+        );
+
+
+      container.innerHTML = "";
+
+
+      rubiksCube = null;
+
+    }
+  );
 
 
 // ==========================================
@@ -709,7 +888,9 @@ function animateCube() {
 
 
   if (cubeControls) {
+
     cubeControls.update();
+
   }
 
 
@@ -727,17 +908,3 @@ function animateCube() {
   }
 
 }
-
-
-// ==========================================
-// INICIAR CUBO
-// ==========================================
-
-window.addEventListener(
-  "load",
-  function () {
-
-    createRubiksCube();
-
-  }
-);
