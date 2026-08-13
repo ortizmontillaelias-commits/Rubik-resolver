@@ -529,53 +529,22 @@ function createRubiksCube(size) {
 
 function createCubePieces(size) {
 
+  const start = -(size - 1) / 2;
+
   cubePieces = [];
 
+  for (let x = 0; x < size; x++) {
 
-  // Para cubos pares e impares
-  // el centro siempre queda correcto.
+    for (let y = 0; y < size; y++) {
 
-  const center =
-    (size - 1) / 2;
-
-
-  // Tamaño de cada pieza.
-
-  const pieceSize =
-    0.92;
-
-
-  // Separación uniforme.
-
-  const spacing =
-    1;
-
-
-  for (
-    let x = 0;
-    x < size;
-    x++
-  ) {
-
-    for (
-      let y = 0;
-      y < size;
-      y++
-    ) {
-
-      for (
-        let z = 0;
-        z < size;
-        z++
-      ) {
+      for (let z = 0; z < size; z++) {
 
         const geometry =
           new THREE.BoxGeometry(
-            pieceSize,
-            pieceSize,
-            pieceSize
+            0.92,
+            0.92,
+            0.92
           );
-
 
         const materials =
           createStickerMaterials(
@@ -585,51 +554,43 @@ function createCubePieces(size) {
             size
           );
 
-
         const piece =
           new THREE.Mesh(
             geometry,
             materials
           );
 
-
+        // Posición inicial exacta
         piece.position.set(
-
-          (x - center) * spacing,
-
-          (y - center) * spacing,
-
-          (z - center) * spacing
-
+          start + x,
+          start + y,
+          start + z
         );
 
+        // ==================================
+        // POSICIÓN LÓGICA
+        // ==================================
 
         piece.userData = {
 
           gridX: x,
           gridY: y,
-          gridZ: z
+          gridZ: z,
+
+          originalX: x,
+          originalY: y,
+          originalZ: z
 
         };
 
+        rubiksCube.add(piece);
 
-        rubiksCube.add(
-          piece
-        );
-
-
-        cubePieces.push(
-          piece
-        );
+        cubePieces.push(piece);
 
       }
-
     }
-
   }
-
 }
-
 
 // ==========================================
 // COLORES
@@ -828,15 +789,20 @@ function rotateFace(face, clockwise = true) {
       return;
   }
 
-  const pieces = cubePieces.filter(
-    function (piece) {
+  const pieces = cubePieces.filter(function (piece) {
 
-      return Math.abs(
-        piece.position[axis] - layer
-      ) < 0.15;
+    const gridAxis =
+      axis === "x"
+        ? piece.userData.gridX
+        : axis === "y"
+          ? piece.userData.gridY
+          : piece.userData.gridZ;
 
-    }
-  );
+    return Math.abs(
+      gridAxis - (layer + center)
+    ) < 0.01;
+
+  });
 
   if (pieces.length === 0) {
     return;
@@ -849,13 +815,9 @@ function rotateFace(face, clockwise = true) {
 
   rubiksCube.add(group);
 
-  pieces.forEach(
-    function (piece) {
-
-      group.attach(piece);
-
-    }
-  );
+  pieces.forEach(function (piece) {
+    group.attach(piece);
+  });
 
   const targetAngle =
     clockwise
@@ -888,87 +850,106 @@ function rotateFace(face, clockwise = true) {
       return;
     }
 
-    // ======================================
-    // TERMINAR ANIMACIÓN
-    // ======================================
-
     group.rotation[axis] =
       targetAngle;
 
     group.updateMatrixWorld(true);
 
+    // ======================================
+    // ACTUALIZAR CUADRÍCULA
+    // ======================================
+
+    pieces.forEach(function (piece) {
+
+      const x =
+        piece.userData.gridX;
+
+      const y =
+        piece.userData.gridY;
+
+      const z =
+        piece.userData.gridZ;
+
+      const max =
+        size - 1;
+
+      let newX = x;
+      let newY = y;
+      let newZ = z;
+
+      if (axis === "x") {
+
+        if (clockwise) {
+
+          newY = max - z;
+          newZ = y;
+
+        } else {
+
+          newY = z;
+          newZ = max - y;
+
+        }
+
+      }
+
+      if (axis === "y") {
+
+        if (clockwise) {
+
+          newX = z;
+          newZ = max - x;
+
+        } else {
+
+          newX = max - z;
+          newZ = x;
+
+        }
+
+      }
+
+      if (axis === "z") {
+
+        if (clockwise) {
+
+          newX = max - y;
+          newY = x;
+
+        } else {
+
+          newX = y;
+          newY = max - x;
+
+        }
+
+      }
+
+      piece.userData.gridX = newX;
+      piece.userData.gridY = newY;
+      piece.userData.gridZ = newZ;
+
+      // Posición exacta
+
+      piece.position.set(
+        newX - center,
+        newY - center,
+        newZ - center
+      );
+
+    });
 
     // ======================================
     // DEVOLVER PIEZAS
     // ======================================
 
-    pieces.forEach(
-      function (piece) {
+    pieces.forEach(function (piece) {
 
-        rubiksCube.attach(piece);
+      rubiksCube.add(piece);
 
-      }
-    );
-
+    });
 
     rubiksCube.remove(group);
-
-
-    // ======================================
-    // ACTUALIZAR POSICIONES LÓGICAS
-    // ======================================
-
-    pieces.forEach(
-      function (piece) {
-
-        const position =
-          piece.position.clone();
-
-
-        const x =
-          Math.round(position.x);
-
-
-        const y =
-          Math.round(position.y);
-
-
-        const z =
-          Math.round(position.z);
-
-
-        piece.position.set(
-          x,
-          y,
-          z
-        );
-
-
-        // Guardamos la posición
-        // lógica de la pieza.
-
-        const newX =
-          x + center;
-
-        const newY =
-          y + center;
-
-        const newZ =
-          z + center;
-
-
-        piece.userData.gridX =
-          Math.round(newX);
-
-        piece.userData.gridY =
-          Math.round(newY);
-
-        piece.userData.gridZ =
-          Math.round(newZ);
-
-      }
-    );
-
 
     // ======================================
     // GUARDAR MOVIMIENTO
@@ -980,17 +961,16 @@ function rotateFace(face, clockwise = true) {
         : face + "'"
     );
 
-
     turning = false;
 
   }
-
 
   requestAnimationFrame(
     animateTurn
   );
 
 }
+
 // ==========================================
 // TECLADO
 // ==========================================
