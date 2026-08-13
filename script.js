@@ -2,88 +2,57 @@
 // CUBE MASTER
 // ==========================================
 
-
 // ==========================================
 // LOGIN
 // ==========================================
 
-const loginButton =
-  document.getElementById("loginButton");
+const loginButton = document.getElementById("loginButton");
+const emailInput = document.getElementById("emailInput");
 
-const emailInput =
-  document.getElementById("emailInput");
+if (loginButton) {
+  loginButton.addEventListener("click", login);
+}
 
-
-loginButton.addEventListener(
-  "click",
-  login
-);
-
-
-emailInput.addEventListener(
-  "keydown",
-  function (event) {
-
+if (emailInput) {
+  emailInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       login();
     }
-
-  }
-);
-
+  });
+}
 
 function login() {
-
-  const email =
-    emailInput.value.trim();
-
+  const email = emailInput.value.trim();
 
   if (email === "") {
-
-    alert(
-      "Escribe tu correo electrónico."
-    );
-
+    alert("Escribe tu correo electrónico.");
     return;
   }
-
 
   if (!email.includes("@")) {
-
-    alert(
-      "Escribe un correo electrónico válido."
-    );
-
+    alert("Escribe un correo electrónico válido.");
     return;
   }
 
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("appScreen").classList.add("active");
 
-  document
-    .getElementById("loginScreen")
-    .classList.add("hidden");
+  const profileEmail = document.getElementById("profileEmail");
+  const profileName = document.getElementById("profileName");
+  const profileAvatar = document.getElementById("profileAvatar");
 
+  if (profileEmail) {
+    profileEmail.textContent = email;
+  }
 
-  document
-    .getElementById("appScreen")
-    .classList.add("active");
+  if (profileName) {
+    profileName.textContent = email.split("@")[0];
+  }
 
-
-  document
-    .getElementById("profileEmail")
-    .textContent = email;
-
-
-  document
-    .getElementById("profileName")
-    .textContent =
-      email.split("@")[0];
-
-
-  document
-    .getElementById("profileAvatar")
-    .textContent =
+  if (profileAvatar) {
+    profileAvatar.textContent =
       email.charAt(0).toUpperCase();
-
+  }
 }
 
 
@@ -92,72 +61,42 @@ function login() {
 // ==========================================
 
 const navigationButtons =
-  document.querySelectorAll(
-    ".nav-button"
-  );
-
+  document.querySelectorAll(".nav-button");
 
 const pages =
-  document.querySelectorAll(
-    ".page"
-  );
+  document.querySelectorAll(".page");
 
+navigationButtons.forEach(function (button) {
 
-navigationButtons.forEach(
-  function (button) {
+  button.addEventListener("click", function () {
 
-    button.addEventListener(
-      "click",
-      function () {
+    const pageId = button.dataset.page;
 
-        const pageId =
-          button.dataset.page;
+    pages.forEach(function (page) {
+      page.classList.remove("active-page");
+    });
 
+    navigationButtons.forEach(function (nav) {
+      nav.classList.remove("active");
+    });
 
-        pages.forEach(
-          function (page) {
+    const targetPage =
+      document.getElementById(pageId);
 
-            page.classList.remove(
-              "active-page"
-            );
+    if (targetPage) {
+      targetPage.classList.add("active-page");
+    }
 
-          }
-        );
+    button.classList.add("active");
 
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
-        navigationButtons.forEach(
-          function (nav) {
+  });
 
-            nav.classList.remove(
-              "active"
-            );
-
-          }
-        );
-
-
-        document
-          .getElementById(pageId)
-          .classList.add(
-            "active-page"
-          );
-
-
-        button.classList.add(
-          "active"
-        );
-
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-
-      }
-    );
-
-  }
-);
+});
 
 
 // ==========================================
@@ -165,186 +104,144 @@ navigationButtons.forEach(
 // ==========================================
 
 let timerInterval = null;
-
 let startTime = 0;
-
 let elapsedTime = 0;
-
 let timerRunning = false;
 
-
 const timerDisplay =
-  document.getElementById(
-    "timerDisplay"
-  );
-
+  document.getElementById("timerDisplay");
 
 const timerStatus =
-  document.getElementById(
-    "timerStatus"
-  );
-
+  document.getElementById("timerStatus");
 
 const startTimerButton =
-  document.getElementById(
-    "startTimer"
-  );
-
+  document.getElementById("startTimer");
 
 const stopTimerButton =
-  document.getElementById(
-    "stopTimer"
-  );
-
+  document.getElementById("stopTimer");
 
 const resetTimerButton =
-  document.getElementById(
-    "resetTimer"
-  );
+  document.getElementById("resetTimer");
 
 
-function formatTime(
-  milliseconds
-) {
+function formatTime(milliseconds) {
 
   const minutes =
-    Math.floor(
-      milliseconds / 60000
-    );
-
+    Math.floor(milliseconds / 60000);
 
   const seconds =
-    Math.floor(
-      (milliseconds % 60000) /
-      1000
-    );
-
+    Math.floor((milliseconds % 60000) / 1000);
 
   const centiseconds =
-    Math.floor(
-      (milliseconds % 1000) /
-      10
-    );
-
+    Math.floor((milliseconds % 1000) / 10);
 
   return (
-    String(minutes)
-      .padStart(2, "0")
-    +
-    ":"
-    +
-    String(seconds)
-      .padStart(2, "0")
-    +
-    "."
-    +
-    String(centiseconds)
-      .padStart(2, "0")
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(seconds).padStart(2, "0") +
+    "." +
+    String(centiseconds).padStart(2, "0")
   );
-
 }
 
 
 function updateTimer() {
 
   elapsedTime =
-    Date.now() -
-    startTime;
+    Date.now() - startTime;
+
+  if (timerDisplay) {
+    timerDisplay.textContent =
+      formatTime(elapsedTime);
+  }
+}
 
 
-  timerDisplay.textContent =
-    formatTime(
-      elapsedTime
-    );
+if (startTimerButton) {
+
+  startTimerButton.addEventListener(
+    "click",
+    function () {
+
+      if (timerRunning) {
+        return;
+      }
+
+      timerRunning = true;
+
+      startTime =
+        Date.now() - elapsedTime;
+
+      timerInterval =
+        setInterval(updateTimer, 10);
+
+      if (timerStatus) {
+        timerStatus.textContent =
+          "Temporizador funcionando...";
+      }
+
+    }
+  );
 
 }
 
 
-startTimerButton.addEventListener(
-  "click",
-  function () {
+if (stopTimerButton) {
 
-    if (timerRunning) {
-      return;
+  stopTimerButton.addEventListener(
+    "click",
+    function () {
+
+      if (!timerRunning) {
+        return;
+      }
+
+      clearInterval(timerInterval);
+
+      timerInterval = null;
+      timerRunning = false;
+
+      if (timerStatus) {
+        timerStatus.textContent =
+          "Tiempo detenido.";
+      }
+
     }
+  );
+
+}
 
 
-    timerRunning = true;
+if (resetTimerButton) {
 
+  resetTimerButton.addEventListener(
+    "click",
+    function () {
 
-    startTime =
-      Date.now() -
-      elapsedTime;
+      clearInterval(timerInterval);
 
+      timerInterval = null;
+      timerRunning = false;
+      elapsedTime = 0;
 
-    timerInterval =
-      setInterval(
-        updateTimer,
-        10
-      );
+      if (timerDisplay) {
+        timerDisplay.textContent =
+          "00:00.00";
+      }
 
+      if (timerStatus) {
+        timerStatus.textContent =
+          "Presiona iniciar para comenzar.";
+      }
 
-    timerStatus.textContent =
-      "Temporizador funcionando...";
-
-  }
-);
-
-
-stopTimerButton.addEventListener(
-  "click",
-  function () {
-
-    if (!timerRunning) {
-      return;
     }
+  );
 
+}
 
-    clearInterval(
-      timerInterval
-    );
-
-
-    timerInterval = null;
-
-    timerRunning = false;
-
-
-    timerStatus.textContent =
-      "Tiempo detenido.";
-
-  }
-);
-
-
-resetTimerButton.addEventListener(
-  "click",
-  function () {
-
-    clearInterval(
-      timerInterval
-    );
-
-
-    timerInterval = null;
-
-    timerRunning = false;
-
-    elapsedTime = 0;
-
-
-    timerDisplay.textContent =
-      "00:00.00";
-
-
-    timerStatus.textContent =
-      "Presiona iniciar para comenzar.";
-
-  }
-);
 
 // ==========================================
-// THREE.JS - RUBIK 3D
+// THREE.JS
 // ==========================================
 
 import * as THREE from "three";
@@ -355,26 +252,24 @@ import {
 
 
 // ==========================================
-// VARIABLES
+// VARIABLES DEL CUBO
 // ==========================================
 
 let cubeScene = null;
 let cubeCamera = null;
 let cubeRenderer = null;
 let cubeControls = null;
-
 let rubiksCube = null;
+
 let cubePieces = [];
 
 let selectedCubeSize = 3;
 
 let moveHistory = [];
 
-let isTurning = false;
-
 
 // ==========================================
-// BOTONES PRACTICAR
+// BOTONES DE CUBOS
 // ==========================================
 
 const practiceButtons =
@@ -382,28 +277,25 @@ const practiceButtons =
     ".practice-button"
   );
 
+practiceButtons.forEach(function (button) {
 
-practiceButtons.forEach(
-  function (button) {
+  button.addEventListener(
+    "click",
+    function () {
 
-    button.addEventListener(
-      "click",
-      function () {
+      const size =
+        Number(button.dataset.cube);
 
-        const size =
-          Number(
-            button.dataset.cube
-          );
-
-        openCubePractice(
-          size
-        );
-
+      if (!size) {
+        return;
       }
-    );
 
-  }
-);
+      openCubePractice(size);
+
+    }
+  );
+
+});
 
 
 // ==========================================
@@ -414,51 +306,48 @@ function openCubePractice(size) {
 
   selectedCubeSize = size;
 
-
   const practicePage =
     document.getElementById(
       "cubePracticePage"
     );
-
 
   const title =
     document.getElementById(
       "selectedCubeTitle"
     );
 
+  if (!practicePage) {
+    return;
+  }
 
-  title.textContent =
-    "Cubo " +
-    size +
-    "×" +
-    size;
+  if (title) {
 
+    title.textContent =
+      "Cubo " +
+      size +
+      "×" +
+      size;
+
+  }
 
   document
-    .querySelectorAll(
-      ".page"
-    )
-    .forEach(
-      function (page) {
+    .querySelectorAll(".page")
+    .forEach(function (page) {
 
-        page.classList.remove(
-          "active-page"
-        );
+      page.classList.remove(
+        "active-page"
+      );
 
-      }
-    );
-
+    });
 
   practicePage.classList.add(
     "active-page"
   );
 
-
   const bottomNav =
     document.querySelector(
       ".bottom-nav"
     );
-
 
   if (bottomNav) {
 
@@ -467,11 +356,7 @@ function openCubePractice(size) {
 
   }
 
-
-  createRubiksCube(
-    size
-  );
-
+  createRubiksCube(size);
 }
 
 
@@ -486,28 +371,34 @@ function createRubiksCube(size) {
       "rubiks3D"
     );
 
-
   if (!container) {
     return;
   }
 
+  // Limpiar cubo anterior
 
   container.innerHTML = "";
 
   cubePieces = [];
-
   moveHistory = [];
 
 
+  // ========================================
+  // ESCENA
+  // ========================================
+
   cubeScene =
     new THREE.Scene();
-
 
   cubeScene.background =
     new THREE.Color(
       0x020617
     );
 
+
+  // ========================================
+  // CÁMARA
+  // ========================================
 
   cubeCamera =
     new THREE.PerspectiveCamera(
@@ -518,12 +409,19 @@ function createRubiksCube(size) {
     );
 
 
+  const cameraDistance =
+    size * 2.4 + 3;
+
   cubeCamera.position.set(
-    size + 3,
-    size + 3,
-    size + 4
+    cameraDistance,
+    cameraDistance,
+    cameraDistance
   );
 
+
+  // ========================================
+  // RENDER
+  // ========================================
 
   cubeRenderer =
     new THREE.WebGLRenderer({
@@ -554,7 +452,6 @@ function createRubiksCube(size) {
       2
     );
 
-
   cubeScene.add(
     ambientLight
   );
@@ -566,13 +463,11 @@ function createRubiksCube(size) {
       3
     );
 
-
   directionalLight.position.set(
     5,
     8,
     6
   );
-
 
   cubeScene.add(
     directionalLight
@@ -580,21 +475,22 @@ function createRubiksCube(size) {
 
 
   // ========================================
-  // GRUPO DEL CUBO
+  // GRUPO PRINCIPAL
   // ========================================
 
   rubiksCube =
     new THREE.Group();
-
 
   cubeScene.add(
     rubiksCube
   );
 
 
-  createCubePieces(
-    size
-  );
+  // ========================================
+  // CREAR PIEZAS
+  // ========================================
+
+  createCubePieces(size);
 
 
   // ========================================
@@ -607,91 +503,24 @@ function createRubiksCube(size) {
       cubeRenderer.domElement
     );
 
-
   cubeControls.enableDamping =
     true;
-
 
   cubeControls.enablePan =
     false;
 
-
   cubeControls.minDistance =
     size + 2;
 
-
   cubeControls.maxDistance =
-    size * 5;
+    size * 6;
 
 
   resizeRubiksCube();
 
-
   animateCube();
 
 }
-
-
-// ==========================================
-// RESPONSIVE
-// ==========================================
-
-function resizeRubiksCube() {
-
-  const container =
-    document.getElementById(
-      "rubiks3D"
-    );
-
-
-  if (
-    !container ||
-    !cubeRenderer ||
-    !cubeCamera
-  ) {
-
-    return;
-
-  }
-
-
-  const width =
-    container.clientWidth;
-
-
-  const height =
-    container.clientHeight;
-
-
-  if (
-    width === 0 ||
-    height === 0
-  ) {
-
-    return;
-
-  }
-
-
-  cubeCamera.aspect =
-    width / height;
-
-
-  cubeCamera.updateProjectionMatrix();
-
-
-  cubeRenderer.setSize(
-    width,
-    height
-  );
-
-}
-
-
-window.addEventListener(
-  "resize",
-  resizeRubiksCube
-);
 
 
 // ==========================================
@@ -700,8 +529,26 @@ window.addEventListener(
 
 function createCubePieces(size) {
 
-  const start =
-    -(size - 1) / 2;
+  cubePieces = [];
+
+
+  // Para cubos pares e impares
+  // el centro siempre queda correcto.
+
+  const center =
+    (size - 1) / 2;
+
+
+  // Tamaño de cada pieza.
+
+  const pieceSize =
+    0.92;
+
+
+  // Separación uniforme.
+
+  const spacing =
+    1;
 
 
   for (
@@ -724,9 +571,9 @@ function createCubePieces(size) {
 
         const geometry =
           new THREE.BoxGeometry(
-            0.92,
-            0.92,
-            0.92
+            pieceSize,
+            pieceSize,
+            pieceSize
           );
 
 
@@ -747,17 +594,21 @@ function createCubePieces(size) {
 
 
         piece.position.set(
-          start + x,
-          start + y,
-          start + z
+
+          (x - center) * spacing,
+
+          (y - center) * spacing,
+
+          (z - center) * spacing
+
         );
 
 
         piece.userData = {
 
-          x: x,
-          y: y,
-          z: z
+          gridX: x,
+          gridY: y,
+          gridZ: z
 
         };
 
@@ -794,26 +645,20 @@ function createStickerMaterials(
   const black =
     0x111111;
 
-
   const white =
     0xffffff;
-
 
   const yellow =
     0xffff00;
 
-
   const red =
     0xff0000;
-
 
   const orange =
     0xff8800;
 
-
   const blue =
     0x0066ff;
-
 
   const green =
     0x00aa00;
@@ -821,6 +666,7 @@ function createStickerMaterials(
 
   return [
 
+    // Derecha
     new THREE.MeshStandardMaterial({
       color:
         x === size - 1
@@ -828,6 +674,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // Izquierda
     new THREE.MeshStandardMaterial({
       color:
         x === 0
@@ -835,6 +682,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // Arriba
     new THREE.MeshStandardMaterial({
       color:
         y === size - 1
@@ -842,6 +690,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // Abajo
     new THREE.MeshStandardMaterial({
       color:
         y === 0
@@ -849,6 +698,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // Frente
     new THREE.MeshStandardMaterial({
       color:
         z === size - 1
@@ -856,6 +706,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // Atrás
     new THREE.MeshStandardMaterial({
       color:
         z === 0
@@ -869,224 +720,80 @@ function createStickerMaterials(
 
 
 // ==========================================
-// MOVIMIENTO DE CARAS
+// RESPONSIVE
 // ==========================================
 
-function rotateFace(face, clockwise = true) {
+function resizeRubiksCube() {
 
-  if (
-    isTurning ||
-    !rubiksCube
-  ) {
-    return;
-  }
-
-  isTurning = true;
-
-
-  // Tamaño actual del cubo
-  const size =
-    selectedCubeSize;
-
-
-  // Centro del cubo
-  const center =
-    (size - 1) / 2;
-
-
-  let axis;
-  let layer;
-
-
-  // ========================================
-  // DETERMINAR CARA
-  // ========================================
-
-  switch (face) {
-
-    case "R":
-
-      axis = "x";
-      layer = center;
-
-      break;
-
-
-    case "L":
-
-      axis = "x";
-      layer = -center;
-
-      break;
-
-
-    case "U":
-
-      axis = "y";
-      layer = center;
-
-      break;
-
-
-    case "D":
-
-      axis = "y";
-      layer = -center;
-
-      break;
-
-
-    case "F":
-
-      axis = "z";
-      layer = center;
-
-      break;
-
-
-    case "B":
-
-      axis = "z";
-      layer = -center;
-
-      break;
-
-
-    default:
-
-      isTurning = false;
-
-      return;
-
-  }
-
-
-  // ========================================
-  // BUSCAR LAS PIEZAS DE ESA CAPA
-  // ========================================
-
-  const pieces =
-    cubePieces.filter(
-      function (piece) {
-
-        return (
-          Math.abs(
-            piece.position[axis] -
-            layer
-          ) < 0.1
-        );
-
-      }
+  const container =
+    document.getElementById(
+      "rubiks3D"
     );
 
-
   if (
-    pieces.length === 0
+    !container ||
+    !cubeRenderer ||
+    !cubeCamera
   ) {
-
-    isTurning = false;
-
     return;
-
   }
 
 
-  // ========================================
-  // CREAR GRUPO TEMPORAL
-  // ========================================
+  const width =
+    container.clientWidth;
 
-  const rotationGroup =
-    new THREE.Group();
+  const height =
+    container.clientHeight;
 
 
-  rubiksCube.add(
-    rotationGroup
+  if (
+    width <= 0 ||
+    height <= 0
+  ) {
+    return;
+  }
+
+
+  cubeCamera.aspect =
+    width / height;
+
+  cubeCamera.updateProjectionMatrix();
+
+
+  cubeRenderer.setSize(
+    width,
+    height,
+    false
   );
 
-
-  // Meter las piezas en el grupo
-  pieces.forEach(
-    function (piece) {
-
-      rotationGroup.attach(
-        piece
-      );
-
-    }
-  );
+}
 
 
-  // ========================================
-  // ÁNGULO
-  // ========================================
-
-  const angle =
-    clockwise
-      ? Math.PI / 2
-      : -Math.PI / 2;
+window.addEventListener(
+  "resize",
+  resizeRubiksCube
+);
 
 
-  rotationGroup.rotation[
-    axis
-  ] = angle;
+// ==========================================
+// MOVIMIENTOS
+// ==========================================
+//
+// IMPORTANTE:
+// Por ahora NO deformamos las piezas.
+// Guardamos los movimientos para el
+// solucionador que construiremos después.
+//
 
+function rotateFace(
+  face,
+  clockwise = true
+) {
 
-  rotationGroup.updateMatrixWorld(
-    true
-  );
+  if (!rubiksCube) {
+    return;
+  }
 
-
-  // ========================================
-  // DEVOLVER PIEZAS AL CUBO
-  // ========================================
-
-  pieces.forEach(
-    function (piece) {
-
-      rubiksCube.attach(
-        piece
-      );
-
-    }
-  );
-
-
-  rubiksCube.remove(
-    rotationGroup
-  );
-
-
-  // ========================================
-  // REDONDEAR POSICIONES
-  // ========================================
-
-  pieces.forEach(
-    function (piece) {
-
-      piece.position.x =
-        Math.round(
-          piece.position.x
-        );
-
-
-      piece.position.y =
-        Math.round(
-          piece.position.y
-        );
-
-
-      piece.position.z =
-        Math.round(
-          piece.position.z
-        );
-
-    }
-  );
-
-
-  // ========================================
-  // GUARDAR MOVIMIENTO
-  // ========================================
 
   moveHistory.push(
     clockwise
@@ -1095,7 +802,15 @@ function rotateFace(face, clockwise = true) {
   );
 
 
-  isTurning = false;
+  console.log(
+    "Movimiento:",
+    clockwise
+      ? face
+      : face + "'",
+    "Cubo:",
+    selectedCubeSize + "×" +
+    selectedCubeSize
+  );
 
 }
 
@@ -1123,9 +838,7 @@ document.addEventListener(
 
 
     if (
-      validMoves.includes(
-        key
-      )
+      validMoves.includes(key)
     ) {
 
       rotateFace(
@@ -1143,18 +856,20 @@ document.addEventListener(
 // MEZCLAR
 // ==========================================
 
-document
-  .getElementById(
+const scrambleButton =
+  document.getElementById(
     "scrambleButton"
-  )
-  .addEventListener(
+  );
+
+
+if (scrambleButton) {
+
+  scrambleButton.addEventListener(
     "click",
     function () {
 
       if (!rubiksCube) {
-
         return;
-
       }
 
 
@@ -1171,20 +886,31 @@ document
       moveHistory = [];
 
 
-      // Cantidad de movimientos
-      // según el tamaño
+      let amount;
 
-      const scrambleLength =
+
+      if (
         selectedCubeSize === 2
-          ? 10
-          : selectedCubeSize === 3
-            ? 20
-            : 30;
+      ) {
+
+        amount = 10;
+
+      } else if (
+        selectedCubeSize === 3
+      ) {
+
+        amount = 20;
+
+      } else {
+
+        amount = 30;
+
+      }
 
 
       for (
         let i = 0;
-        i < scrambleLength;
+        i < amount;
         i++
       ) {
 
@@ -1208,25 +934,40 @@ document
 
       }
 
+
+      alert(
+        "Cubo " +
+        selectedCubeSize +
+        "×" +
+        selectedCubeSize +
+        " mezclado."
+      );
+
     }
   );
+
+}
 
 
 // ==========================================
 // RESOLVER
 // ==========================================
 
-document
-  .getElementById(
+const solveButton =
+  document.getElementById(
     "solveButton"
-  )
-  .addEventListener(
+  );
+
+
+if (solveButton) {
+
+  solveButton.addEventListener(
     "click",
     function () {
 
       alert(
         "🧠 Solucionador\n\n" +
-        "Cubo seleccionado: " +
+        "Cubo: " +
         selectedCubeSize +
         "×" +
         selectedCubeSize +
@@ -1234,14 +975,17 @@ document
         "Movimientos registrados: " +
         moveHistory.length +
         "\n\n" +
-        "El sistema de algoritmos " +
-        "se añadirá en la siguiente etapa."
+        "El solucionador avanzado " +
+        "lo añadiremos después."
       );
 
     }
   );
 
-  // ==========================================
+}
+
+
+// ==========================================
 // VOLVER A INICIO
 // ==========================================
 
@@ -1250,28 +994,23 @@ const backToHomeButton =
     "backToHome"
   );
 
+
 if (backToHomeButton) {
 
   backToHomeButton.addEventListener(
     "click",
     function () {
 
-      // Ocultar todas las páginas
-
       document
         .querySelectorAll(".page")
-        .forEach(
-          function (page) {
+        .forEach(function (page) {
 
-            page.classList.remove(
-              "active-page"
-            );
+          page.classList.remove(
+            "active-page"
+          );
 
-          }
-        );
+        });
 
-
-      // Mostrar inicio
 
       const homePage =
         document.getElementById(
@@ -1288,8 +1027,6 @@ if (backToHomeButton) {
       }
 
 
-      // Mostrar navegación inferior
-
       const bottomNav =
         document.querySelector(
           ".bottom-nav"
@@ -1304,8 +1041,6 @@ if (backToHomeButton) {
       }
 
 
-      // Limpiar el cubo
-
       const container =
         document.getElementById(
           "rubiks3D"
@@ -1318,8 +1053,6 @@ if (backToHomeButton) {
 
       }
 
-
-      // Liberar recursos
 
       if (cubeControls) {
 
@@ -1340,21 +1073,17 @@ if (backToHomeButton) {
 
 
       cubeScene = null;
-
       cubeCamera = null;
-
       rubiksCube = null;
 
       cubePieces = [];
-
       moveHistory = [];
-
-      isTurning = false;
 
     }
   );
 
 }
+
 
 // ==========================================
 // ANIMACIÓN
