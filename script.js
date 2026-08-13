@@ -872,105 +872,128 @@ function createStickerMaterials(
 // MOVIMIENTO DE CARAS
 // ==========================================
 
-function rotateFace(
-  face,
-  clockwise = true
-) {
+function rotateFace(face, clockwise = true) {
 
   if (
     isTurning ||
     !rubiksCube
   ) {
-
     return;
-
   }
-
-
-  // Por ahora los movimientos reales
-  // se prueban únicamente en 3×3
-
-  if (
-    selectedCubeSize !== 3
-  ) {
-
-    alert(
-      "Los movimientos reales se están preparando primero para el 3×3."
-    );
-
-    return;
-
-  }
-
 
   isTurning = true;
+
+
+  // Tamaño actual del cubo
+  const size =
+    selectedCubeSize;
+
+
+  // Centro del cubo
+  const center =
+    (size - 1) / 2;
 
 
   let axis;
   let layer;
 
 
-  if (face === "R") {
+  // ========================================
+  // DETERMINAR CARA
+  // ========================================
 
-    axis = "x";
-    layer = 1;
+  switch (face) {
+
+    case "R":
+
+      axis = "x";
+      layer = center;
+
+      break;
+
+
+    case "L":
+
+      axis = "x";
+      layer = -center;
+
+      break;
+
+
+    case "U":
+
+      axis = "y";
+      layer = center;
+
+      break;
+
+
+    case "D":
+
+      axis = "y";
+      layer = -center;
+
+      break;
+
+
+    case "F":
+
+      axis = "z";
+      layer = center;
+
+      break;
+
+
+    case "B":
+
+      axis = "z";
+      layer = -center;
+
+      break;
+
+
+    default:
+
+      isTurning = false;
+
+      return;
 
   }
 
 
-  if (face === "L") {
-
-    axis = "x";
-    layer = -1;
-
-  }
-
-
-  if (face === "U") {
-
-    axis = "y";
-    layer = 1;
-
-  }
-
-
-  if (face === "D") {
-
-    axis = "y";
-    layer = -1;
-
-  }
-
-
-  if (face === "F") {
-
-    axis = "z";
-    layer = 1;
-
-  }
-
-
-  if (face === "B") {
-
-    axis = "z";
-    layer = -1;
-
-  }
-
+  // ========================================
+  // BUSCAR LAS PIEZAS DE ESA CAPA
+  // ========================================
 
   const pieces =
     cubePieces.filter(
       function (piece) {
 
         return (
-          Math.round(
-            piece.position[axis]
-          ) === layer
+          Math.abs(
+            piece.position[axis] -
+            layer
+          ) < 0.1
         );
 
       }
     );
 
+
+  if (
+    pieces.length === 0
+  ) {
+
+    isTurning = false;
+
+    return;
+
+  }
+
+
+  // ========================================
+  // CREAR GRUPO TEMPORAL
+  // ========================================
 
   const rotationGroup =
     new THREE.Group();
@@ -981,6 +1004,7 @@ function rotateFace(
   );
 
 
+  // Meter las piezas en el grupo
   pieces.forEach(
     function (piece) {
 
@@ -991,6 +1015,10 @@ function rotateFace(
     }
   );
 
+
+  // ========================================
+  // ÁNGULO
+  // ========================================
 
   const angle =
     clockwise
@@ -1008,6 +1036,10 @@ function rotateFace(
   );
 
 
+  // ========================================
+  // DEVOLVER PIEZAS AL CUBO
+  // ========================================
+
   pieces.forEach(
     function (piece) {
 
@@ -1023,6 +1055,10 @@ function rotateFace(
     rotationGroup
   );
 
+
+  // ========================================
+  // REDONDEAR POSICIONES
+  // ========================================
 
   pieces.forEach(
     function (piece) {
@@ -1048,6 +1084,10 @@ function rotateFace(
   );
 
 
+  // ========================================
+  // GUARDAR MOVIMIENTO
+  // ========================================
+
   moveHistory.push(
     clockwise
       ? face
@@ -1072,13 +1112,20 @@ document.addEventListener(
       event.key.toUpperCase();
 
 
+    const validMoves = [
+      "R",
+      "L",
+      "U",
+      "D",
+      "F",
+      "B"
+    ];
+
+
     if (
-      key === "R" ||
-      key === "L" ||
-      key === "U" ||
-      key === "D" ||
-      key === "F" ||
-      key === "B"
+      validMoves.includes(
+        key
+      )
     ) {
 
       rotateFace(
@@ -1105,17 +1152,6 @@ document
     function () {
 
       if (!rubiksCube) {
-        return;
-      }
-
-
-      if (
-        selectedCubeSize !== 3
-      ) {
-
-        alert(
-          "El mezclador real comenzará primero con el 3×3."
-        );
 
         return;
 
@@ -1135,13 +1171,24 @@ document
       moveHistory = [];
 
 
+      // Cantidad de movimientos
+      // según el tamaño
+
+      const scrambleLength =
+        selectedCubeSize === 2
+          ? 10
+          : selectedCubeSize === 3
+            ? 20
+            : 30;
+
+
       for (
         let i = 0;
-        i < 20;
+        i < scrambleLength;
         i++
       ) {
 
-        const move =
+        const randomMove =
           moves[
             Math.floor(
               Math.random() *
@@ -1155,7 +1202,7 @@ document
 
 
         rotateFace(
-          move,
+          randomMove,
           clockwise
         );
 
@@ -1179,86 +1226,17 @@ document
 
       alert(
         "🧠 Solucionador\n\n" +
+        "Cubo seleccionado: " +
+        selectedCubeSize +
+        "×" +
+        selectedCubeSize +
+        "\n\n" +
         "Movimientos registrados: " +
         moveHistory.length +
         "\n\n" +
-        "La siguiente etapa será " +
-        "crear el solucionador paso a paso."
+        "El sistema de algoritmos " +
+        "se añadirá en la siguiente etapa."
       );
-
-    }
-  );
-
-
-// ==========================================
-// VOLVER
-// ==========================================
-
-document
-  .getElementById(
-    "backToHome"
-  )
-  .addEventListener(
-    "click",
-    function () {
-
-      document
-        .querySelectorAll(
-          ".page"
-        )
-        .forEach(
-          function (page) {
-
-            page.classList.remove(
-              "active-page"
-            );
-
-          }
-        );
-
-
-      document
-        .getElementById(
-          "homePage"
-        )
-        .classList.add(
-          "active-page"
-        );
-
-
-      const bottomNav =
-        document.querySelector(
-          ".bottom-nav"
-        );
-
-
-      if (bottomNav) {
-
-        bottomNav.style.display =
-          "flex";
-
-      }
-
-
-      const container =
-        document.getElementById(
-          "rubiks3D"
-        );
-
-
-      if (container) {
-
-        container.innerHTML =
-          "";
-
-      }
-
-
-      rubiksCube = null;
-
-      cubePieces = [];
-
-      moveHistory = [];
 
     }
   );
