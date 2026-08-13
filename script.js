@@ -1270,33 +1270,15 @@ if (scrambleButton) {
 // ==========================================
 
 const solveButton =
-  document.getElementById(
-    "solveButton"
-  );
-
+  document.getElementById("solveButton");
 
 if (solveButton) {
 
-  solveButton.addEventListener(
-    "click",
-    function () {
+  solveButton.onclick = function () {
 
-      alert(
-        "🧠 Solucionador\n\n" +
-        "Cubo: " +
-        selectedCubeSize +
-        "×" +
-        selectedCubeSize +
-        "\n\n" +
-        "Movimientos registrados: " +
-        moveHistory.length +
-        "\n\n" +
-        "El solucionador avanzado " +
-        "lo añadiremos después."
-      );
+    alert("🧠 El botón RESOLVER funciona.");
 
-    }
-  );
+  };
 
 }
 
