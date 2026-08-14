@@ -264,16 +264,33 @@ const cubeColors = {
 
 
 // ==========================================
-// DATOS DEL SOLUCIONADOR
+// ORDEN DEL SOLUCIONADOR
 // ==========================================
+//
+// F = Frente
+// R = Derecha
+// B = Atrás
+// L = Izquierda
+// U = Arriba
+// D = Abajo
+//
+// IMPORTANTE:
+// Primero se llena la cara FRONTAL.
+// Después el cubo gira hacia la DERECHA.
+// Luego ATRÁS.
+// Luego IZQUIERDA.
+// Finalmente ARRIBA y ABAJO.
+//
 
 const solverFaces = [
-  "U",
-  "R",
+
   "F",
-  "D",
+  "R",
+  "B",
   "L",
-  "B"
+  "U",
+  "D"
+
 ];
 
 
@@ -1025,6 +1042,10 @@ function openCubeSolver() {
   });
 
 
+  /*
+   * SIEMPRE EMPEZAMOS POR EL FRENTE.
+   */
+
   currentFaceIndex = 0;
 
   currentSelectedColor =
@@ -1240,8 +1261,8 @@ function createReferenceCube() {
 
 
   /*
-   * Cámara centrada.
-   * El cubo NO queda inclinado.
+   * CÁMARA FIJA.
+   * El cubo gira, no la cámara.
    */
 
   referenceCamera.position.set(
@@ -1315,6 +1336,19 @@ function createReferenceCube() {
 
   referenceScene.add(
     referenceCube
+  );
+
+
+  /*
+   * IMPORTANTE:
+   * El cubo comienza mirando
+   * directamente al FRENTE.
+   */
+
+  referenceCube.rotation.set(
+    0,
+    0,
+    0
   );
 
 
@@ -1581,6 +1615,22 @@ function setReferenceSticker(
 // ==========================================
 // ORIENTACIÓN DEL CUBO
 // ==========================================
+//
+// ORDEN:
+//
+// FRENTE
+// ↓
+// DERECHA
+// ↓
+// ATRÁS
+// ↓
+// IZQUIERDA
+// ↓
+// ARRIBA
+// ↓
+// ABAJO
+//
+// ==========================================
 
 function rotateReferenceToFace(
   face,
@@ -1590,44 +1640,39 @@ function rotateReferenceToFace(
   if (!referenceCube) return;
 
 
-  /*
-   * Cada cara tiene una posición exacta.
-   *
-   * F = frente
-   * R = derecha
-   * B = atrás
-   * L = izquierda
-   * U = arriba
-   * D = abajo
-   */
-
   const targets = {
 
+    // 1. FRENTE
     F: {
       x: 0,
       y: 0
     },
 
+    // 2. DERECHA
     R: {
       x: 0,
       y: -Math.PI / 2
     },
 
+    // 3. ATRÁS
     B: {
       x: 0,
-      y: Math.PI
+      y: -Math.PI
     },
 
+    // 4. IZQUIERDA
     L: {
       x: 0,
       y: Math.PI / 2
     },
 
+    // 5. ARRIBA
     U: {
       x: -Math.PI / 2,
       y: 0
     },
 
+    // 6. ABAJO
     D: {
       x: Math.PI / 2,
       y: 0
@@ -1697,11 +1742,6 @@ function animateReferenceRotation(
     referenceCube.rotation.y;
 
 
-  /*
-   * Calculamos el camino más corto
-   * para evitar giros extraños.
-   */
-
   let differenceY =
     targetY - startY;
 
@@ -1734,8 +1774,13 @@ function animateReferenceRotation(
     performance.now();
 
 
+  /*
+   * Duración del giro.
+   * Más lento = más fácil de ver.
+   */
+
   const duration =
-    1000;
+    900;
 
 
   function animation(now) {
@@ -1757,10 +1802,6 @@ function animateReferenceRotation(
         1
       );
 
-
-    /*
-     * Suavizado.
-     */
 
     const eased =
       1 -
@@ -1787,8 +1828,8 @@ function animateReferenceRotation(
 
 
     /*
-     * Evita que el cubo quede
-     * inclinado en Z.
+     * Nunca giramos el cubo
+     * aleatoriamente sobre Z.
      */
 
     referenceCube.rotation.z =
@@ -1805,11 +1846,6 @@ function animateReferenceRotation(
     }
 
     else {
-
-      /*
-       * Al terminar, colocamos
-       * EXACTAMENTE la rotación final.
-       */
 
       referenceCube.rotation.x =
         targetX;
@@ -1923,7 +1959,7 @@ function animateReferenceCube() {
 
 
 // ==========================================
-// RENDERIZAR CARA
+// RENDERIZAR CARA ACTUAL
 // ==========================================
 
 function renderCurrentFace() {
@@ -1957,10 +1993,31 @@ function renderCurrentFace() {
   if (!container) return;
 
 
+  // ========================================
+  // NOMBRE DE LA CARA
+  // ========================================
+
+  const faceNames = {
+
+    F: "FRENTE",
+
+    R: "DERECHA",
+
+    B: "ATRÁS",
+
+    L: "IZQUIERDA",
+
+    U: "ARRIBA",
+
+    D: "ABAJO"
+
+  };
+
+
   if (instruction) {
 
     instruction.textContent =
-      "Selecciona los colores de esta cara";
+      `Selecciona los colores de la cara ${faceNames[face]}`;
 
   }
 
@@ -1968,7 +2025,7 @@ function renderCurrentFace() {
   if (progress) {
 
     progress.textContent =
-      `Cara ${currentFaceIndex + 1} de 6`;
+      `Cara ${currentFaceIndex + 1} de 6 — ${faceNames[face]}`;
 
   }
 
@@ -2038,11 +2095,6 @@ function renderCurrentFace() {
           ];
 
 
-        /*
-         * Actualiza el cubo 3D
-         * inmediatamente.
-         */
-
         updateReferenceColors();
 
       }
@@ -2062,8 +2114,8 @@ function renderCurrentFace() {
 
 
   /*
-   * Girar lentamente hacia la cara
-   * que el usuario está rellenando.
+   * El cubo gira SOLO hacia la cara
+   * que estamos rellenando.
    */
 
   rotateReferenceToFace(
@@ -2071,10 +2123,6 @@ function renderCurrentFace() {
     false
   );
 
-
-  /*
-   * Actualizar colores.
-   */
 
   updateReferenceColors();
 
@@ -2086,7 +2134,6 @@ function renderCurrentFace() {
 // ==========================================
 
 function setupSolverButtons() {
-
 
   document
     .querySelectorAll(
@@ -2231,13 +2278,6 @@ function nextFace() {
   ) {
 
     currentFaceIndex++;
-
-
-    /*
-     * renderCurrentFace()
-     * hace girar lentamente el cubo
-     * hacia la nueva cara.
-     */
 
     renderCurrentFace();
 
