@@ -270,14 +270,7 @@ const cubeColors = {
 // D = Abajo
 // U = Arriba
 //
-// IMPORTANTE:
-// Primero se llena la cara FRONTAL.
-// Después el cubo gira hacia la DERECHA.
-// Luego ATRÁS.
-// Luego IZQUIERDA.
-// Luego ABAJO.
-// Finalmente ARRIBA.
-//
+// ==========================================
 
 const solverFaces = [
 
@@ -754,6 +747,15 @@ function update3DCubeColors() {
 // ==========================================
 // OBTENER POSICIÓN EN LA CARA
 // ==========================================
+//
+// CORREGIDO:
+//
+// La orientación de ARRIBA y ABAJO
+// fue ajustada para que el cuadro
+// seleccionado coincida con el cuadro
+// visual después del giro del cubo.
+//
+// ==========================================
 
 function getFaceIndex(
   face,
@@ -768,15 +770,25 @@ function getFaceIndex(
   let row;
   let col;
 
-  if (face === "U") {
+
+  // ========================================
+  // FRENTE
+  // ========================================
+
+  if (face === "F") {
 
     row =
-      size - 1 - z;
+      size - 1 - y;
 
     col =
       x;
 
   }
+
+
+  // ========================================
+  // DERECHA
+  // ========================================
 
   else if (face === "R") {
 
@@ -788,25 +800,25 @@ function getFaceIndex(
 
   }
 
-  else if (face === "F") {
+
+  // ========================================
+  // ATRÁS
+  // ========================================
+
+  else if (face === "B") {
 
     row =
       size - 1 - y;
 
     col =
-      x;
+      size - 1 - x;
 
   }
 
-  else if (face === "D") {
 
-    row =
-      z;
-
-    col =
-      x;
-
-  }
+  // ========================================
+  // IZQUIERDA
+  // ========================================
 
   else if (face === "L") {
 
@@ -818,15 +830,36 @@ function getFaceIndex(
 
   }
 
-  else if (face === "B") {
+
+  // ========================================
+  // ABAJO
+  // ========================================
+
+  else if (face === "D") {
 
     row =
-      size - 1 - y;
+      size - 1 - z;
 
     col =
-      size - 1 - x;
+      x;
 
   }
+
+
+  // ========================================
+  // ARRIBA
+  // ========================================
+
+  else if (face === "U") {
+
+    row =
+      z;
+
+    col =
+      x;
+
+  }
+
 
   return row * size + col;
 
@@ -986,10 +1019,6 @@ function openCubeSolver() {
       ).fill(null);
 
   });
-
-  // ========================================
-  // EMPEZAMOS POR EL FRENTE
-  // ========================================
 
   currentFaceIndex = 0;
 
@@ -1494,22 +1523,6 @@ function setReferenceSticker(
 // ==========================================
 // ORIENTACIÓN DEL CUBO
 // ==========================================
-//
-// ORDEN:
-//
-// FRENTE
-// ↓
-// DERECHA
-// ↓
-// ATRÁS
-// ↓
-// IZQUIERDA
-// ↓
-// ABAJO
-// ↓
-// ARRIBA
-//
-// ==========================================
 
 function rotateReferenceToFace(
   face,
@@ -1520,37 +1533,31 @@ function rotateReferenceToFace(
 
   const targets = {
 
-    // 1. FRENTE
     F: {
       x: 0,
       y: 0
     },
 
-    // 2. DERECHA
     R: {
       x: 0,
       y: -Math.PI / 2
     },
 
-    // 3. ATRÁS
     B: {
       x: 0,
       y: -Math.PI
     },
 
-    // 4. IZQUIERDA
     L: {
       x: 0,
       y: Math.PI / 2
     },
 
-    // 5. ABAJO
     D: {
       x: -Math.PI / 2,
       y: 0
     },
 
-    // 6. ARRIBA
     U: {
       x: Math.PI / 2,
       y: 0
@@ -1827,10 +1834,6 @@ function renderCurrentFace() {
   if (!container) return;
 
 
-  // ========================================
-  // NOMBRE DE LA CARA
-  // ========================================
-
   const faceNames = {
 
     F: "FRENTE",
@@ -1946,10 +1949,6 @@ function renderCurrentFace() {
     grid
   );
 
-
-  // ========================================
-  // GIRAR HACIA LA CARA ACTUAL
-  // ========================================
 
   rotateReferenceToFace(
     face,
