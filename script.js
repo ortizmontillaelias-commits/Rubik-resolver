@@ -233,7 +233,7 @@ resetTimerButton?.addEventListener("click", () => {
 
 
 // ==========================================
-// VARIABLES CUBO 3D
+// VARIABLES DEL CUBO 3D
 // ==========================================
 
 let cubeScene = null;
@@ -276,6 +276,7 @@ const solverFaces = [
   "B"
 ];
 
+
 const faceColor = {
 
   U: "white",
@@ -287,6 +288,7 @@ const faceColor = {
 
 };
 
+
 const solverColors = {
 
   white: "#ffffff",
@@ -297,6 +299,7 @@ const solverColors = {
   green: "#00aa00"
 
 };
+
 
 let currentFaceIndex = 0;
 
@@ -384,6 +387,7 @@ function createRubiksCube(size) {
   cubeScene.background =
     new THREE.Color(0x020617);
 
+
   cubeCamera =
     new THREE.PerspectiveCamera(
       35,
@@ -392,10 +396,6 @@ function createRubiksCube(size) {
       200
     );
 
-  /*
-   * Cámara completamente centrada.
-   * Ya no está excesivamente inclinada.
-   */
 
   cubeCamera.position.set(
     size * 2.8,
@@ -403,7 +403,12 @@ function createRubiksCube(size) {
     size * 4.2
   );
 
-  cubeCamera.lookAt(0, 0, 0);
+
+  cubeCamera.lookAt(
+    0,
+    0,
+    0
+  );
 
 
   cubeRenderer =
@@ -411,9 +416,14 @@ function createRubiksCube(size) {
       antialias: true
     });
 
+
   cubeRenderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
+    Math.min(
+      window.devicePixelRatio,
+      2
+    )
   );
+
 
   container.appendChild(
     cubeRenderer.domElement
@@ -441,13 +451,17 @@ function createRubiksCube(size) {
     10
   );
 
-  cubeScene.add(directional);
+  cubeScene.add(
+    directional
+  );
 
 
   rubiksCube =
     new THREE.Group();
 
-  cubeScene.add(rubiksCube);
+  cubeScene.add(
+    rubiksCube
+  );
 
 
   createCubePieces(size);
@@ -459,11 +473,15 @@ function createRubiksCube(size) {
       cubeRenderer.domElement
     );
 
-  cubeControls.enableDamping = true;
 
-  cubeControls.dampingFactor = 0.08;
+  cubeControls.enableDamping =
+    true;
 
-  cubeControls.enablePan = false;
+  cubeControls.dampingFactor =
+    0.08;
+
+  cubeControls.enablePan =
+    false;
 
   cubeControls.minDistance =
     size * 2;
@@ -494,11 +512,24 @@ function createCubePieces(size) {
   const start =
     -(size - 1) / 2;
 
-  for (let x = 0; x < size; x++) {
 
-    for (let y = 0; y < size; y++) {
+  for (
+    let x = 0;
+    x < size;
+    x++
+  ) {
 
-      for (let z = 0; z < size; z++) {
+    for (
+      let y = 0;
+      y < size;
+      y++
+    ) {
+
+      for (
+        let z = 0;
+        z < size;
+        z++
+      ) {
 
         const geometry =
           new THREE.BoxGeometry(
@@ -506,6 +537,7 @@ function createCubePieces(size) {
             0.94,
             0.94
           );
+
 
         const materials =
           createStickerMaterials(
@@ -515,11 +547,13 @@ function createCubePieces(size) {
             size
           );
 
+
         const piece =
           new THREE.Mesh(
             geometry,
             materials
           );
+
 
         piece.position.set(
           start + x,
@@ -527,10 +561,6 @@ function createCubePieces(size) {
           start + z
         );
 
-        /*
-         * Guardamos la posición lógica
-         * para poder actualizar los colores.
-         */
 
         piece.userData = {
           x,
@@ -538,9 +568,15 @@ function createCubePieces(size) {
           z
         };
 
-        rubiksCube.add(piece);
 
-        cubePieces.push(piece);
+        rubiksCube.add(
+          piece
+        );
+
+
+        cubePieces.push(
+          piece
+        );
 
       }
 
@@ -562,7 +598,9 @@ function createStickerMaterials(
   size
 ) {
 
-  const black = 0x101010;
+  const black =
+    0x101010;
+
 
   return [
 
@@ -614,40 +652,39 @@ function createStickerMaterials(
 
 
 // ==========================================
-// ACTUALIZAR COLORES DEL CUBO
+// ACTUALIZAR COLORES CUBO 3D
 // ==========================================
 
 function update3DCubeColors() {
 
   if (!rubiksCube) return;
 
+
   const size =
     selectedCubeSize;
 
+
   cubePieces.forEach(piece => {
 
-    const { x, y, z } =
-      piece.userData;
+    const {
+      x,
+      y,
+      z
+    } = piece.userData;
+
 
     const materials =
       piece.material;
 
-    /*
-     * Por defecto los lados internos
-     * permanecen oscuros.
-     */
 
-    materials[0].color.setHex(0x101010);
-    materials[1].color.setHex(0x101010);
-    materials[2].color.setHex(0x101010);
-    materials[3].color.setHex(0x101010);
-    materials[4].color.setHex(0x101010);
-    materials[5].color.setHex(0x101010);
+    materials.forEach(material => {
 
+      material.color.setHex(
+        0x101010
+      );
 
-    /*
-     * X positivo = R
-     */
+    });
+
 
     if (x === size - 1) {
 
@@ -662,10 +699,6 @@ function update3DCubeColors() {
     }
 
 
-    /*
-     * X negativo = L
-     */
-
     if (x === 0) {
 
       setFaceSticker(
@@ -678,10 +711,6 @@ function update3DCubeColors() {
 
     }
 
-
-    /*
-     * Y positivo = U
-     */
 
     if (y === size - 1) {
 
@@ -696,10 +725,6 @@ function update3DCubeColors() {
     }
 
 
-    /*
-     * Y negativo = D
-     */
-
     if (y === 0) {
 
       setFaceSticker(
@@ -713,10 +738,6 @@ function update3DCubeColors() {
     }
 
 
-    /*
-     * Z positivo = F
-     */
-
     if (z === size - 1) {
 
       setFaceSticker(
@@ -729,10 +750,6 @@ function update3DCubeColors() {
 
     }
 
-
-    /*
-     * Z negativo = B
-     */
 
     if (z === 0) {
 
@@ -752,7 +769,7 @@ function update3DCubeColors() {
 
 
 // ==========================================
-// OBTENER COLOR DE UNA POSICIÓN
+// OBTENER POSICIÓN EN LA CARA
 // ==========================================
 
 function getFaceIndex(
@@ -768,52 +785,72 @@ function getFaceIndex(
   let row;
   let col;
 
-  /*
-   * Cada cara utiliza la misma
-   * orientación que la cuadrícula.
-   */
 
   if (face === "U") {
 
-    row = size - 1 - z;
-    col = x;
+    row =
+      size - 1 - z;
+
+    col =
+      x;
 
   }
+
 
   else if (face === "R") {
 
-    row = size - 1 - y;
-    col = size - 1 - z;
+    row =
+      size - 1 - y;
+
+    col =
+      size - 1 - z;
 
   }
+
 
   else if (face === "F") {
 
-    row = size - 1 - y;
-    col = x;
+    row =
+      size - 1 - y;
+
+    col =
+      x;
 
   }
+
 
   else if (face === "D") {
 
-    row = z;
-    col = x;
+    row =
+      z;
+
+    col =
+      x;
 
   }
+
 
   else if (face === "L") {
 
-    row = size - 1 - y;
-    col = z;
+    row =
+      size - 1 - y;
+
+    col =
+      z;
 
   }
+
 
   else if (face === "B") {
 
-    row = size - 1 - y;
-    col = size - 1 - x;
+    row =
+      size - 1 - y;
+
+    col =
+      size - 1 - x;
 
   }
+
 
   return row * size + col;
 
@@ -837,6 +874,7 @@ function setFaceSticker(
 
   if (!data) return;
 
+
   const index =
     getFaceIndex(
       face,
@@ -845,8 +883,10 @@ function setFaceSticker(
       z
     );
 
+
   const selected =
     data[index];
+
 
   if (selected) {
 
@@ -860,13 +900,14 @@ function setFaceSticker(
 
 
 // ==========================================
-// RESIZE
+// RESIZE CUBO
 // ==========================================
 
 function resizeRubiksCube() {
 
   const container =
     document.getElementById("rubiks3D");
+
 
   if (
     !container ||
@@ -876,20 +917,28 @@ function resizeRubiksCube() {
     return;
   }
 
+
   const width =
     container.clientWidth;
 
   const height =
     container.clientHeight;
 
-  if (width <= 0 || height <= 0) {
+
+  if (
+    width <= 0 ||
+    height <= 0
+  ) {
     return;
   }
+
 
   cubeCamera.aspect =
     width / height;
 
+
   cubeCamera.updateProjectionMatrix();
+
 
   cubeRenderer.setSize(
     width,
@@ -907,7 +956,7 @@ window.addEventListener(
 
 
 // ==========================================
-// ANIMACIÓN
+// ANIMACIÓN CUBO
 // ==========================================
 
 function animateCube() {
@@ -916,7 +965,9 @@ function animateCube() {
     animateCube
   );
 
+
   cubeControls?.update();
+
 
   if (
     cubeRenderer &&
@@ -943,7 +994,7 @@ let referenceCamera = null;
 let referenceRenderer = null;
 let referenceCube = null;
 
-let referenceControls = null;
+let referenceRotationAnimation = null;
 
 
 // ==========================================
@@ -962,6 +1013,7 @@ function openCubeSolver() {
 
   cubeInputData = {};
 
+
   solverFaces.forEach(face => {
 
     cubeInputData[face] =
@@ -975,13 +1027,29 @@ function openCubeSolver() {
 
   currentFaceIndex = 0;
 
-  currentSelectedColor = "white";
+  currentSelectedColor =
+    "white";
+
+
+  const oldSolver =
+    document.getElementById(
+      "cubeSolver"
+    );
+
+
+  if (oldSolver) {
+    oldSolver.remove();
+  }
 
 
   const solver =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
-  solver.id = "cubeSolver";
+
+  solver.id =
+    "cubeSolver";
 
 
   solver.innerHTML = `
@@ -1123,7 +1191,9 @@ function openCubeSolver() {
   `;
 
 
-  document.body.appendChild(solver);
+  document.body.appendChild(
+    solver
+  );
 
 
   createReferenceCube();
@@ -1136,7 +1206,7 @@ function openCubeSolver() {
 
 
 // ==========================================
-// CUBO DE REFERENCIA
+// CREAR CUBO DE REFERENCIA
 // ==========================================
 
 function createReferenceCube() {
@@ -1146,6 +1216,7 @@ function createReferenceCube() {
       "referenceCube"
     );
 
+
   if (!container) return;
 
 
@@ -1154,7 +1225,9 @@ function createReferenceCube() {
 
 
   referenceScene.background =
-    new THREE.Color(0x0f172a);
+    new THREE.Color(
+      0x0f172a
+    );
 
 
   referenceCamera =
@@ -1167,15 +1240,16 @@ function createReferenceCube() {
 
 
   /*
-   * Vista frontal derecha.
-   * No está inclinada.
+   * Cámara centrada.
+   * El cubo NO queda inclinado.
    */
 
   referenceCamera.position.set(
-    5,
-    4,
-    7
+    0,
+    0,
+    8
   );
+
 
   referenceCamera.lookAt(
     0,
@@ -1186,7 +1260,8 @@ function createReferenceCube() {
 
   referenceRenderer =
     new THREE.WebGLRenderer({
-      antialias: true
+      antialias: true,
+      alpha: true
     });
 
 
@@ -1209,7 +1284,10 @@ function createReferenceCube() {
       2.3
     );
 
-  referenceScene.add(ambient);
+
+  referenceScene.add(
+    ambient
+  );
 
 
   const light =
@@ -1218,17 +1296,22 @@ function createReferenceCube() {
       3
     );
 
+
   light.position.set(
     5,
     8,
     10
   );
 
-  referenceScene.add(light);
+
+  referenceScene.add(
+    light
+  );
 
 
   referenceCube =
     new THREE.Group();
+
 
   referenceScene.add(
     referenceCube
@@ -1254,15 +1337,28 @@ function createReferencePieces() {
   const size =
     selectedCubeSize;
 
+
   const start =
     -(size - 1) / 2;
 
 
-  for (let x = 0; x < size; x++) {
+  for (
+    let x = 0;
+    x < size;
+    x++
+  ) {
 
-    for (let y = 0; y < size; y++) {
+    for (
+      let y = 0;
+      y < size;
+      y++
+    ) {
 
-      for (let z = 0; z < size; z++) {
+      for (
+        let z = 0;
+        z < size;
+        z++
+      ) {
 
         const geometry =
           new THREE.BoxGeometry(
@@ -1270,6 +1366,7 @@ function createReferencePieces() {
             0.9,
             0.9
           );
+
 
         const materials =
           createStickerMaterials(
@@ -1279,11 +1376,13 @@ function createReferencePieces() {
             size
           );
 
+
         const piece =
           new THREE.Mesh(
             geometry,
             materials
           );
+
 
         piece.position.set(
           start + x,
@@ -1291,11 +1390,13 @@ function createReferencePieces() {
           start + z
         );
 
+
         piece.userData = {
           x,
           y,
           z
         };
+
 
         referenceCube.add(
           piece
@@ -1306,6 +1407,7 @@ function createReferencePieces() {
     }
 
   }
+
 
   updateReferenceColors();
 
@@ -1320,101 +1422,115 @@ function updateReferenceColors() {
 
   if (!referenceCube) return;
 
+
   const size =
     selectedCubeSize;
 
-  referenceCube.children.forEach(piece => {
 
-    const { x, y, z } =
-      piece.userData;
+  referenceCube.children.forEach(
+    piece => {
 
-    const materials =
-      piece.material;
-
-
-    materials.forEach(material => {
-      material.color.setHex(0x101010);
-    });
-
-
-    if (x === size - 1) {
-
-      setReferenceSticker(
-        materials[0],
-        "R",
+      const {
         x,
         y,
         z
+      } = piece.userData;
+
+
+      const materials =
+        piece.material;
+
+
+      materials.forEach(
+        material => {
+
+          material.color.setHex(
+            0x101010
+          );
+
+        }
       );
 
+
+      if (x === size - 1) {
+
+        setReferenceSticker(
+          materials[0],
+          "R",
+          x,
+          y,
+          z
+        );
+
+      }
+
+
+      if (x === 0) {
+
+        setReferenceSticker(
+          materials[1],
+          "L",
+          x,
+          y,
+          z
+        );
+
+      }
+
+
+      if (y === size - 1) {
+
+        setReferenceSticker(
+          materials[2],
+          "U",
+          x,
+          y,
+          z
+        );
+
+      }
+
+
+      if (y === 0) {
+
+        setReferenceSticker(
+          materials[3],
+          "D",
+          x,
+          y,
+          z
+        );
+
+      }
+
+
+      if (z === size - 1) {
+
+        setReferenceSticker(
+          materials[4],
+          "F",
+          x,
+          y,
+          z
+        );
+
+      }
+
+
+      if (z === 0) {
+
+        setReferenceSticker(
+          materials[5],
+          "B",
+          x,
+          y,
+          z
+        );
+
+      }
+
     }
-
-
-    if (x === 0) {
-
-      setReferenceSticker(
-        materials[1],
-        "L",
-        x,
-        y,
-        z
-      );
-
-    }
-
-
-    if (y === size - 1) {
-
-      setReferenceSticker(
-        materials[2],
-        "U",
-        x,
-        y,
-        z
-      );
-
-    }
-
-
-    if (y === 0) {
-
-      setReferenceSticker(
-        materials[3],
-        "D",
-        x,
-        y,
-        z
-      );
-
-    }
-
-
-    if (z === size - 1) {
-
-      setReferenceSticker(
-        materials[4],
-        "F",
-        x,
-        y,
-        z
-      );
-
-    }
-
-
-    if (z === 0) {
-
-      setReferenceSticker(
-        materials[5],
-        "B",
-        x,
-        y,
-        z
-      );
-
-    }
-
-  });
+  );
 
 }
 
@@ -1434,7 +1550,9 @@ function setReferenceSticker(
   const data =
     cubeInputData[face];
 
+
   if (!data) return;
+
 
   const index =
     getFaceIndex(
@@ -1444,8 +1562,10 @@ function setReferenceSticker(
       z
     );
 
+
   const color =
     data[index];
+
 
   if (color) {
 
@@ -1471,41 +1591,46 @@ function rotateReferenceToFace(
 
 
   /*
-   * En vez de inclinar el cubo,
-   * utilizamos una rotación limpia
-   * alrededor del eje Y.
+   * Cada cara tiene una posición exacta.
+   *
+   * F = frente
+   * R = derecha
+   * B = atrás
+   * L = izquierda
+   * U = arriba
+   * D = abajo
    */
 
   const targets = {
-
-    U: {
-      x: -0.15,
-      y: 0
-    },
-
-    R: {
-      x: 0,
-      y: -0.65
-    },
 
     F: {
       x: 0,
       y: 0
     },
 
-    D: {
-      x: 0.15,
-      y: 0
-    },
-
-    L: {
+    R: {
       x: 0,
-      y: 0.65
+      y: -Math.PI / 2
     },
 
     B: {
       x: 0,
       y: Math.PI
+    },
+
+    L: {
+      x: 0,
+      y: Math.PI / 2
+    },
+
+    U: {
+      x: -Math.PI / 2,
+      y: 0
+    },
+
+    D: {
+      x: Math.PI / 2,
+      y: 0
     }
 
   };
@@ -1515,13 +1640,30 @@ function rotateReferenceToFace(
     targets[face];
 
 
+  if (!target) return;
+
+
+  if (
+    referenceRotationAnimation
+  ) {
+
+    cancelAnimationFrame(
+      referenceRotationAnimation
+    );
+
+    referenceRotationAnimation =
+      null;
+
+  }
+
+
   if (instant) {
 
-    referenceCube.rotation.x =
-      target.x;
-
-    referenceCube.rotation.y =
-      target.y;
+    referenceCube.rotation.set(
+      target.x,
+      target.y,
+      0
+    );
 
     return;
 
@@ -1537,7 +1679,7 @@ function rotateReferenceToFace(
 
 
 // ==========================================
-// GIRO SUAVE
+// ANIMACIÓN DE GIRO
 // ==========================================
 
 function animateReferenceRotation(
@@ -1554,21 +1696,64 @@ function animateReferenceRotation(
   const startY =
     referenceCube.rotation.y;
 
-  let startTime =
+
+  /*
+   * Calculamos el camino más corto
+   * para evitar giros extraños.
+   */
+
+  let differenceY =
+    targetY - startY;
+
+
+  while (
+    differenceY > Math.PI
+  ) {
+
+    differenceY -=
+      Math.PI * 2;
+
+  }
+
+
+  while (
+    differenceY < -Math.PI
+  ) {
+
+    differenceY +=
+      Math.PI * 2;
+
+  }
+
+
+  const finalY =
+    startY + differenceY;
+
+
+  const animationStart =
     performance.now();
 
+
   const duration =
-    850;
+    1000;
 
 
   function animation(now) {
 
-    if (!referenceCube) return;
+    if (!referenceCube) {
+
+      referenceRotationAnimation =
+        null;
+
+      return;
+
+    }
 
 
     const progress =
       Math.min(
-        (now - startTime) / duration,
+        (now - animationStart) /
+        duration,
         1
       );
 
@@ -1578,41 +1763,76 @@ function animateReferenceRotation(
      */
 
     const eased =
-      progress < 0.5
-        ? 2 * progress * progress
-        : 1 -
-          Math.pow(
-            -2 * progress + 2,
-            2
-          ) / 2;
+      1 -
+      Math.pow(
+        1 - progress,
+        3
+      );
 
 
     referenceCube.rotation.x =
       startX +
-      (targetX - startX) *
+      (
+        targetX - startX
+      ) *
       eased;
 
 
     referenceCube.rotation.y =
       startY +
-      (targetY - startY) *
+      (
+        finalY - startY
+      ) *
       eased;
+
+
+    /*
+     * Evita que el cubo quede
+     * inclinado en Z.
+     */
+
+    referenceCube.rotation.z =
+      0;
 
 
     if (progress < 1) {
 
-      requestAnimationFrame(
-        animation
-      );
+      referenceRotationAnimation =
+        requestAnimationFrame(
+          animation
+        );
+
+    }
+
+    else {
+
+      /*
+       * Al terminar, colocamos
+       * EXACTAMENTE la rotación final.
+       */
+
+      referenceCube.rotation.x =
+        targetX;
+
+      referenceCube.rotation.y =
+        targetY;
+
+      referenceCube.rotation.z =
+        0;
+
+
+      referenceRotationAnimation =
+        null;
 
     }
 
   }
 
 
-  requestAnimationFrame(
-    animation
-  );
+  referenceRotationAnimation =
+    requestAnimationFrame(
+      animation
+    );
 
 }
 
@@ -1627,6 +1847,7 @@ function resizeReferenceCube() {
     document.getElementById(
       "referenceCube"
     );
+
 
   if (
     !container ||
@@ -1644,13 +1865,17 @@ function resizeReferenceCube() {
     container.clientHeight;
 
 
-  if (width <= 0 || height <= 0) {
+  if (
+    width <= 0 ||
+    height <= 0
+  ) {
     return;
   }
 
 
   referenceCamera.aspect =
     width / height;
+
 
   referenceCamera.updateProjectionMatrix();
 
@@ -1680,6 +1905,7 @@ function animateReferenceCube() {
     animateReferenceCube
   );
 
+
   if (
     referenceRenderer &&
     referenceScene &&
@@ -1705,6 +1931,7 @@ function renderCurrentFace() {
   const face =
     solverFaces[currentFaceIndex];
 
+
   const size =
     selectedCubeSize;
 
@@ -1714,10 +1941,12 @@ function renderCurrentFace() {
       "faceInstruction"
     );
 
+
   const progress =
     document.getElementById(
       "faceProgress"
     );
+
 
   const container =
     document.getElementById(
@@ -1748,10 +1977,14 @@ function renderCurrentFace() {
 
 
   const grid =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   grid.className =
     "input-face-grid";
+
 
   grid.style.setProperty(
     "--cube-size",
@@ -1763,10 +1996,17 @@ function renderCurrentFace() {
     size * size;
 
 
-  for (let i = 0; i < total; i++) {
+  for (
+    let i = 0;
+    i < total;
+    i++
+  ) {
 
     const square =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
+
 
     square.className =
       "input-square";
@@ -1791,6 +2031,7 @@ function renderCurrentFace() {
         cubeInputData[face][i] =
           currentSelectedColor;
 
+
         square.style.background =
           solverColors[
             currentSelectedColor
@@ -1798,9 +2039,8 @@ function renderCurrentFace() {
 
 
         /*
-         * AQUÍ está la parte importante:
-         * cada vez que el usuario toca
-         * un cuadrado, el cubo 3D se actualiza.
+         * Actualiza el cubo 3D
+         * inmediatamente.
          */
 
         updateReferenceColors();
@@ -1809,16 +2049,21 @@ function renderCurrentFace() {
     );
 
 
-    grid.appendChild(square);
+    grid.appendChild(
+      square
+    );
 
   }
 
 
-  container.appendChild(grid);
+  container.appendChild(
+    grid
+  );
 
 
   /*
-   * Mostramos la cara correspondiente.
+   * Girar lentamente hacia la cara
+   * que el usuario está rellenando.
    */
 
   rotateReferenceToFace(
@@ -1828,8 +2073,7 @@ function renderCurrentFace() {
 
 
   /*
-   * Actualizamos inmediatamente
-   * los colores.
+   * Actualizar colores.
    */
 
   updateReferenceColors();
@@ -1838,14 +2082,16 @@ function renderCurrentFace() {
 
 
 // ==========================================
-// BOTONES SOLUCIONADOR
+// BOTONES DEL SOLUCIONADOR
 // ==========================================
 
 function setupSolverButtons() {
 
 
   document
-    .querySelectorAll(".solver-color")
+    .querySelectorAll(
+      ".solver-color"
+    )
     .forEach(button => {
 
       button.addEventListener(
@@ -1888,13 +2134,17 @@ function setupSolverButtons() {
       () => {
 
         const face =
-          solverFaces[currentFaceIndex];
+          solverFaces[
+            currentFaceIndex
+          ];
+
 
         cubeInputData[face] =
           Array(
             selectedCubeSize *
             selectedCubeSize
           ).fill(null);
+
 
         renderCurrentFace();
 
@@ -1951,7 +2201,10 @@ function setupSolverButtons() {
 function nextFace() {
 
   const face =
-    solverFaces[currentFaceIndex];
+    solverFaces[
+      currentFaceIndex
+    ];
+
 
   const values =
     cubeInputData[face];
@@ -1979,9 +2232,10 @@ function nextFace() {
 
     currentFaceIndex++;
 
+
     /*
-     * La función renderCurrentFace
-     * hace que el cubo gire suavemente
+     * renderCurrentFace()
+     * hace girar lentamente el cubo
      * hacia la nueva cara.
      */
 
@@ -1998,7 +2252,7 @@ function nextFace() {
 
 
 // ==========================================
-// FINALIZAR
+// FINALIZAR ENTRADA
 // ==========================================
 
 function finishColorInput() {
@@ -2015,7 +2269,9 @@ function finishColorInput() {
   };
 
 
-  for (const face of solverFaces) {
+  for (
+    const face of solverFaces
+  ) {
 
     for (
       const color of cubeInputData[face]
@@ -2074,44 +2330,98 @@ let solutionIndex = 0;
 let solving = false;
 
 
+// ==========================================
+// MOSTRAR SOLUCIÓN
+// ==========================================
+
 function showSolution() {
 
-  document
-    .getElementById(
+  const instruction =
+    document.getElementById(
       "faceInstruction"
-    )
-    .textContent =
+    );
+
+
+  const progress =
+    document.getElementById(
+      "faceProgress"
+    );
+
+
+  const input =
+    document.getElementById(
+      "inputFaceContainer"
+    );
+
+
+  const colors =
+    document.querySelector(
+      ".solver-colors"
+    );
+
+
+  const actions =
+    document.querySelector(
+      ".solver-actions"
+    );
+
+
+  const solutionPanel =
+    document.getElementById(
+      "solutionPanel"
+    );
+
+
+  if (instruction) {
+
+    instruction.textContent =
       "Cubo configurado correctamente";
 
+  }
 
-  document
-    .getElementById(
-      "faceProgress"
-    )
-    .textContent =
+
+  if (progress) {
+
+    progress.textContent =
       "Preparando solución...";
 
-
-  document
-    .getElementById(
-      "inputFaceContainer"
-    )
-    .classList.add("hidden");
+  }
 
 
-  document
-    .querySelector(".solver-colors")
-    .classList.add("hidden");
+  if (input) {
+
+    input.classList.add(
+      "hidden"
+    );
+
+  }
 
 
-  document
-    .querySelector(".solver-actions")
-    .classList.add("hidden");
+  if (colors) {
+
+    colors.classList.add(
+      "hidden"
+    );
+
+  }
 
 
-  document
-    .getElementById("solutionPanel")
-    .classList.remove("hidden");
+  if (actions) {
+
+    actions.classList.add(
+      "hidden"
+    );
+
+  }
+
+
+  if (solutionPanel) {
+
+    solutionPanel.classList.remove(
+      "hidden"
+    );
+
+  }
 
 
   solutionMoves =
@@ -2122,18 +2432,22 @@ function showSolution() {
 
   solutionIndex = 0;
 
+  solving = false;
+
+
   showCurrentSolutionMove();
 
 }
 
 
 // ==========================================
-// MOVIMIENTOS
+// GENERAR MOVIMIENTOS
 // ==========================================
 
 function generateSolutionMoves(size) {
 
   const base = [
+
     "R",
     "U",
     "R'",
@@ -2142,7 +2456,9 @@ function generateSolutionMoves(size) {
     "R",
     "F'",
     "U"
+
   ];
+
 
   const amount =
     Math.max(
@@ -2150,7 +2466,9 @@ function generateSolutionMoves(size) {
       size * 2
     );
 
+
   const moves = [];
+
 
   for (
     let i = 0;
@@ -2165,6 +2483,7 @@ function generateSolutionMoves(size) {
     );
 
   }
+
 
   return moves;
 
@@ -2182,10 +2501,12 @@ function showCurrentSolutionMove() {
       "solutionMove"
     );
 
+
   const status =
     document.getElementById(
       "solutionStatus"
     );
+
 
   const button =
     document.getElementById(
@@ -2198,31 +2519,54 @@ function showCurrentSolutionMove() {
     solutionMoves.length
   ) {
 
-    moveElement.textContent =
-      "✓";
+    if (moveElement) {
 
-    status.textContent =
-      "Cubo resuelto.";
+      moveElement.textContent =
+        "✓";
 
-    button.textContent =
-      "✓ Terminado";
+    }
 
-    button.disabled =
-      true;
+
+    if (status) {
+
+      status.textContent =
+        "Cubo resuelto.";
+
+    }
+
+
+    if (button) {
+
+      button.textContent =
+        "✓ Terminado";
+
+      button.disabled =
+        true;
+
+    }
+
 
     return;
 
   }
 
 
-  moveElement.textContent =
-    solutionMoves[
-      solutionIndex
-    ];
+  if (moveElement) {
+
+    moveElement.textContent =
+      solutionMoves[
+        solutionIndex
+      ];
+
+  }
 
 
-  status.textContent =
-    `Movimiento ${solutionIndex + 1} de ${solutionMoves.length}. Pulsa el botón para continuar.`;
+  if (status) {
+
+    status.textContent =
+      `Movimiento ${solutionIndex + 1} de ${solutionMoves.length}. Pulsa el botón para continuar.`;
+
+  }
 
 }
 
@@ -2234,6 +2578,7 @@ function showCurrentSolutionMove() {
 async function playNextSolutionMove() {
 
   if (solving) return;
+
 
   if (
     solutionIndex >=
@@ -2258,32 +2603,44 @@ async function playNextSolutionMove() {
     );
 
 
-  moveElement.textContent =
-    move;
-
-
   const status =
     document.getElementById(
       "solutionStatus"
     );
 
 
-  status.textContent =
-    `Realiza lentamente el movimiento ${move} en tu cubo físico...`;
+  if (moveElement) {
+
+    moveElement.textContent =
+      move;
+
+  }
+
+
+  if (status) {
+
+    status.textContent =
+      `Realiza lentamente el movimiento ${move} en tu cubo físico...`;
+
+  }
 
 
   await new Promise(
-    resolve =>
+    resolve => {
+
       setTimeout(
         resolve,
         1200
-      )
+      );
+
+    }
   );
 
 
   solutionIndex++;
 
   solving = false;
+
 
   showCurrentSolutionMove();
 
@@ -2301,7 +2658,24 @@ function closeCubeSolver() {
       "cubeSolver"
     );
 
-  solver?.remove();
+
+  if (solver) {
+
+    solver.remove();
+
+  }
+
+
+  if (referenceRotationAnimation) {
+
+    cancelAnimationFrame(
+      referenceRotationAnimation
+    );
+
+    referenceRotationAnimation =
+      null;
+
+  }
 
 
   if (referenceRenderer) {
@@ -2339,7 +2713,9 @@ document
 
 
       document
-        .getElementById("homePage")
+        .getElementById(
+          "homePage"
+        )
         ?.classList.add(
           "active-page"
         );
@@ -2372,7 +2748,13 @@ document
 
         cubeRenderer.dispose();
 
-        cubeRenderer.domElement.remove();
+        if (
+          cubeRenderer.domElement
+        ) {
+
+          cubeRenderer.domElement.remove();
+
+        }
 
         cubeRenderer = null;
 
