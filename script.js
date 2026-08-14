@@ -15,7 +15,6 @@ const loginButton =
 const emailInput =
   document.getElementById("emailInput");
 
-
 loginButton?.addEventListener("click", login);
 
 emailInput?.addEventListener("keydown", event => {
@@ -25,7 +24,6 @@ emailInput?.addEventListener("keydown", event => {
   }
 
 });
-
 
 function login() {
 
@@ -86,7 +84,6 @@ const navigationButtons =
 const pages =
   document.querySelectorAll(".page");
 
-
 navigationButtons.forEach(button => {
 
   button.addEventListener("click", () => {
@@ -121,7 +118,6 @@ let timerInterval = null;
 let startTime = 0;
 let elapsedTime = 0;
 let timerRunning = false;
-
 
 const timerDisplay =
   document.getElementById("timerDisplay");
@@ -271,15 +267,16 @@ const cubeColors = {
 // R = Derecha
 // B = Atrás
 // L = Izquierda
-// U = Arriba
 // D = Abajo
+// U = Arriba
 //
 // IMPORTANTE:
 // Primero se llena la cara FRONTAL.
 // Después el cubo gira hacia la DERECHA.
 // Luego ATRÁS.
 // Luego IZQUIERDA.
-// Finalmente ARRIBA y ABAJO.
+// Luego ABAJO.
+// Finalmente ARRIBA.
 //
 
 const solverFaces = [
@@ -288,8 +285,8 @@ const solverFaces = [
   "R",
   "B",
   "L",
-  "U",
-  "D"
+  "D",
+  "U"
 
 ];
 
@@ -404,7 +401,6 @@ function createRubiksCube(size) {
   cubeScene.background =
     new THREE.Color(0x020617);
 
-
   cubeCamera =
     new THREE.PerspectiveCamera(
       35,
@@ -413,13 +409,11 @@ function createRubiksCube(size) {
       200
     );
 
-
   cubeCamera.position.set(
     size * 2.8,
     size * 2.4,
     size * 4.2
   );
-
 
   cubeCamera.lookAt(
     0,
@@ -427,12 +421,10 @@ function createRubiksCube(size) {
     0
   );
 
-
   cubeRenderer =
     new THREE.WebGLRenderer({
       antialias: true
     });
-
 
   cubeRenderer.setPixelRatio(
     Math.min(
@@ -441,11 +433,9 @@ function createRubiksCube(size) {
     )
   );
 
-
   container.appendChild(
     cubeRenderer.domElement
   );
-
 
   const ambient =
     new THREE.AmbientLight(
@@ -454,7 +444,6 @@ function createRubiksCube(size) {
     );
 
   cubeScene.add(ambient);
-
 
   const directional =
     new THREE.DirectionalLight(
@@ -472,7 +461,6 @@ function createRubiksCube(size) {
     directional
   );
 
-
   rubiksCube =
     new THREE.Group();
 
@@ -480,16 +468,13 @@ function createRubiksCube(size) {
     rubiksCube
   );
 
-
   createCubePieces(size);
-
 
   cubeControls =
     new OrbitControls(
       cubeCamera,
       cubeRenderer.domElement
     );
-
 
   cubeControls.enableDamping =
     true;
@@ -512,7 +497,6 @@ function createRubiksCube(size) {
     0
   );
 
-
   resizeRubiksCube();
 
   animateCube();
@@ -528,7 +512,6 @@ function createCubePieces(size) {
 
   const start =
     -(size - 1) / 2;
-
 
   for (
     let x = 0;
@@ -555,7 +538,6 @@ function createCubePieces(size) {
             0.94
           );
 
-
         const materials =
           createStickerMaterials(
             x,
@@ -564,13 +546,11 @@ function createCubePieces(size) {
             size
           );
 
-
         const piece =
           new THREE.Mesh(
             geometry,
             materials
           );
-
 
         piece.position.set(
           start + x,
@@ -578,18 +558,15 @@ function createCubePieces(size) {
           start + z
         );
 
-
         piece.userData = {
           x,
           y,
           z
         };
 
-
         rubiksCube.add(
           piece
         );
-
 
         cubePieces.push(
           piece
@@ -617,7 +594,6 @@ function createStickerMaterials(
 
   const black =
     0x101010;
-
 
   return [
 
@@ -676,10 +652,8 @@ function update3DCubeColors() {
 
   if (!rubiksCube) return;
 
-
   const size =
     selectedCubeSize;
-
 
   cubePieces.forEach(piece => {
 
@@ -689,10 +663,8 @@ function update3DCubeColors() {
       z
     } = piece.userData;
 
-
     const materials =
       piece.material;
-
 
     materials.forEach(material => {
 
@@ -701,7 +673,6 @@ function update3DCubeColors() {
       );
 
     });
-
 
     if (x === size - 1) {
 
@@ -715,7 +686,6 @@ function update3DCubeColors() {
 
     }
 
-
     if (x === 0) {
 
       setFaceSticker(
@@ -727,7 +697,6 @@ function update3DCubeColors() {
       );
 
     }
-
 
     if (y === size - 1) {
 
@@ -741,7 +710,6 @@ function update3DCubeColors() {
 
     }
 
-
     if (y === 0) {
 
       setFaceSticker(
@@ -754,7 +722,6 @@ function update3DCubeColors() {
 
     }
 
-
     if (z === size - 1) {
 
       setFaceSticker(
@@ -766,7 +733,6 @@ function update3DCubeColors() {
       );
 
     }
-
 
     if (z === 0) {
 
@@ -802,7 +768,6 @@ function getFaceIndex(
   let row;
   let col;
 
-
   if (face === "U") {
 
     row =
@@ -812,7 +777,6 @@ function getFaceIndex(
       x;
 
   }
-
 
   else if (face === "R") {
 
@@ -824,7 +788,6 @@ function getFaceIndex(
 
   }
 
-
   else if (face === "F") {
 
     row =
@@ -834,7 +797,6 @@ function getFaceIndex(
       x;
 
   }
-
 
   else if (face === "D") {
 
@@ -846,7 +808,6 @@ function getFaceIndex(
 
   }
 
-
   else if (face === "L") {
 
     row =
@@ -857,7 +818,6 @@ function getFaceIndex(
 
   }
 
-
   else if (face === "B") {
 
     row =
@@ -867,7 +827,6 @@ function getFaceIndex(
       size - 1 - x;
 
   }
-
 
   return row * size + col;
 
@@ -891,7 +850,6 @@ function setFaceSticker(
 
   if (!data) return;
 
-
   const index =
     getFaceIndex(
       face,
@@ -900,10 +858,8 @@ function setFaceSticker(
       z
     );
 
-
   const selected =
     data[index];
-
 
   if (selected) {
 
@@ -925,7 +881,6 @@ function resizeRubiksCube() {
   const container =
     document.getElementById("rubiks3D");
 
-
   if (
     !container ||
     !cubeRenderer ||
@@ -934,13 +889,11 @@ function resizeRubiksCube() {
     return;
   }
 
-
   const width =
     container.clientWidth;
 
   const height =
     container.clientHeight;
-
 
   if (
     width <= 0 ||
@@ -949,13 +902,10 @@ function resizeRubiksCube() {
     return;
   }
 
-
   cubeCamera.aspect =
     width / height;
 
-
   cubeCamera.updateProjectionMatrix();
-
 
   cubeRenderer.setSize(
     width,
@@ -964,7 +914,6 @@ function resizeRubiksCube() {
   );
 
 }
-
 
 window.addEventListener(
   "resize",
@@ -982,9 +931,7 @@ function animateCube() {
     animateCube
   );
 
-
   cubeControls?.update();
-
 
   if (
     cubeRenderer &&
@@ -1030,7 +977,6 @@ function openCubeSolver() {
 
   cubeInputData = {};
 
-
   solverFaces.forEach(face => {
 
     cubeInputData[face] =
@@ -1041,37 +987,31 @@ function openCubeSolver() {
 
   });
 
-
-  /*
-   * SIEMPRE EMPEZAMOS POR EL FRENTE.
-   */
+  // ========================================
+  // EMPEZAMOS POR EL FRENTE
+  // ========================================
 
   currentFaceIndex = 0;
 
   currentSelectedColor =
     "white";
 
-
   const oldSolver =
     document.getElementById(
       "cubeSolver"
     );
 
-
   if (oldSolver) {
     oldSolver.remove();
   }
-
 
   const solver =
     document.createElement(
       "div"
     );
 
-
   solver.id =
     "cubeSolver";
-
 
   solver.innerHTML = `
 
@@ -1087,25 +1027,21 @@ function openCubeSolver() {
 
       </div>
 
-
       <div class="reference-cube-box">
 
         <div id="referenceCube"></div>
 
       </div>
 
-
       <div
         id="faceInstruction"
         class="face-instruction">
       </div>
 
-
       <div
         id="faceProgress"
         class="face-progress">
       </div>
-
 
       <div class="solver-colors">
 
@@ -1147,12 +1083,10 @@ function openCubeSolver() {
 
       </div>
 
-
       <div
         id="inputFaceContainer"
         class="input-face-container">
       </div>
-
 
       <div class="solver-actions">
 
@@ -1175,7 +1109,6 @@ function openCubeSolver() {
         </button>
 
       </div>
-
 
       <div
         id="solutionPanel"
@@ -1211,11 +1144,9 @@ function openCubeSolver() {
 
   `;
 
-
   document.body.appendChild(
     solver
   );
-
 
   createReferenceCube();
 
@@ -1237,19 +1168,15 @@ function createReferenceCube() {
       "referenceCube"
     );
 
-
   if (!container) return;
-
 
   referenceScene =
     new THREE.Scene();
-
 
   referenceScene.background =
     new THREE.Color(
       0x0f172a
     );
-
 
   referenceCamera =
     new THREE.PerspectiveCamera(
@@ -1259,18 +1186,11 @@ function createReferenceCube() {
       100
     );
 
-
-  /*
-   * CÁMARA FIJA.
-   * El cubo gira, no la cámara.
-   */
-
   referenceCamera.position.set(
     0,
     0,
     8
   );
-
 
   referenceCamera.lookAt(
     0,
@@ -1278,13 +1198,11 @@ function createReferenceCube() {
     0
   );
 
-
   referenceRenderer =
     new THREE.WebGLRenderer({
       antialias: true,
       alpha: true
     });
-
 
   referenceRenderer.setPixelRatio(
     Math.min(
@@ -1293,11 +1211,9 @@ function createReferenceCube() {
     )
   );
 
-
   container.appendChild(
     referenceRenderer.domElement
   );
-
 
   const ambient =
     new THREE.AmbientLight(
@@ -1305,11 +1221,9 @@ function createReferenceCube() {
       2.3
     );
 
-
   referenceScene.add(
     ambient
   );
-
 
   const light =
     new THREE.DirectionalLight(
@@ -1317,33 +1231,22 @@ function createReferenceCube() {
       3
     );
 
-
   light.position.set(
     5,
     8,
     10
   );
 
-
   referenceScene.add(
     light
   );
 
-
   referenceCube =
     new THREE.Group();
-
 
   referenceScene.add(
     referenceCube
   );
-
-
-  /*
-   * IMPORTANTE:
-   * El cubo comienza mirando
-   * directamente al FRENTE.
-   */
 
   referenceCube.rotation.set(
     0,
@@ -1351,9 +1254,7 @@ function createReferenceCube() {
     0
   );
 
-
   createReferencePieces();
-
 
   resizeReferenceCube();
 
@@ -1371,10 +1272,8 @@ function createReferencePieces() {
   const size =
     selectedCubeSize;
 
-
   const start =
     -(size - 1) / 2;
-
 
   for (
     let x = 0;
@@ -1401,7 +1300,6 @@ function createReferencePieces() {
             0.9
           );
 
-
         const materials =
           createStickerMaterials(
             x,
@@ -1410,13 +1308,11 @@ function createReferencePieces() {
             size
           );
 
-
         const piece =
           new THREE.Mesh(
             geometry,
             materials
           );
-
 
         piece.position.set(
           start + x,
@@ -1424,13 +1320,11 @@ function createReferencePieces() {
           start + z
         );
 
-
         piece.userData = {
           x,
           y,
           z
         };
-
 
         referenceCube.add(
           piece
@@ -1441,7 +1335,6 @@ function createReferencePieces() {
     }
 
   }
-
 
   updateReferenceColors();
 
@@ -1456,10 +1349,8 @@ function updateReferenceColors() {
 
   if (!referenceCube) return;
 
-
   const size =
     selectedCubeSize;
-
 
   referenceCube.children.forEach(
     piece => {
@@ -1470,10 +1361,8 @@ function updateReferenceColors() {
         z
       } = piece.userData;
 
-
       const materials =
         piece.material;
-
 
       materials.forEach(
         material => {
@@ -1484,7 +1373,6 @@ function updateReferenceColors() {
 
         }
       );
-
 
       if (x === size - 1) {
 
@@ -1498,7 +1386,6 @@ function updateReferenceColors() {
 
       }
 
-
       if (x === 0) {
 
         setReferenceSticker(
@@ -1510,7 +1397,6 @@ function updateReferenceColors() {
         );
 
       }
-
 
       if (y === size - 1) {
 
@@ -1524,7 +1410,6 @@ function updateReferenceColors() {
 
       }
 
-
       if (y === 0) {
 
         setReferenceSticker(
@@ -1537,7 +1422,6 @@ function updateReferenceColors() {
 
       }
 
-
       if (z === size - 1) {
 
         setReferenceSticker(
@@ -1549,7 +1433,6 @@ function updateReferenceColors() {
         );
 
       }
-
 
       if (z === 0) {
 
@@ -1584,9 +1467,7 @@ function setReferenceSticker(
   const data =
     cubeInputData[face];
 
-
   if (!data) return;
-
 
   const index =
     getFaceIndex(
@@ -1596,10 +1477,8 @@ function setReferenceSticker(
       z
     );
 
-
   const color =
     data[index];
-
 
   if (color) {
 
@@ -1626,9 +1505,9 @@ function setReferenceSticker(
 // ↓
 // IZQUIERDA
 // ↓
-// ARRIBA
-// ↓
 // ABAJO
+// ↓
+// ARRIBA
 //
 // ==========================================
 
@@ -1638,7 +1517,6 @@ function rotateReferenceToFace(
 ) {
 
   if (!referenceCube) return;
-
 
   const targets = {
 
@@ -1666,27 +1544,24 @@ function rotateReferenceToFace(
       y: Math.PI / 2
     },
 
-    // 5. ARRIBA
-    U: {
+    // 5. ABAJO
+    D: {
       x: -Math.PI / 2,
       y: 0
     },
 
-    // 6. ABAJO
-    D: {
+    // 6. ARRIBA
+    U: {
       x: Math.PI / 2,
       y: 0
     }
 
   };
 
-
   const target =
     targets[face];
 
-
   if (!target) return;
-
 
   if (
     referenceRotationAnimation
@@ -1701,7 +1576,6 @@ function rotateReferenceToFace(
 
   }
 
-
   if (instant) {
 
     referenceCube.rotation.set(
@@ -1713,7 +1587,6 @@ function rotateReferenceToFace(
     return;
 
   }
-
 
   animateReferenceRotation(
     target.x,
@@ -1734,17 +1607,14 @@ function animateReferenceRotation(
 
   if (!referenceCube) return;
 
-
   const startX =
     referenceCube.rotation.x;
 
   const startY =
     referenceCube.rotation.y;
 
-
   let differenceY =
     targetY - startY;
-
 
   while (
     differenceY > Math.PI
@@ -1755,7 +1625,6 @@ function animateReferenceRotation(
 
   }
 
-
   while (
     differenceY < -Math.PI
   ) {
@@ -1765,23 +1634,14 @@ function animateReferenceRotation(
 
   }
 
-
   const finalY =
     startY + differenceY;
-
 
   const animationStart =
     performance.now();
 
-
-  /*
-   * Duración del giro.
-   * Más lento = más fácil de ver.
-   */
-
   const duration =
     900;
-
 
   function animation(now) {
 
@@ -1794,14 +1654,12 @@ function animateReferenceRotation(
 
     }
 
-
     const progress =
       Math.min(
         (now - animationStart) /
         duration,
         1
       );
-
 
     const eased =
       1 -
@@ -1810,14 +1668,12 @@ function animateReferenceRotation(
         3
       );
 
-
     referenceCube.rotation.x =
       startX +
       (
         targetX - startX
       ) *
       eased;
-
 
     referenceCube.rotation.y =
       startY +
@@ -1826,15 +1682,8 @@ function animateReferenceRotation(
       ) *
       eased;
 
-
-    /*
-     * Nunca giramos el cubo
-     * aleatoriamente sobre Z.
-     */
-
     referenceCube.rotation.z =
       0;
-
 
     if (progress < 1) {
 
@@ -1856,14 +1705,12 @@ function animateReferenceRotation(
       referenceCube.rotation.z =
         0;
 
-
       referenceRotationAnimation =
         null;
 
     }
 
   }
-
 
   referenceRotationAnimation =
     requestAnimationFrame(
@@ -1884,7 +1731,6 @@ function resizeReferenceCube() {
       "referenceCube"
     );
 
-
   if (
     !container ||
     !referenceRenderer ||
@@ -1893,13 +1739,11 @@ function resizeReferenceCube() {
     return;
   }
 
-
   const width =
     container.clientWidth;
 
   const height =
     container.clientHeight;
-
 
   if (
     width <= 0 ||
@@ -1908,13 +1752,10 @@ function resizeReferenceCube() {
     return;
   }
 
-
   referenceCamera.aspect =
     width / height;
 
-
   referenceCamera.updateProjectionMatrix();
-
 
   referenceRenderer.setSize(
     width,
@@ -1923,7 +1764,6 @@ function resizeReferenceCube() {
   );
 
 }
-
 
 window.addEventListener(
   "resize",
@@ -1940,7 +1780,6 @@ function animateReferenceCube() {
   requestAnimationFrame(
     animateReferenceCube
   );
-
 
   if (
     referenceRenderer &&
@@ -1967,28 +1806,23 @@ function renderCurrentFace() {
   const face =
     solverFaces[currentFaceIndex];
 
-
   const size =
     selectedCubeSize;
-
 
   const instruction =
     document.getElementById(
       "faceInstruction"
     );
 
-
   const progress =
     document.getElementById(
       "faceProgress"
     );
 
-
   const container =
     document.getElementById(
       "inputFaceContainer"
     );
-
 
   if (!container) return;
 
@@ -2007,9 +1841,9 @@ function renderCurrentFace() {
 
     L: "IZQUIERDA",
 
-    U: "ARRIBA",
+    D: "ABAJO",
 
-    D: "ABAJO"
+    U: "ARRIBA"
 
   };
 
@@ -2113,10 +1947,9 @@ function renderCurrentFace() {
   );
 
 
-  /*
-   * El cubo gira SOLO hacia la cara
-   * que estamos rellenando.
-   */
+  // ========================================
+  // GIRAR HACIA LA CARA ACTUAL
+  // ========================================
 
   rotateReferenceToFace(
     face,
@@ -2381,30 +2214,25 @@ function showSolution() {
       "faceInstruction"
     );
 
-
   const progress =
     document.getElementById(
       "faceProgress"
     );
-
 
   const input =
     document.getElementById(
       "inputFaceContainer"
     );
 
-
   const colors =
     document.querySelector(
       ".solver-colors"
     );
 
-
   const actions =
     document.querySelector(
       ".solver-actions"
     );
-
 
   const solutionPanel =
     document.getElementById(
