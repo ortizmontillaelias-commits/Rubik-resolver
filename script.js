@@ -80,19 +80,13 @@ function login() {
 
 
   const profileEmail =
-    document.getElementById(
-      "profileEmail"
-    );
+    document.getElementById("profileEmail");
 
   const profileName =
-    document.getElementById(
-      "profileName"
-    );
+    document.getElementById("profileName");
 
   const profileAvatar =
-    document.getElementById(
-      "profileAvatar"
-    );
+    document.getElementById("profileAvatar");
 
 
   if (profileEmail) {
@@ -123,14 +117,10 @@ function login() {
 // ==========================================
 
 const navigationButtons =
-  document.querySelectorAll(
-    ".nav-button"
-  );
+  document.querySelectorAll(".nav-button");
 
 const pages =
-  document.querySelectorAll(
-    ".page"
-  );
+  document.querySelectorAll(".page");
 
 
 navigationButtons.forEach(
@@ -167,9 +157,7 @@ navigationButtons.forEach(
 
 
         const target =
-          document.getElementById(
-            pageId
-          );
+          document.getElementById(pageId);
 
 
         if (target) {
@@ -203,29 +191,19 @@ let timerRunning = false;
 
 
 const timerDisplay =
-  document.getElementById(
-    "timerDisplay"
-  );
+  document.getElementById("timerDisplay");
 
 const timerStatus =
-  document.getElementById(
-    "timerStatus"
-  );
+  document.getElementById("timerStatus");
 
 const startTimerButton =
-  document.getElementById(
-    "startTimer"
-  );
+  document.getElementById("startTimer");
 
 const stopTimerButton =
-  document.getElementById(
-    "stopTimer"
-  );
+  document.getElementById("stopTimer");
 
 const resetTimerButton =
-  document.getElementById(
-    "resetTimer"
-  );
+  document.getElementById("resetTimer");
 
 
 function formatTime(ms) {
@@ -459,9 +437,10 @@ function openCubePractice(size) {
   document
     .querySelectorAll(".page")
     .forEach(
-      page => page.classList.remove(
-        "active-page"
-      )
+      page =>
+        page.classList.remove(
+          "active-page"
+        )
     );
 
 
@@ -487,7 +466,7 @@ function openCubePractice(size) {
 
 
 // ==========================================
-// CREAR CUBO 3D
+// CREAR CUBO 3D PRINCIPAL
 // ==========================================
 
 function createRubiksCube(size) {
@@ -504,7 +483,6 @@ function createRubiksCube(size) {
 
 
   container.innerHTML = "";
-
 
   cubePieces = [];
 
@@ -524,18 +502,34 @@ function createRubiksCube(size) {
       45,
       1,
       0.1,
-      100
+      200
     );
 
 
+  /*
+   * IMPORTANTE:
+   * Antes la cámara estaba demasiado cerca
+   * en cubos grandes como 6x6 y 7x7.
+   */
+
   const distance =
-    size * 2.4 + 3;
+    Math.max(
+      7,
+      size * 3.3
+    );
 
 
   cubeCamera.position.set(
     distance,
     distance,
     distance
+  );
+
+
+  cubeCamera.lookAt(
+    0,
+    0,
+    0
   );
 
 
@@ -553,6 +547,20 @@ function createRubiksCube(size) {
   );
 
 
+  cubeRenderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+
+  cubeRenderer.domElement.style.width =
+    "100%";
+
+  cubeRenderer.domElement.style.height =
+    "100%";
+
+  cubeRenderer.domElement.style.display =
+    "block";
+
+
   container.appendChild(
     cubeRenderer.domElement
   );
@@ -561,7 +569,7 @@ function createRubiksCube(size) {
   const ambient =
     new THREE.AmbientLight(
       0xffffff,
-      2
+      2.2
     );
 
 
@@ -586,6 +594,25 @@ function createRubiksCube(size) {
 
   cubeScene.add(
     directional
+  );
+
+
+  const directional2 =
+    new THREE.DirectionalLight(
+      0xffffff,
+      1.5
+    );
+
+
+  directional2.position.set(
+    -5,
+    3,
+    -5
+  );
+
+
+  cubeScene.add(
+    directional2
   );
 
 
@@ -614,18 +641,21 @@ function createRubiksCube(size) {
   cubeControls.enablePan =
     false;
 
-
   cubeControls.minDistance =
     size + 2;
 
   cubeControls.maxDistance =
-    size * 6;
+    size * 7;
 
 
   resizeRubiksCube();
 
 
-  animateCube();
+  requestAnimationFrame(
+    function () {
+      resizeRubiksCube();
+    }
+  );
 
 }
 
@@ -708,7 +738,7 @@ function createCubePieces(size) {
 
 
 // ==========================================
-// COLORES
+// COLORES DEL CUBO
 // ==========================================
 
 function createStickerMaterials(
@@ -719,7 +749,7 @@ function createStickerMaterials(
 ) {
 
   const black =
-    0x111111;
+    0x101010;
 
   const white =
     0xffffff;
@@ -746,42 +776,54 @@ function createStickerMaterials(
       color:
         x === size - 1
           ? red
-          : black
+          : black,
+
+      roughness: .45
     }),
 
     new THREE.MeshStandardMaterial({
       color:
         x === 0
           ? orange
-          : black
+          : black,
+
+      roughness: .45
     }),
 
     new THREE.MeshStandardMaterial({
       color:
         y === size - 1
           ? white
-          : black
+          : black,
+
+      roughness: .45
     }),
 
     new THREE.MeshStandardMaterial({
       color:
         y === 0
           ? yellow
-          : black
+          : black,
+
+      roughness: .45
     }),
 
     new THREE.MeshStandardMaterial({
       color:
         z === size - 1
           ? green
-          : black
+          : black,
+
+      roughness: .45
     }),
 
     new THREE.MeshStandardMaterial({
       color:
         z === 0
           ? blue
-          : black
+          : black,
+
+      roughness: .45
     })
 
   ];
@@ -790,7 +832,7 @@ function createStickerMaterials(
 
 
 // ==========================================
-// RESIZE
+// RESIZE CUBO PRINCIPAL
 // ==========================================
 
 function resizeRubiksCube() {
@@ -848,7 +890,7 @@ window.addEventListener(
 
 
 // ==========================================
-// ANIMACIÓN
+// ANIMACIÓN CUBO PRINCIPAL
 // ==========================================
 
 function animateCube() {
@@ -859,9 +901,7 @@ function animateCube() {
 
 
   if (cubeControls) {
-
     cubeControls.update();
-
   }
 
 
@@ -879,6 +919,9 @@ function animateCube() {
   }
 
 }
+
+
+animateCube();
 
 
 // ==========================================
@@ -906,10 +949,10 @@ if (solveButton) {
 
 
 // ==========================================
-// ESTADO DEL SOLUCIONADOR
+// ESTADO SOLUCIONADOR
 // ==========================================
 
-let solverFaces = [
+const solverFaces = [
   "U",
   "R",
   "F",
@@ -926,7 +969,7 @@ let cubeInputData = {};
 
 
 // ==========================================
-// COLORES
+// COLORES SOLUCIONADOR
 // ==========================================
 
 const solverColors = {
@@ -942,27 +985,6 @@ const solverColors = {
   blue: "#0066ff",
 
   green: "#00aa00"
-
-};
-
-
-// ==========================================
-// NOMBRES INTERNOS
-// ==========================================
-
-const faceColor = {
-
-  U: "white",
-
-  R: "red",
-
-  F: "green",
-
-  D: "yellow",
-
-  L: "orange",
-
-  B: "blue"
 
 };
 
@@ -994,6 +1016,8 @@ function openCubeSolver() {
 
   currentFaceIndex = 0;
 
+  currentSelectedColor = "white";
+
 
   const solver =
     document.createElement(
@@ -1016,7 +1040,7 @@ function openCubeSolver() {
         </h1>
 
         <p>
-          Introduce los colores de tu cubo.
+          Coloca tu cubo frente a ti y selecciona los colores.
         </p>
 
       </div>
@@ -1165,7 +1189,7 @@ function openCubeSolver() {
 
 
 // ==========================================
-// CUBO DE REFERENCIA
+// VARIABLES CUBO REFERENCIA
 // ==========================================
 
 let referenceScene = null;
@@ -1173,6 +1197,10 @@ let referenceCamera = null;
 let referenceRenderer = null;
 let referenceCube = null;
 
+
+// ==========================================
+// CREAR CUBO REFERENCIA
+// ==========================================
 
 function createReferenceCube() {
 
@@ -1199,24 +1227,44 @@ function createReferenceCube() {
 
   referenceCamera =
     new THREE.PerspectiveCamera(
-      35,
+      38,
       1,
       0.1,
-      100
+      200
+    );
+
+
+  /*
+   * La cámara ahora se aleja
+   * automáticamente para 2x2, 3x3...
+   * hasta 7x7.
+   */
+
+  const distance =
+    Math.max(
+      6,
+      selectedCubeSize * 2.9
     );
 
 
   referenceCamera.position.set(
-    5,
-    5,
-    5
+    distance,
+    distance,
+    distance
+  );
+
+
+  referenceCamera.lookAt(
+    0,
+    0,
+    0
   );
 
 
   referenceRenderer =
     new THREE.WebGLRenderer({
       antialias: true,
-      alpha: true
+      alpha: false
     });
 
 
@@ -1228,6 +1276,20 @@ function createReferenceCube() {
   );
 
 
+  referenceRenderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+
+  referenceRenderer.domElement.style.width =
+    "100%";
+
+  referenceRenderer.domElement.style.height =
+    "100%";
+
+  referenceRenderer.domElement.style.display =
+    "block";
+
+
   container.appendChild(
     referenceRenderer.domElement
   );
@@ -1236,7 +1298,7 @@ function createReferenceCube() {
   const ambient =
     new THREE.AmbientLight(
       0xffffff,
-      2
+      2.3
     );
 
 
@@ -1264,6 +1326,25 @@ function createReferenceCube() {
   );
 
 
+  const light2 =
+    new THREE.DirectionalLight(
+      0xffffff,
+      1.5
+    );
+
+
+  light2.position.set(
+    -5,
+    4,
+    -5
+  );
+
+
+  referenceScene.add(
+    light2
+  );
+
+
   referenceCube =
     new THREE.Group();
 
@@ -1279,13 +1360,17 @@ function createReferenceCube() {
   resizeReferenceCube();
 
 
-  animateReferenceCube();
+  requestAnimationFrame(
+    function () {
+      resizeReferenceCube();
+    }
+  );
 
 }
 
 
 // ==========================================
-// PIEZAS DEL CUBO DE REFERENCIA
+// PIEZAS REFERENCIA
 // ==========================================
 
 function createReferencePieces() {
@@ -1361,7 +1446,7 @@ function createReferencePieces() {
 
 
 // ==========================================
-// ORIENTACIÓN SEGÚN CARA
+// ORIENTACIÓN DE REFERENCIA
 // ==========================================
 
 function updateReferenceOrientation() {
@@ -1375,8 +1460,6 @@ function updateReferenceOrientation() {
     solverFaces[currentFaceIndex];
 
 
-  // Reset
-
   referenceCube.rotation.set(
     0,
     0,
@@ -1385,18 +1468,14 @@ function updateReferenceOrientation() {
 
 
   /*
-   * La cámara mira desde
-   * una posición diagonal.
-   *
-   * Estas rotaciones hacen que
-   * la cara que se está rellenando
-   * quede visualmente destacada.
+   * Cada orientación coloca la cara
+   * correspondiente hacia el usuario.
    */
 
   if (face === "U") {
 
     referenceCube.rotation.x =
-      -0.45;
+      -0.55;
 
     referenceCube.rotation.y =
       0.45;
@@ -1407,10 +1486,10 @@ function updateReferenceOrientation() {
   if (face === "R") {
 
     referenceCube.rotation.x =
-      0.25;
+      0.20;
 
     referenceCube.rotation.y =
-      -0.9;
+      -0.85;
 
   }
 
@@ -1418,7 +1497,7 @@ function updateReferenceOrientation() {
   if (face === "F") {
 
     referenceCube.rotation.x =
-      0.15;
+      0.10;
 
     referenceCube.rotation.y =
       0.05;
@@ -1429,10 +1508,10 @@ function updateReferenceOrientation() {
   if (face === "D") {
 
     referenceCube.rotation.x =
-      0.85;
+      0.75;
 
     referenceCube.rotation.y =
-      0.4;
+      0.40;
 
   }
 
@@ -1440,10 +1519,10 @@ function updateReferenceOrientation() {
   if (face === "L") {
 
     referenceCube.rotation.x =
-      0.2;
+      0.20;
 
     referenceCube.rotation.y =
-      0.9;
+      0.85;
 
   }
 
@@ -1451,7 +1530,7 @@ function updateReferenceOrientation() {
   if (face === "B") {
 
     referenceCube.rotation.x =
-      0.15;
+      0.10;
 
     referenceCube.rotation.y =
       Math.PI;
@@ -1462,7 +1541,7 @@ function updateReferenceOrientation() {
 
 
 // ==========================================
-// RENDER DEL CUBO REFERENCIA
+// RESIZE REFERENCIA
 // ==========================================
 
 function resizeReferenceCube() {
@@ -1513,6 +1592,16 @@ function resizeReferenceCube() {
 }
 
 
+window.addEventListener(
+  "resize",
+  resizeReferenceCube
+);
+
+
+// ==========================================
+// ANIMACIÓN REFERENCIA
+// ==========================================
+
 function animateReferenceCube() {
 
   requestAnimationFrame(
@@ -1536,10 +1625,7 @@ function animateReferenceCube() {
 }
 
 
-window.addEventListener(
-  "resize",
-  resizeReferenceCube
-);
+animateReferenceCube();
 
 
 // ==========================================
@@ -1582,7 +1668,7 @@ function renderCurrentFace() {
   if (instruction) {
 
     instruction.textContent =
-      "Coloca esta cara frente a ti y selecciona sus colores";
+      "Mira el cubo 3D y coloca los colores de la cara que se muestra.";
 
   }
 
@@ -1681,7 +1767,7 @@ function renderCurrentFace() {
 
 
 // ==========================================
-// BOTONES DEL SOLUCIONADOR
+// BOTONES SOLUCIONADOR
 // ==========================================
 
 function setupSolverButtons() {
@@ -1852,12 +1938,6 @@ function nextFace() {
   }
 
 
-  /*
-   * Después de completar una cara,
-   * cambiamos automáticamente la
-   * orientación del cubo de referencia.
-   */
-
   if (
     currentFaceIndex <
     solverFaces.length - 1
@@ -1878,15 +1958,10 @@ function nextFace() {
 
 
 // ==========================================
-// FINALIZAR ENTRADA
+// FINALIZAR COLORES
 // ==========================================
 
 function finishColorInput() {
-
-  /*
-   * Comprobamos que cada color
-   * aparezca exactamente N² veces.
-   */
 
   const counts = {
 
@@ -1906,7 +1981,9 @@ function finishColorInput() {
       const color of cubeInputData[face]
     ) {
 
-      if (counts[color] !== undefined) {
+      if (
+        counts[color] !== undefined
+      ) {
 
         counts[color]++;
 
@@ -1925,7 +2002,8 @@ function finishColorInput() {
   const valid =
     Object.values(counts)
       .every(
-        count => count === expected
+        count =>
+          count === expected
       );
 
 
@@ -1995,14 +2073,18 @@ function showSolution() {
 
 
   if (faceInstruction) {
+
     faceInstruction.textContent =
       "Cubo configurado correctamente";
+
   }
 
 
   if (progress) {
+
     progress.textContent =
       "Preparando solución...";
+
   }
 
 
@@ -2026,15 +2108,6 @@ function showSolution() {
   }
 
 
-  /*
-   * Generamos movimientos educativos
-   * para que el usuario pueda seguirlos.
-   *
-   * La estructura permite posteriormente
-   * conectar aquí un algoritmo real de
-   * resolución para cada tamaño.
-   */
-
   solutionMoves =
     generateSolutionMoves(
       selectedCubeSize
@@ -2043,6 +2116,8 @@ function showSolution() {
 
   solutionIndex = 0;
 
+  solving = false;
+
 
   showCurrentSolutionMove();
 
@@ -2050,12 +2125,13 @@ function showSolution() {
 
 
 // ==========================================
-// GENERAR MOVIMIENTOS
+// MOVIMIENTOS TEMPORALES
 // ==========================================
 
 function generateSolutionMoves(size) {
 
   const base = [
+
     "R",
     "U",
     "R'",
@@ -2064,6 +2140,7 @@ function generateSolutionMoves(size) {
     "R",
     "F'",
     "U"
+
   ];
 
 
@@ -2158,6 +2235,17 @@ function showCurrentSolutionMove() {
   }
 
 
+  if (button) {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "▶ Siguiente movimiento";
+
+  }
+
+
   if (moveElement) {
 
     moveElement.textContent =
@@ -2220,11 +2308,6 @@ async function playNextSolutionMove() {
   }
 
 
-  /*
-   * Animación lenta para que el usuario
-   * pueda seguir el movimiento.
-   */
-
   await animateSolutionMove(move);
 
 
@@ -2247,15 +2330,6 @@ function animateSolutionMove(move) {
 
   return new Promise(
     function (resolve) {
-
-      /*
-       * Esta versión muestra el movimiento
-       * lentamente en pantalla.
-       *
-       * Más adelante el movimiento también
-       * puede conectarse directamente con
-       * el cubo 3D principal.
-       */
 
       const status =
         document.getElementById(
