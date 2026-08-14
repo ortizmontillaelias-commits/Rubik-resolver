@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>CubeMaster</title>
 
   <link rel="stylesheet" href="style.css">
@@ -33,10 +32,7 @@
         placeholder="Correo electrónico"
       >
 
-      <button
-        id="loginButton"
-        class="primary-button"
-      >
+      <button id="loginButton" class="primary-button">
         Ingresar
       </button>
 
@@ -54,15 +50,8 @@
     <header class="header">
 
       <div>
-
-        <h2>
-          CubeMaster
-        </h2>
-
-        <p>
-          Tu espacio para practicar
-        </p>
-
+        <h2>CubeMaster</h2>
+        <p>Tu espacio para practicar</p>
       </div>
 
       <div class="header-logo">
@@ -76,16 +65,11 @@
          INICIO
          ========================================== -->
 
-    <main
-      id="homePage"
-      class="page active-page"
-    >
+    <main id="homePage" class="page active-page">
 
       <div class="title">
 
-        <h1>
-          Mis cubos
-        </h1>
+        <h1>Mis cubos</h1>
 
         <p>
           Elige un cubo para practicar
@@ -106,18 +90,12 @@
             <i></i><i></i>
           </div>
 
-          <h3>
-            2×2
-          </h3>
-
-          <p>
-            Principiante
-          </p>
+          <h3>2×2</h3>
+          <p>Principiante</p>
 
           <button
             class="practice-button"
-            data-cube="2"
-          >
+            data-cube="2">
             Practicar
           </button>
 
@@ -134,18 +112,12 @@
             <i></i><i></i><i></i>
           </div>
 
-          <h3>
-            3×3
-          </h3>
-
-          <p>
-            Clásico
-          </p>
+          <h3>3×3</h3>
+          <p>Clásico</p>
 
           <button
             class="practice-button"
-            data-cube="3"
-          >
+            data-cube="3">
             Practicar
           </button>
 
@@ -163,18 +135,12 @@
             <i></i><i></i><i></i><i></i>
           </div>
 
-          <h3>
-            4×4
-          </h3>
-
-          <p>
-            Avanzado
-          </p>
+          <h3>4×4</h3>
+          <p>Avanzado</p>
 
           <button
             class="practice-button"
-            data-cube="4"
-          >
+            data-cube="4">
             Practicar
           </button>
 
@@ -193,18 +159,12 @@
             <i></i><i></i><i></i><i></i><i></i>
           </div>
 
-          <h3>
-            5×5
-          </h3>
-
-          <p>
-            Experto
-          </p>
+          <h3>5×5</h3>
+          <p>Experto</p>
 
           <button
             class="practice-button"
-            data-cube="5"
-          >
+            data-cube="5">
             Practicar
           </button>
 
@@ -224,18 +184,12 @@
             <i></i><i></i><i></i><i></i><i></i><i></i>
           </div>
 
-          <h3>
-            6×6
-          </h3>
-
-          <p>
-            Experto
-          </p>
+          <h3>6×6</h3>
+          <p>Experto</p>
 
           <button
             class="practice-button"
-            data-cube="6"
-          >
+            data-cube="6">
             Practicar
           </button>
 
@@ -249,25 +203,19 @@
           <div class="cube cube-7x7">
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
           </div>
 
-          <h3>
-            7×7
-          </h3>
-
-          <p>
-            Profesional
-          </p>
+          <h3>7×7</h3>
+          <p>Profesional</p>
 
           <button
             class="practice-button"
-            data-cube="7"
-          >
+            data-cube="7">
             Practicar
           </button>
 
@@ -279,20 +227,16 @@
 
 
     <!-- ==========================================
-         PRACTICAR CUBO
+         PRACTICAR
          ========================================== -->
 
-    <main
-      id="cubePracticePage"
-      class="page"
-    >
+    <main id="cubePracticePage" class="page">
 
       <div class="cube-practice-header">
 
         <button
           id="backToHome"
-          class="secondary-button"
-        >
+          class="secondary-button">
           ← Volver
         </button>
 
@@ -320,185 +264,11 @@
 
       <div class="cube-actions">
 
-        <!-- MEZCLAR ELIMINADO -->
-
         <button
           id="solveButton"
-          class="primary-button"
-        >
+          class="primary-button">
           🧠 Resolver
         </button>
-
-      </div>
-
-
-      <!-- ==========================================
-           PANEL DE ENTRADA DE COLORES
-           ========================================== -->
-
-      <div
-        id="cubeInputPanel"
-        class="cube-input-panel hidden"
-      >
-
-        <div class="solver-card">
-
-          <div class="solver-icon">
-            🎨
-          </div>
-
-          <h2>
-            Introduce tu cubo
-          </h2>
-
-          <p id="scannerInstruction">
-            Selecciona un color y toca las casillas
-            correspondientes.
-          </p>
-
-          <div class="scanner-progress">
-
-            <strong id="scannerFaceName">
-              ARRIBA
-            </strong>
-
-            <span id="scannerProgress">
-              Cara 1 de 6
-            </span>
-
-          </div>
-
-          <div
-            id="colorSelector"
-            class="color-selector"
-          >
-
-            <button
-              class="color-option selected"
-              data-color="white"
-              style="background:#ffffff"
-              aria-label="Blanco"
-            ></button>
-
-            <button
-              class="color-option"
-              data-color="yellow"
-              style="background:#ffff00"
-              aria-label="Amarillo"
-            ></button>
-
-            <button
-              class="color-option"
-              data-color="red"
-              style="background:#ff0000"
-              aria-label="Rojo"
-            ></button>
-
-            <button
-              class="color-option"
-              data-color="orange"
-              style="background:#ff8800"
-              aria-label="Naranja"
-            ></button>
-
-            <button
-              class="color-option"
-              data-color="blue"
-              style="background:#0066ff"
-              aria-label="Azul"
-            ></button>
-
-            <button
-              class="color-option"
-              data-color="green"
-              style="background:#00aa00"
-              aria-label="Verde"
-            ></button>
-
-          </div>
-
-
-          <!-- LA CARA ACTUAL SE CREA AQUÍ -->
-
-          <div
-            id="activeColorFace"
-            class="active-color-face"
-          ></div>
-
-
-          <div class="scanner-buttons">
-
-            <button
-              id="clearCurrentFace"
-              class="secondary-button"
-            >
-              Limpiar cara
-            </button>
-
-            <button
-              id="nextColorFace"
-              class="primary-button"
-            >
-              Siguiente →
-            </button>
-
-          </div>
-
-          <button
-            id="cancelColorInput"
-            class="secondary-button"
-          >
-            Cancelar
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- ==========================================
-           PANEL DE SOLUCIÓN
-           ========================================== -->
-
-      <div
-        id="solutionPanel"
-        class="solution-panel hidden"
-      >
-
-        <div class="solver-card">
-
-          <div class="solver-icon">
-            🧠
-          </div>
-
-          <h2>
-            Solución
-          </h2>
-
-          <p id="solutionStatus">
-            Preparando solución...
-          </p>
-
-          <div
-            id="solutionMoves"
-            class="solution-moves"
-          ></div>
-
-          <button
-            id="startSolution"
-            class="primary-button"
-          >
-            ▶ Seguir solución
-          </button>
-
-          <button
-            id="closeSolution"
-            class="secondary-button"
-          >
-            Cerrar
-          </button>
-
-        </div>
 
       </div>
 
@@ -509,10 +279,7 @@
          TEMPORIZADOR
          ========================================== -->
 
-    <main
-      id="timerPage"
-      class="page"
-    >
+    <main id="timerPage" class="page">
 
       <div class="timer-container">
 
@@ -536,22 +303,19 @@
 
           <button
             id="startTimer"
-            class="primary-button"
-          >
+            class="primary-button">
             Iniciar
           </button>
 
           <button
             id="stopTimer"
-            class="secondary-button"
-          >
+            class="secondary-button">
             Detener
           </button>
 
           <button
             id="resetTimer"
-            class="secondary-button"
-          >
+            class="secondary-button">
             Reiniciar
           </button>
 
@@ -566,10 +330,7 @@
          PERFIL
          ========================================== -->
 
-    <main
-      id="profilePage"
-      class="page"
-    >
+    <main id="profilePage" class="page">
 
       <div class="profile-card">
 
@@ -588,39 +349,18 @@
         <div class="statistics">
 
           <div>
-
-            <strong>
-              6
-            </strong>
-
-            <span>
-              Cubos
-            </span>
-
+            <strong>6</strong>
+            <span>Cubos</span>
           </div>
 
           <div>
-
-            <strong>
-              0
-            </strong>
-
-            <span>
-              Solves
-            </span>
-
+            <strong>0</strong>
+            <span>Solves</span>
           </div>
 
           <div>
-
-            <strong>
-              --
-            </strong>
-
-            <span>
-              Mejor tiempo
-            </span>
-
+            <strong>--</strong>
+            <span>Mejor tiempo</span>
           </div>
 
         </div>
@@ -638,26 +378,29 @@
 
       <button
         class="nav-button active"
-        data-page="homePage"
-      >
+        data-page="homePage">
+
         <span>⌂</span>
         <small>Inicio</small>
+
       </button>
 
       <button
         class="nav-button"
-        data-page="timerPage"
-      >
+        data-page="timerPage">
+
         <span>⏱</span>
         <small>Temporizador</small>
+
       </button>
 
       <button
         class="nav-button"
-        data-page="profilePage"
-      >
+        data-page="profilePage">
+
         <span>♙</span>
         <small>Perfil</small>
+
       </button>
 
     </nav>
@@ -684,8 +427,8 @@
 
   <script
     type="module"
-    src="script.js"
-  ></script>
+    src="script.js">
+  </script>
 
 </body>
 </html>
