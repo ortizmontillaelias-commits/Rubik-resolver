@@ -1264,146 +1264,347 @@ if (scrambleButton) {
 
 }
 
-
 // ==========================================
-// RESOLVER CUBO
+// SOLUCIONADOR REAL - PASO 1
 // ==========================================
 
 const solveButton =
   document.getElementById("solveButton");
 
-let solvingCube = false;
-
 
 // ==========================================
-// INVERTIR MOVIMIENTO
+// CREAR PANEL DE COLORES
 // ==========================================
 
-function inverseMove(move) {
+function openColorScanner() {
 
-  if (move.endsWith("'")) {
+  // Por ahora comenzamos con el 3x3
+  if (selectedCubeSize !== 3) {
 
-    return move.charAt(0);
+    alert(
+      "El sistema de entrada de colores comenzará primero con el cubo 3×3."
+    );
+
+    return;
+  }
+
+
+  // Evitar crear el panel dos veces
+  const existing =
+    document.getElementById(
+      "cubeColorScanner"
+    );
+
+  if (existing) {
+
+    existing.remove();
 
   }
 
-  return move + "'";
+
+  const scanner =
+    document.createElement("div");
+
+  scanner.id =
+    "cubeColorScanner";
+
+
+  scanner.innerHTML = `
+
+    <div class="scanner-box">
+
+      <div class="scanner-header">
+
+        <h2>
+          Configurar cubo 3×3
+        </h2>
+
+        <p>
+          Introduce los colores de tu cubo físico.
+        </p>
+
+      </div>
+
+
+      <div class="scanner-info">
+
+        Selecciona un color y luego toca las
+        casillas que tengan ese color.
+
+      </div>
+
+
+      <div class="color-selector">
+
+        <button
+          class="color-option selected"
+          data-color="white"
+          style="background:#ffffff">
+        </button>
+
+        <button
+          class="color-option"
+          data-color="yellow"
+          style="background:#ffff00">
+        </button>
+
+        <button
+          class="color-option"
+          data-color="red"
+          style="background:#ff0000">
+        </button>
+
+        <button
+          class="color-option"
+          data-color="orange"
+          style="background:#ff8800">
+        </button>
+
+        <button
+          class="color-option"
+          data-color="blue"
+          style="background:#0066ff">
+        </button>
+
+        <button
+          class="color-option"
+          data-color="green"
+          style="background:#00aa00">
+        </button>
+
+      </div>
+
+
+      <div class="cube-color-faces">
+
+        ${createColorFace("U", "ARRIBA")}
+
+        ${createColorFace("R", "DERECHA")}
+
+        ${createColorFace("F", "FRENTE")}
+
+        ${createColorFace("D", "ABAJO")}
+
+        ${createColorFace("L", "IZQUIERDA")}
+
+        ${createColorFace("B", "ATRÁS")}
+
+      </div>
+
+
+      <div class="scanner-buttons">
+
+        <button
+          id="clearCubeColors"
+          class="secondary-button">
+
+          Limpiar
+
+        </button>
+
+
+        <button
+          id="saveCubeColors"
+          class="primary-button">
+
+          Continuar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    scanner
+  );
+
+
+  setupColorScanner();
 
 }
 
 
 // ==========================================
-// RESOLVER MOVIMIENTOS
+// CREAR UNA CARA
 // ==========================================
 
-async function solveCube() {
+function createColorFace(
+  face,
+  name
+) {
 
-  if (!rubiksCube) {
+  let squares = "";
 
-    alert(
-      "Primero abre un cubo."
+
+  for (
+    let i = 0;
+    i < 9;
+    i++
+  ) {
+
+    squares += `
+
+      <button
+        class="color-square"
+        data-face="${face}"
+        data-index="${i}">
+      </button>
+
+    `;
+
+  }
+
+
+  return `
+
+    <div class="color-face">
+
+      <h3>
+        ${name}
+      </h3>
+
+      <div class="color-grid">
+
+        ${squares}
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+// ==========================================
+// CONFIGURAR SELECTOR
+// ==========================================
+
+function setupColorScanner() {
+
+  let selectedColor =
+    "white";
+
+
+  const colors = {
+
+    white: "#ffffff",
+
+    yellow: "#ffff00",
+
+    red: "#ff0000",
+
+    orange: "#ff8800",
+
+    blue: "#0066ff",
+
+    green: "#00aa00"
+
+  };
+
+
+  const colorButtons =
+    document.querySelectorAll(
+      ".color-option"
     );
 
-    return;
 
-  }
-
-
-  if (solvingCube) {
-
-    return;
-
-  }
-
-
-  if (scrambleRunning || turning) {
-
-    alert(
-      "Espera a que termine la mezcla."
+  const squares =
+    document.querySelectorAll(
+      ".color-square"
     );
 
-    return;
-
-  }
-
-
-  if (moveHistory.length === 0) {
-
-    alert(
-      "El cubo todavía no tiene movimientos registrados."
-    );
-
-    return;
-
-  }
-
-
-  solvingCube = true;
-
 
   // ========================================
-  // COPIAR HISTORIAL
+  // SELECCIONAR COLOR
   // ========================================
 
-  const history =
-    [...moveHistory];
+  colorButtons.forEach(
+    function (button) {
 
+      button.addEventListener(
+        "click",
+        function () {
 
-  // ========================================
-  // INVERTIR LOS MOVIMIENTOS
-  // ========================================
+          colorButtons.forEach(
+            function (item) {
 
-  const solution =
-    history
-      .reverse()
-      .map(
-        function (move) {
+              item.classList.remove(
+                "selected"
+              );
 
-          return inverseMove(
-            move
+            }
           );
+
+
+          button.classList.add(
+            "selected"
+          );
+
+
+          selectedColor =
+            button.dataset.color;
 
         }
       );
 
-
-  console.log(
-    "Solución:",
-    solution.join(" ")
+    }
   );
 
 
   // ========================================
-  // EJECUTAR SOLUCIÓN
+  // PINTAR CASILLAS
   // ========================================
 
-  for (
-    const move of solution
-  ) {
+  squares.forEach(
+    function (square) {
 
-    const face =
-      move.charAt(0);
+      square.addEventListener(
+        "click",
+        function () {
+
+          square.style.background =
+            colors[selectedColor];
+
+          square.dataset.color =
+            selectedColor;
+
+        }
+      );
+
+    }
+  );
 
 
-    const clockwise =
-      !move.endsWith("'");
+  // ========================================
+  // LIMPIAR
+  // ========================================
 
-
-    rotateFace(
-      face,
-      clockwise
+  const clearButton =
+    document.getElementById(
+      "clearCubeColors"
     );
 
 
-    await waitForTurn();
+  if (clearButton) {
 
+    clearButton.addEventListener(
+      "click",
+      function () {
 
-    await new Promise(
-      function (resolve) {
+        squares.forEach(
+          function (square) {
 
-        setTimeout(
-          resolve,
-          120
+            square.style.background =
+              "#111827";
+
+            delete square.dataset.color;
+
+          }
         );
 
       }
@@ -1413,21 +1614,92 @@ async function solveCube() {
 
 
   // ========================================
-  // TERMINÓ
+  // CONTINUAR
   // ========================================
 
-  solvingCube = false;
+  const saveButton =
+    document.getElementById(
+      "saveCubeColors"
+    );
 
 
-  moveHistory = [];
+  if (saveButton) {
+
+    saveButton.addEventListener(
+      "click",
+      function () {
+
+        const data = {};
+
+        let complete = true;
 
 
-  alert(
-    "✅ ¡Cubo resuelto!"
-  );
+        squares.forEach(
+          function (square) {
+
+            const face =
+              square.dataset.face;
+
+            const index =
+              square.dataset.index;
+
+
+            if (!data[face]) {
+
+              data[face] = [];
+
+            }
+
+
+            const color =
+              square.dataset.color;
+
+
+            if (!color) {
+
+              complete = false;
+
+            }
+
+
+            data[face][index] =
+              color || null;
+
+          }
+        );
+
+
+        if (!complete) {
+
+          alert(
+            "Completa todos los colores del cubo antes de continuar."
+          );
+
+          return;
+
+        }
+
+
+        console.log(
+          "Estado del cubo:",
+          data
+        );
+
+
+        alert(
+          "✅ Colores guardados.\n\nEl siguiente paso será analizar este estado y generar la solución."
+        );
+
+
+        scanner.remove();
+
+      }
+    );
+
+  }
 
 }
-  
+
 
 // ==========================================
 // BOTÓN RESOLVER
@@ -1437,11 +1709,14 @@ if (solveButton) {
 
   solveButton.addEventListener(
     "click",
-    solveCube
+    function () {
+
+      openColorScanner();
+
+    }
   );
 
 }
-
 
 // ==========================================
 // VOLVER A INICIO
