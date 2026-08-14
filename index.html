@@ -51,15 +51,14 @@
       margin: 0;
     }
 
-
     /* ==========================================
        CUBO DE REFERENCIA
     ========================================== */
 
     .reference-cube-box {
-      width: min(100%, 500px);
+      width: min(100%, 520px);
 
-      height: 330px;
+      height: 340px;
 
       margin: 15px auto;
 
@@ -68,9 +67,10 @@
       background:
         radial-gradient(
           circle at center,
-          rgba(22, 140, 255, 0.12),
-          #0f172a 70%
-        );
+          rgba(30, 64, 175, .18),
+          transparent 65%
+        ),
+        #0f172a;
 
       border: 1px solid rgba(255,255,255,.08);
 
@@ -90,11 +90,6 @@
       height: 100%;
     }
 
-
-    /* ==========================================
-       INDICACIONES
-    ========================================== */
-
     .face-instruction {
       color: white;
 
@@ -112,7 +107,6 @@
 
       margin-bottom: 15px;
     }
-
 
     /* ==========================================
        COLORES
@@ -148,7 +142,7 @@
     }
 
     .solver-color:hover {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
 
     .solver-color.selected {
@@ -160,7 +154,6 @@
         0 0 15px
         rgba(255,255,255,.35);
     }
-
 
     /* ==========================================
        CUADRÍCULA
@@ -207,11 +200,6 @@
       transform: scale(.95);
     }
 
-
-    /* ==========================================
-       ACCIONES
-    ========================================== */
-
     .solver-actions {
       display: flex;
 
@@ -225,7 +213,6 @@
 
       padding-bottom: 30px;
     }
-
 
     /* ==========================================
        SOLUCIÓN
@@ -264,11 +251,6 @@
     .hidden {
       display: none !important;
     }
-
-
-    /* ==========================================
-       MÓVIL
-    ========================================== */
 
     @media (max-width: 600px) {
 
@@ -315,8 +297,7 @@
 
       <button
         id="loginButton"
-        class="primary-button"
-      >
+        class="primary-button">
         Ingresar
       </button>
 
@@ -350,18 +331,17 @@
     </header>
 
 
-    <!-- ==========================================
-         INICIO
-    ========================================== -->
+    <!-- INICIO -->
 
     <main
       id="homePage"
-      class="page active-page"
-    >
+      class="page active-page">
 
       <div class="title">
 
-        <h1>Mis cubos</h1>
+        <h1>
+          Mis cubos
+        </h1>
 
         <p>
           Elige un cubo para practicar
@@ -371,9 +351,6 @@
 
 
       <div class="cube-grid">
-
-
-        <!-- 2x2 -->
 
         <div class="cube-card">
 
@@ -388,15 +365,12 @@
 
           <button
             class="practice-button"
-            data-cube="2"
-          >
+            data-cube="2">
             Practicar
           </button>
 
         </div>
 
-
-        <!-- 3x3 -->
 
         <div class="cube-card">
 
@@ -412,15 +386,12 @@
 
           <button
             class="practice-button"
-            data-cube="3"
-          >
+            data-cube="3">
             Practicar
           </button>
 
         </div>
 
-
-        <!-- 4x4 -->
 
         <div class="cube-card">
 
@@ -437,15 +408,12 @@
 
           <button
             class="practice-button"
-            data-cube="4"
-          >
+            data-cube="4">
             Practicar
           </button>
 
         </div>
 
-
-        <!-- 5x5 -->
 
         <div class="cube-card">
 
@@ -465,15 +433,12 @@
 
           <button
             class="practice-button"
-            data-cube="5"
-          >
+            data-cube="5">
             Practicar
           </button>
 
         </div>
 
-
-        <!-- 6x6 -->
 
         <div class="cube-card">
 
@@ -494,15 +459,12 @@
 
           <button
             class="practice-button"
-            data-cube="6"
-          >
+            data-cube="6">
             Practicar
           </button>
 
         </div>
 
-
-        <!-- 7x7 -->
 
         <div class="cube-card">
 
@@ -524,8 +486,7 @@
 
           <button
             class="practice-button"
-            data-cube="7"
-          >
+            data-cube="7">
             Practicar
           </button>
 
@@ -542,15 +503,13 @@
 
     <main
       id="cubePracticePage"
-      class="page"
-    >
+      class="page">
 
       <div class="cube-practice-header">
 
         <button
           id="backToHome"
-          class="secondary-button"
-        >
+          class="secondary-button">
           ← Volver
         </button>
 
@@ -576,8 +535,7 @@
 
         <button
           id="solveButton"
-          class="primary-button"
-        >
+          class="primary-button">
           🧠 Resolver
         </button>
 
@@ -592,8 +550,7 @@
 
     <main
       id="timerPage"
-      class="page"
-    >
+      class="page">
 
       <div class="timer-container">
 
@@ -617,22 +574,19 @@
 
           <button
             id="startTimer"
-            class="primary-button"
-          >
+            class="primary-button">
             Iniciar
           </button>
 
           <button
             id="stopTimer"
-            class="secondary-button"
-          >
+            class="secondary-button">
             Detener
           </button>
 
           <button
             id="resetTimer"
-            class="secondary-button"
-          >
+            class="secondary-button">
             Reiniciar
           </button>
 
@@ -649,8 +603,7 @@
 
     <main
       id="profilePage"
-      class="page"
-    >
+      class="page">
 
       <div class="profile-card">
 
@@ -698,26 +651,29 @@
 
       <button
         class="nav-button active"
-        data-page="homePage"
-      >
+        data-page="homePage">
+
         <span>⌂</span>
         <small>Inicio</small>
+
       </button>
 
       <button
         class="nav-button"
-        data-page="timerPage"
-      >
+        data-page="timerPage">
+
         <span>⏱</span>
         <small>Temporizador</small>
+
       </button>
 
       <button
         class="nav-button"
-        data-page="profilePage"
-      >
+        data-page="profilePage">
+
         <span>♙</span>
         <small>Perfil</small>
+
       </button>
 
     </nav>
@@ -732,19 +688,16 @@
   <script type="importmap">
   {
     "imports": {
-      "three":
-        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-
-      "three/addons/":
-        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
     }
   }
   </script>
 
   <script
     type="module"
-    src="script.js"
-  ></script>
+    src="script.js">
+  </script>
 
 </body>
 </html>
