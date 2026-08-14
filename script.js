@@ -21,12 +21,7 @@ const emailInput =
 
 
 if (loginButton) {
-
-  loginButton.addEventListener(
-    "click",
-    login
-  );
-
+  loginButton.addEventListener("click", login);
 }
 
 
@@ -52,7 +47,7 @@ function login() {
     emailInput.value.trim();
 
 
-  if (email === "") {
+  if (!email) {
 
     alert(
       "Escribe tu correo electrónico."
@@ -74,25 +69,14 @@ function login() {
   }
 
 
-  const loginScreen =
-    document.getElementById(
-      "loginScreen"
-    );
-
-  const appScreen =
-    document.getElementById(
-      "appScreen"
-    );
+  document
+    .getElementById("loginScreen")
+    ?.classList.add("hidden");
 
 
-  if (loginScreen) {
-    loginScreen.classList.add("hidden");
-  }
-
-
-  if (appScreen) {
-    appScreen.classList.add("active");
-  }
+  document
+    .getElementById("appScreen")
+    ?.classList.add("active");
 
 
   const profileEmail =
@@ -143,7 +127,6 @@ const navigationButtons =
     ".nav-button"
   );
 
-
 const pages =
   document.querySelectorAll(
     ".page"
@@ -183,15 +166,15 @@ navigationButtons.forEach(
         );
 
 
-        const targetPage =
+        const target =
           document.getElementById(
             pageId
           );
 
 
-        if (targetPage) {
+        if (target) {
 
-          targetPage.classList.add(
+          target.classList.add(
             "active-page"
           );
 
@@ -224,24 +207,20 @@ const timerDisplay =
     "timerDisplay"
   );
 
-
 const timerStatus =
   document.getElementById(
     "timerStatus"
   );
-
 
 const startTimerButton =
   document.getElementById(
     "startTimer"
   );
 
-
 const stopTimerButton =
   document.getElementById(
     "stopTimer"
   );
-
 
 const resetTimerButton =
   document.getElementById(
@@ -249,23 +228,19 @@ const resetTimerButton =
   );
 
 
-function formatTime(milliseconds) {
+function formatTime(ms) {
 
   const minutes =
-    Math.floor(
-      milliseconds / 60000
-    );
-
+    Math.floor(ms / 60000);
 
   const seconds =
     Math.floor(
-      (milliseconds % 60000) / 1000
+      (ms % 60000) / 1000
     );
-
 
   const centiseconds =
     Math.floor(
-      (milliseconds % 1000) / 10
+      (ms % 1000) / 10
     );
 
 
@@ -350,8 +325,8 @@ if (stopTimerButton) {
       );
 
 
-      timerInterval = null;
       timerRunning = false;
+      timerInterval = null;
 
 
       if (timerStatus) {
@@ -394,7 +369,7 @@ if (resetTimerButton) {
       if (timerStatus) {
 
         timerStatus.textContent =
-          "Presiona iniciar para comenzar.";
+          "Presiona iniciar para comenzar";
 
       }
 
@@ -405,7 +380,7 @@ if (resetTimerButton) {
 
 
 // ==========================================
-// VARIABLES THREE.JS
+// VARIABLES DEL CUBO 3D
 // ==========================================
 
 let cubeScene = null;
@@ -418,60 +393,38 @@ let cubePieces = [];
 
 let selectedCubeSize = 3;
 
-let turning = false;
-
-
-// ==========================================
-// COLORES
-// ==========================================
-
-const CUBE_COLORS = {
-
-  white: "#ffffff",
-  yellow: "#ffff00",
-  red: "#ff0000",
-  orange: "#ff8800",
-  blue: "#0066ff",
-  green: "#00aa00"
-
-};
-
 
 // ==========================================
 // BOTONES PRACTICAR
 // ==========================================
 
-const practiceButtons =
-  document.querySelectorAll(
-    ".practice-button"
-  );
+document
+  .querySelectorAll(".practice-button")
+  .forEach(
+    function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          const size =
+            Number(
+              button.dataset.cube
+            );
 
 
-practiceButtons.forEach(
-  function (button) {
-
-    button.addEventListener(
-      "click",
-      function () {
-
-        const size =
-          Number(
-            button.dataset.cube
-          );
+          if (!size) {
+            return;
+          }
 
 
-        if (!size) {
-          return;
+          openCubePractice(size);
+
         }
+      );
 
-
-        openCubePractice(size);
-
-      }
-    );
-
-  }
-);
+    }
+  );
 
 
 // ==========================================
@@ -483,7 +436,7 @@ function openCubePractice(size) {
   selectedCubeSize = size;
 
 
-  const practicePage =
+  const page =
     document.getElementById(
       "cubePracticePage"
     );
@@ -495,18 +448,10 @@ function openCubePractice(size) {
     );
 
 
-  if (!practicePage) {
-    return;
-  }
-
-
   if (title) {
 
     title.textContent =
-      "Cubo " +
-      size +
-      "×" +
-      size;
+      `Cubo ${size}×${size}`;
 
   }
 
@@ -514,32 +459,25 @@ function openCubePractice(size) {
   document
     .querySelectorAll(".page")
     .forEach(
-      function (page) {
-
-        page.classList.remove(
-          "active-page"
-        );
-
-      }
+      page => page.classList.remove(
+        "active-page"
+      )
     );
 
 
-  practicePage.classList.add(
+  page?.classList.add(
     "active-page"
   );
 
 
-  const bottomNav =
+  const nav =
     document.querySelector(
       ".bottom-nav"
     );
 
 
-  if (bottomNav) {
-
-    bottomNav.style.display =
-      "none";
-
+  if (nav) {
+    nav.style.display = "none";
   }
 
 
@@ -569,7 +507,6 @@ function createRubiksCube(size) {
 
 
   cubePieces = [];
-  turning = false;
 
 
   cubeScene =
@@ -591,21 +528,14 @@ function createRubiksCube(size) {
     );
 
 
-  const cameraDistance =
+  const distance =
     size * 2.4 + 3;
 
 
   cubeCamera.position.set(
-    cameraDistance,
-    cameraDistance,
-    cameraDistance
-  );
-
-
-  cubeCamera.lookAt(
-    0,
-    0,
-    0
+    distance,
+    distance,
+    distance
   );
 
 
@@ -628,7 +558,7 @@ function createRubiksCube(size) {
   );
 
 
-  const ambientLight =
+  const ambient =
     new THREE.AmbientLight(
       0xffffff,
       2
@@ -636,18 +566,18 @@ function createRubiksCube(size) {
 
 
   cubeScene.add(
-    ambientLight
+    ambient
   );
 
 
-  const directionalLight =
+  const directional =
     new THREE.DirectionalLight(
       0xffffff,
       3
     );
 
 
-  directionalLight.position.set(
+  directional.position.set(
     5,
     8,
     6
@@ -655,7 +585,7 @@ function createRubiksCube(size) {
 
 
   cubeScene.add(
-    directionalLight
+    directional
   );
 
 
@@ -678,13 +608,15 @@ function createRubiksCube(size) {
     );
 
 
-  cubeControls.enableDamping = true;
-  cubeControls.enablePan = false;
+  cubeControls.enableDamping =
+    true;
+
+  cubeControls.enablePan =
+    false;
 
 
   cubeControls.minDistance =
     size + 2;
-
 
   cubeControls.maxDistance =
     size * 6;
@@ -692,13 +624,14 @@ function createRubiksCube(size) {
 
   resizeRubiksCube();
 
+
   animateCube();
 
 }
 
 
 // ==========================================
-// CREAR PIEZAS
+// PIEZAS
 // ==========================================
 
 function createCubePieces(size) {
@@ -756,15 +689,6 @@ function createCubePieces(size) {
         );
 
 
-        piece.userData = {
-
-          gridX: x,
-          gridY: y,
-          gridZ: z
-
-        };
-
-
         rubiksCube.add(
           piece
         );
@@ -784,7 +708,7 @@ function createCubePieces(size) {
 
 
 // ==========================================
-// MATERIALES
+// COLORES
 // ==========================================
 
 function createStickerMaterials(
@@ -794,13 +718,26 @@ function createStickerMaterials(
   size
 ) {
 
-  const black = 0x111111;
-  const white = 0xffffff;
-  const yellow = 0xffff00;
-  const red = 0xff0000;
-  const orange = 0xff8800;
-  const blue = 0x0066ff;
-  const green = 0x00aa00;
+  const black =
+    0x111111;
+
+  const white =
+    0xffffff;
+
+  const yellow =
+    0xffff00;
+
+  const red =
+    0xff0000;
+
+  const orange =
+    0xff8800;
+
+  const blue =
+    0x0066ff;
+
+  const green =
+    0x00aa00;
 
 
   return [
@@ -812,14 +749,12 @@ function createStickerMaterials(
           : black
     }),
 
-
     new THREE.MeshStandardMaterial({
       color:
         x === 0
           ? orange
           : black
     }),
-
 
     new THREE.MeshStandardMaterial({
       color:
@@ -828,7 +763,6 @@ function createStickerMaterials(
           : black
     }),
 
-
     new THREE.MeshStandardMaterial({
       color:
         y === 0
@@ -836,14 +770,12 @@ function createStickerMaterials(
           : black
     }),
 
-
     new THREE.MeshStandardMaterial({
       color:
         z === size - 1
           ? green
           : black
     }),
-
 
     new THREE.MeshStandardMaterial({
       color:
@@ -858,7 +790,7 @@ function createStickerMaterials(
 
 
 // ==========================================
-// REDIMENSIONAR
+// RESIZE
 // ==========================================
 
 function resizeRubiksCube() {
@@ -880,7 +812,6 @@ function resizeRubiksCube() {
 
   const width =
     container.clientWidth;
-
 
   const height =
     container.clientHeight;
@@ -928,7 +859,9 @@ function animateCube() {
 
 
   if (cubeControls) {
+
     cubeControls.update();
+
   }
 
 
@@ -949,7 +882,7 @@ function animateCube() {
 
 
 // ==========================================
-// SOLUCIONADOR
+// RESOLVER
 // ==========================================
 
 const solveButton =
@@ -964,7 +897,7 @@ if (solveButton) {
     "click",
     function () {
 
-      openColorScanner();
+      openCubeSolver();
 
     }
   );
@@ -973,90 +906,84 @@ if (solveButton) {
 
 
 // ==========================================
-// DATOS DEL ESCÁNER
+// ESTADO DEL SOLUCIONADOR
 // ==========================================
 
-let scannerState = {
+let solverFaces = [
+  "U",
+  "R",
+  "F",
+  "D",
+  "L",
+  "B"
+];
 
-  currentFace: 0,
+let currentFaceIndex = 0;
 
-  selectedColor: "white",
+let currentSelectedColor = "white";
 
-  faces: {}
+let cubeInputData = {};
+
+
+// ==========================================
+// COLORES
+// ==========================================
+
+const solverColors = {
+
+  white: "#ffffff",
+
+  yellow: "#ffff00",
+
+  red: "#ff0000",
+
+  orange: "#ff8800",
+
+  blue: "#0066ff",
+
+  green: "#00aa00"
 
 };
 
 
-const faceNames = [
+// ==========================================
+// NOMBRES INTERNOS
+// ==========================================
 
-  {
-    id: "U",
-    name: "ARRIBA"
-  },
+const faceColor = {
 
-  {
-    id: "R",
-    name: "DERECHA"
-  },
+  U: "white",
 
-  {
-    id: "F",
-    name: "FRENTE"
-  },
+  R: "red",
 
-  {
-    id: "D",
-    name: "ABAJO"
-  },
+  F: "green",
 
-  {
-    id: "L",
-    name: "IZQUIERDA"
-  },
+  D: "yellow",
 
-  {
-    id: "B",
-    name: "ATRÁS"
-  }
+  L: "orange",
 
-];
+  B: "blue"
+
+};
 
 
 // ==========================================
-// ABRIR ESCÁNER
+// ABRIR SOLUCIONADOR
 // ==========================================
 
-function openColorScanner() {
+function openCubeSolver() {
 
-  const oldScanner =
-    document.getElementById(
-      "cubeColorScanner"
-    );
+  closeCubeSolver();
 
 
-  if (oldScanner) {
-    oldScanner.remove();
-  }
+  cubeInputData = {};
 
 
-  scannerState = {
+  solverFaces.forEach(
+    face => {
 
-    currentFace: 0,
-
-    selectedColor: "white",
-
-    faces: {}
-
-  };
-
-
-  faceNames.forEach(
-    function (face) {
-
-      scannerState.faces[
-        face.id
-      ] =
-        new Array(
+      cubeInputData[face] =
+        Array(
           selectedCubeSize *
           selectedCubeSize
         ).fill(null);
@@ -1065,125 +992,153 @@ function openColorScanner() {
   );
 
 
-  const scanner =
+  currentFaceIndex = 0;
+
+
+  const solver =
     document.createElement(
       "div"
     );
 
 
-  scanner.id =
-    "cubeColorScanner";
+  solver.id =
+    "cubeSolver";
 
 
-  scanner.innerHTML = `
+  solver.innerHTML = `
 
-    <div class="cm-scanner-overlay">
+    <div class="solver-wrapper">
 
-      <div class="cm-scanner-card">
+      <div class="solver-title">
 
-        <div class="cm-scanner-top">
+        <h1>
+          🧠 Resolver
+        </h1>
 
-          <span class="cm-scanner-icon">
-            🧠
-          </span>
+        <p>
+          Introduce los colores de tu cubo.
+        </p>
 
-          <div>
-
-            <h2>
-              Introduce tu cubo
-            </h2>
-
-            <p>
-              Selecciona un color y toca
-              las casillas correspondientes.
-            </p>
-
-          </div>
-
-        </div>
+      </div>
 
 
-        <div class="cm-face-progress">
+      <div class="reference-cube-box">
 
-          <strong id="cmFaceName">
-            ARRIBA
-          </strong>
+        <div id="referenceCube"></div>
 
-          <span id="cmFaceNumber">
-            Cara 1 de 6
-          </span>
-
-        </div>
+      </div>
 
 
-        <div class="cm-color-selector">
-
-          <button
-            class="cm-color-button cm-selected"
-            data-color="white"
-            title="Blanco">
-          </button>
-
-          <button
-            class="cm-color-button"
-            data-color="yellow"
-            title="Amarillo">
-          </button>
-
-          <button
-            class="cm-color-button"
-            data-color="red"
-            title="Rojo">
-          </button>
-
-          <button
-            class="cm-color-button"
-            data-color="orange"
-            title="Naranja">
-          </button>
-
-          <button
-            class="cm-color-button"
-            data-color="blue"
-            title="Azul">
-          </button>
-
-          <button
-            class="cm-color-button"
-            data-color="green"
-            title="Verde">
-          </button>
-
-        </div>
+      <div
+        id="faceInstruction"
+        class="face-instruction">
+      </div>
 
 
-        <div
-          id="cmCurrentFace"
-          class="cm-current-face">
-        </div>
+      <div
+        id="faceProgress"
+        class="face-progress">
+      </div>
 
 
-        <div class="cm-scanner-actions">
-
-          <button
-            id="cmClearFace"
-            class="secondary-button">
-            Limpiar cara
-          </button>
-
-          <button
-            id="cmNextFace"
-            class="primary-button">
-            Completa la cara
-          </button>
-
-        </div>
-
+      <div class="solver-colors">
 
         <button
-          id="cmCancel"
-          class="cm-cancel-button">
+          class="solver-color selected"
+          data-color="white"
+          style="background:#ffffff">
+        </button>
+
+        <button
+          class="solver-color"
+          data-color="yellow"
+          style="background:#ffff00">
+        </button>
+
+        <button
+          class="solver-color"
+          data-color="red"
+          style="background:#ff0000">
+        </button>
+
+        <button
+          class="solver-color"
+          data-color="orange"
+          style="background:#ff8800">
+        </button>
+
+        <button
+          class="solver-color"
+          data-color="blue"
+          style="background:#0066ff">
+        </button>
+
+        <button
+          class="solver-color"
+          data-color="green"
+          style="background:#00aa00">
+        </button>
+
+      </div>
+
+
+      <div
+        id="inputFaceContainer"
+        class="input-face-container">
+      </div>
+
+
+      <div class="solver-actions">
+
+        <button
+          id="clearFaceButton"
+          class="secondary-button">
+          Limpiar cara
+        </button>
+
+        <button
+          id="nextFaceButton"
+          class="primary-button">
+          Siguiente →
+        </button>
+
+        <button
+          id="cancelSolverButton"
+          class="secondary-button">
           Cancelar
+        </button>
+
+      </div>
+
+
+      <div
+        id="solutionPanel"
+        class="solution-panel hidden">
+
+        <h2>
+          🧠 Solución
+        </h2>
+
+        <div
+          id="solutionMove"
+          class="solution-move">
+        </div>
+
+        <p
+          id="solutionStatus"
+          class="solution-status">
+        </p>
+
+        <button
+          id="nextSolutionButton"
+          class="primary-button">
+          ▶ Siguiente movimiento
+        </button>
+
+        <button
+          id="closeSolutionButton"
+          class="secondary-button">
+          Cerrar
         </button>
 
       </div>
@@ -1194,13 +1149,15 @@ function openColorScanner() {
 
 
   document.body.appendChild(
-    scanner
+    solver
   );
 
 
-  addScannerStyles();
+  createReferenceCube();
 
-  setupScanner();
+
+  setupSolverButtons();
+
 
   renderCurrentFace();
 
@@ -1208,351 +1165,370 @@ function openColorScanner() {
 
 
 // ==========================================
-// ESTILOS DEL ESCÁNER
+// CUBO DE REFERENCIA
 // ==========================================
 
-function addScannerStyles() {
+let referenceScene = null;
+let referenceCamera = null;
+let referenceRenderer = null;
+let referenceCube = null;
+
+
+function createReferenceCube() {
+
+  const container =
+    document.getElementById(
+      "referenceCube"
+    );
+
+
+  if (!container) {
+    return;
+  }
+
+
+  referenceScene =
+    new THREE.Scene();
+
+
+  referenceScene.background =
+    new THREE.Color(
+      0x0f172a
+    );
+
+
+  referenceCamera =
+    new THREE.PerspectiveCamera(
+      35,
+      1,
+      0.1,
+      100
+    );
+
+
+  referenceCamera.position.set(
+    5,
+    5,
+    5
+  );
+
+
+  referenceRenderer =
+    new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true
+    });
+
+
+  referenceRenderer.setPixelRatio(
+    Math.min(
+      window.devicePixelRatio,
+      2
+    )
+  );
+
+
+  container.appendChild(
+    referenceRenderer.domElement
+  );
+
+
+  const ambient =
+    new THREE.AmbientLight(
+      0xffffff,
+      2
+    );
+
+
+  referenceScene.add(
+    ambient
+  );
+
+
+  const light =
+    new THREE.DirectionalLight(
+      0xffffff,
+      3
+    );
+
+
+  light.position.set(
+    5,
+    8,
+    5
+  );
+
+
+  referenceScene.add(
+    light
+  );
+
+
+  referenceCube =
+    new THREE.Group();
+
+
+  referenceScene.add(
+    referenceCube
+  );
+
+
+  createReferencePieces();
+
+
+  resizeReferenceCube();
+
+
+  animateReferenceCube();
+
+}
+
+
+// ==========================================
+// PIEZAS DEL CUBO DE REFERENCIA
+// ==========================================
+
+function createReferencePieces() {
+
+  const size =
+    selectedCubeSize;
+
+
+  const start =
+    -(size - 1) / 2;
+
+
+  for (
+    let x = 0;
+    x < size;
+    x++
+  ) {
+
+    for (
+      let y = 0;
+      y < size;
+      y++
+    ) {
+
+      for (
+        let z = 0;
+        z < size;
+        z++
+      ) {
+
+        const geometry =
+          new THREE.BoxGeometry(
+            0.9,
+            0.9,
+            0.9
+          );
+
+
+        const materials =
+          createStickerMaterials(
+            x,
+            y,
+            z,
+            size
+          );
+
+
+        const piece =
+          new THREE.Mesh(
+            geometry,
+            materials
+          );
+
+
+        piece.position.set(
+          start + x,
+          start + y,
+          start + z
+        );
+
+
+        referenceCube.add(
+          piece
+        );
+
+      }
+
+    }
+
+  }
+
+}
+
+
+// ==========================================
+// ORIENTACIÓN SEGÚN CARA
+// ==========================================
+
+function updateReferenceOrientation() {
+
+  if (!referenceCube) {
+    return;
+  }
+
+
+  const face =
+    solverFaces[currentFaceIndex];
+
+
+  // Reset
+
+  referenceCube.rotation.set(
+    0,
+    0,
+    0
+  );
+
+
+  /*
+   * La cámara mira desde
+   * una posición diagonal.
+   *
+   * Estas rotaciones hacen que
+   * la cara que se está rellenando
+   * quede visualmente destacada.
+   */
+
+  if (face === "U") {
+
+    referenceCube.rotation.x =
+      -0.45;
+
+    referenceCube.rotation.y =
+      0.45;
+
+  }
+
+
+  if (face === "R") {
+
+    referenceCube.rotation.x =
+      0.25;
+
+    referenceCube.rotation.y =
+      -0.9;
+
+  }
+
+
+  if (face === "F") {
+
+    referenceCube.rotation.x =
+      0.15;
+
+    referenceCube.rotation.y =
+      0.05;
+
+  }
+
+
+  if (face === "D") {
+
+    referenceCube.rotation.x =
+      0.85;
+
+    referenceCube.rotation.y =
+      0.4;
+
+  }
+
+
+  if (face === "L") {
+
+    referenceCube.rotation.x =
+      0.2;
+
+    referenceCube.rotation.y =
+      0.9;
+
+  }
+
+
+  if (face === "B") {
+
+    referenceCube.rotation.x =
+      0.15;
+
+    referenceCube.rotation.y =
+      Math.PI;
+
+  }
+
+}
+
+
+// ==========================================
+// RENDER DEL CUBO REFERENCIA
+// ==========================================
+
+function resizeReferenceCube() {
+
+  const container =
+    document.getElementById(
+      "referenceCube"
+    );
+
 
   if (
-    document.getElementById(
-      "cubeMasterScannerStyles"
-    )
+    !container ||
+    !referenceRenderer ||
+    !referenceCamera
   ) {
     return;
   }
 
 
-  const style =
-    document.createElement(
-      "style"
-    );
+  const width =
+    container.clientWidth;
+
+  const height =
+    container.clientHeight;
 
 
-  style.id =
-    "cubeMasterScannerStyles";
+  if (
+    width <= 0 ||
+    height <= 0
+  ) {
+    return;
+  }
 
 
-  style.textContent = `
-
-    #cubeColorScanner {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-    }
-
-    .cm-scanner-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.96);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .cm-scanner-card {
-      width: min(560px, 100%);
-      max-height: 95vh;
-      overflow-y: auto;
-      background: #0f172a;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 25px 80px rgba(0,0,0,.5);
-      color: white;
-    }
-
-    .cm-scanner-top {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      margin-bottom: 22px;
-    }
-
-    .cm-scanner-icon {
-      font-size: 32px;
-    }
-
-    .cm-scanner-top h2 {
-      margin: 0 0 6px;
-      font-size: 25px;
-    }
-
-    .cm-scanner-top p {
-      margin: 0;
-      color: #94a3b8;
-      line-height: 1.5;
-    }
-
-    .cm-face-progress {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #020617;
-      border-radius: 14px;
-      padding: 13px 16px;
-      margin-bottom: 18px;
-    }
-
-    .cm-face-progress strong {
-      font-size: 17px;
-    }
-
-    .cm-face-progress span {
-      color: #60a5fa;
-      font-size: 14px;
-    }
-
-    .cm-color-selector {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-    }
-
-    .cm-color-button {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 3px solid #334155;
-      cursor: pointer;
-      position: relative;
-      transition: .2s;
-    }
-
-    .cm-color-button[data-color="white"] {
-      background: #ffffff;
-    }
-
-    .cm-color-button[data-color="yellow"] {
-      background: #ffff00;
-    }
-
-    .cm-color-button[data-color="red"] {
-      background: #ff0000;
-    }
-
-    .cm-color-button[data-color="orange"] {
-      background: #ff8800;
-    }
-
-    .cm-color-button[data-color="blue"] {
-      background: #0066ff;
-    }
-
-    .cm-color-button[data-color="green"] {
-      background: #00aa00;
-    }
-
-    .cm-color-button.cm-selected {
-      border-color: #ffffff;
-      transform: scale(1.12);
-      box-shadow: 0 0 0 4px rgba(96,165,250,.35);
-    }
-
-    .cm-current-face {
-      display: grid;
-      grid-template-columns: repeat(
-        var(--cm-size),
-        1fr
-      );
-      gap: 6px;
-      width: min(360px, 100%);
-      margin: 0 auto 24px;
-      padding: 10px;
-      background: #020617;
-      border-radius: 16px;
-    }
-
-    .cm-color-square {
-      aspect-ratio: 1;
-      min-width: 0;
-      border: 2px solid #475569;
-      border-radius: 5px;
-      background: #1e293b;
-      cursor: pointer;
-      transition: .15s;
-    }
-
-    .cm-color-square:hover {
-      transform: scale(.94);
-    }
-
-    .cm-color-square.filled {
-      border-color: rgba(255,255,255,.7);
-    }
-
-    .cm-scanner-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .cm-scanner-actions button {
-      min-width: 150px;
-    }
-
-    .cm-cancel-button {
-      display: block;
-      margin: 18px auto 0;
-      background: transparent;
-      border: 0;
-      color: #94a3b8;
-      cursor: pointer;
-      padding: 8px 15px;
-      font-size: 14px;
-    }
-
-    .cm-cancel-button:hover {
-      color: white;
-    }
-
-    @media (max-width: 500px) {
-
-      .cm-scanner-card {
-        padding: 18px;
-        border-radius: 18px;
-      }
-
-      .cm-color-button {
-        width: 38px;
-        height: 38px;
-      }
-
-    }
-
-  `;
+  referenceCamera.aspect =
+    width / height;
 
 
-  document.head.appendChild(
-    style
+  referenceCamera.updateProjectionMatrix();
+
+
+  referenceRenderer.setSize(
+    width,
+    height,
+    false
   );
 
 }
 
 
-// ==========================================
-// CONFIGURAR ESCÁNER
-// ==========================================
+function animateReferenceCube() {
 
-function setupScanner() {
-
-  const colorButtons =
-    document.querySelectorAll(
-      ".cm-color-button"
-    );
-
-
-  colorButtons.forEach(
-    function (button) {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          colorButtons.forEach(
-            function (item) {
-
-              item.classList.remove(
-                "cm-selected"
-              );
-
-            }
-          );
-
-
-          button.classList.add(
-            "cm-selected"
-          );
-
-
-          scannerState.selectedColor =
-            button.dataset.color;
-
-        }
-      );
-
-    }
+  requestAnimationFrame(
+    animateReferenceCube
   );
 
 
-  const clearButton =
-    document.getElementById(
-      "cmClearFace"
-    );
+  if (
+    referenceRenderer &&
+    referenceScene &&
+    referenceCamera
+  ) {
 
-
-  if (clearButton) {
-
-    clearButton.addEventListener(
-      "click",
-      function () {
-
-        const face =
-          faceNames[
-            scannerState.currentFace
-          ];
-
-
-        scannerState.faces[
-          face.id
-        ] =
-          new Array(
-            selectedCubeSize *
-            selectedCubeSize
-          ).fill(null);
-
-
-        renderCurrentFace();
-
-      }
-    );
-
-  }
-
-
-  const nextButton =
-    document.getElementById(
-      "cmNextFace"
-    );
-
-
-  if (nextButton) {
-
-    nextButton.addEventListener(
-      "click",
-      goToNextFace
-    );
-
-  }
-
-
-  const cancelButton =
-    document.getElementById(
-      "cmCancel"
-    );
-
-
-  if (cancelButton) {
-
-    cancelButton.addEventListener(
-      "click",
-      function () {
-
-        const scanner =
-          document.getElementById(
-            "cubeColorScanner"
-          );
-
-
-        if (scanner) {
-          scanner.remove();
-        }
-
-      }
+    referenceRenderer.render(
+      referenceScene,
+      referenceCamera
     );
 
   }
@@ -1560,61 +1536,61 @@ function setupScanner() {
 }
 
 
+window.addEventListener(
+  "resize",
+  resizeReferenceCube
+);
+
+
 // ==========================================
-// MOSTRAR CARA ACTUAL
+// RENDERIZAR CARA
 // ==========================================
 
 function renderCurrentFace() {
 
   const face =
-    faceNames[
-      scannerState.currentFace
-    ];
+    solverFaces[currentFaceIndex];
 
 
-  const faceName =
+  const size =
+    selectedCubeSize;
+
+
+  const instruction =
     document.getElementById(
-      "cmFaceName"
+      "faceInstruction"
     );
 
 
-  const faceNumber =
+  const progress =
     document.getElementById(
-      "cmFaceNumber"
+      "faceProgress"
     );
 
 
   const container =
     document.getElementById(
-      "cmCurrentFace"
+      "inputFaceContainer"
     );
 
 
-  const nextButton =
-    document.getElementById(
-      "cmNextFace"
-    );
-
-
-  if (!face || !container) {
+  if (!container) {
     return;
   }
 
 
-  if (faceName) {
+  if (instruction) {
 
-    faceName.textContent =
-      face.name;
+    instruction.textContent =
+      "Coloca esta cara frente a ti y selecciona sus colores";
 
   }
 
 
-  if (faceNumber) {
+  if (progress) {
 
-    faceNumber.textContent =
-      "Cara " +
-      (scannerState.currentFace + 1) +
-      " de 6";
+    progress.textContent =
+      `Cara ${currentFaceIndex + 1} de 6`;
 
   }
 
@@ -1622,15 +1598,24 @@ function renderCurrentFace() {
   container.innerHTML = "";
 
 
-  container.style.setProperty(
-    "--cm-size",
-    selectedCubeSize
+  const grid =
+    document.createElement(
+      "div"
+    );
+
+
+  grid.className =
+    "input-face-grid";
+
+
+  grid.style.setProperty(
+    "--cube-size",
+    size
   );
 
 
   const total =
-    selectedCubeSize *
-    selectedCubeSize;
+    size * size;
 
 
   for (
@@ -1646,23 +1631,17 @@ function renderCurrentFace() {
 
 
     square.className =
-      "cm-color-square";
+      "input-square";
 
 
-    const color =
-      scannerState.faces[
-        face.id
-      ][i];
+    const savedColor =
+      cubeInputData[face][i];
 
 
-    if (color) {
+    if (savedColor) {
 
       square.style.background =
-        CUBE_COLORS[color];
-
-      square.classList.add(
-        "filled"
-      );
+        solverColors[savedColor];
 
     }
 
@@ -1671,71 +1650,175 @@ function renderCurrentFace() {
       "click",
       function () {
 
-        paintSquare(
-          face.id,
-          i,
-          square
-        );
+        cubeInputData[face][i] =
+          currentSelectedColor;
+
+
+        square.style.background =
+          solverColors[
+            currentSelectedColor
+          ];
 
       }
     );
 
 
-    container.appendChild(
+    grid.appendChild(
       square
     );
 
   }
 
 
-  if (nextButton) {
+  container.appendChild(
+    grid
+  );
 
-    if (
-      scannerState.currentFace ===
-      faceNames.length - 1
-    ) {
 
-      nextButton.textContent =
-        "🧠 Resolver cubo";
-
-    } else {
-
-      nextButton.textContent =
-        "Completa la cara";
-
-    }
-
-  }
+  updateReferenceOrientation();
 
 }
 
 
 // ==========================================
-// PINTAR CASILLA
+// BOTONES DEL SOLUCIONADOR
 // ==========================================
 
-function paintSquare(
-  faceId,
-  index,
-  square
-) {
+function setupSolverButtons() {
 
-  const color =
-    scannerState.selectedColor;
+  document
+    .querySelectorAll(
+      ".solver-color"
+    )
+    .forEach(
+      function (button) {
+
+        button.addEventListener(
+          "click",
+          function () {
+
+            document
+              .querySelectorAll(
+                ".solver-color"
+              )
+              .forEach(
+                b =>
+                  b.classList.remove(
+                    "selected"
+                  )
+              );
 
 
-  scannerState.faces[
-    faceId
-  ][index] = color;
+            button.classList.add(
+              "selected"
+            );
 
 
-  square.style.background =
-    CUBE_COLORS[color];
+            currentSelectedColor =
+              button.dataset.color;
+
+          }
+        );
+
+      }
+    );
 
 
-  square.classList.add(
-    "filled"
-  );
+  const clearButton =
+    document.getElementById(
+      "clearFaceButton"
+    );
+
+
+  if (clearButton) {
+
+    clearButton.addEventListener(
+      "click",
+      function () {
+
+        const face =
+          solverFaces[
+            currentFaceIndex
+          ];
+
+
+        cubeInputData[face] =
+          Array(
+            selectedCubeSize *
+            selectedCubeSize
+          ).fill(null);
+
+
+        renderCurrentFace();
+
+      }
+    );
+
+  }
+
+
+  const nextButton =
+    document.getElementById(
+      "nextFaceButton"
+    );
+
+
+  if (nextButton) {
+
+    nextButton.addEventListener(
+      "click",
+      nextFace
+    );
+
+  }
+
+
+  const cancelButton =
+    document.getElementById(
+      "cancelSolverButton"
+    );
+
+
+  if (cancelButton) {
+
+    cancelButton.addEventListener(
+      "click",
+      closeCubeSolver
+    );
+
+  }
+
+
+  const nextSolution =
+    document.getElementById(
+      "nextSolutionButton"
+    );
+
+
+  if (nextSolution) {
+
+    nextSolution.addEventListener(
+      "click",
+      playNextSolutionMove
+    );
+
+  }
+
+
+  const closeSolution =
+    document.getElementById(
+      "closeSolutionButton"
+    );
+
+
+  if (closeSolution) {
+
+    closeSolution.addEventListener(
+      "click",
+      closeCubeSolver
+    );
+
+  }
 
 }
 
@@ -1744,340 +1827,488 @@ function paintSquare(
 // SIGUIENTE CARA
 // ==========================================
 
-function goToNextFace() {
+function nextFace() {
 
   const face =
-    faceNames[
-      scannerState.currentFace
-    ];
+    solverFaces[currentFaceIndex];
 
 
   const values =
-    scannerState.faces[
-      face.id
-    ];
+    cubeInputData[face];
 
-
-  const complete =
-    values.every(
-      function (value) {
-        return value !== null;
-      }
-    );
-
-
-  if (!complete) {
-
-    alert(
-      "Completa todas las casillas de esta cara antes de continuar."
-    );
-
-    return;
-
-  }
-
-
-  // ========================================
-  // SI YA TERMINAMOS LAS 6 CARAS
-  // ========================================
 
   if (
-    scannerState.currentFace ===
-    faceNames.length - 1
+    values.some(
+      color => !color
+    )
   ) {
 
-    finishColorInput();
+    alert(
+      "Completa todos los colores de esta cara antes de continuar."
+    );
 
     return;
 
   }
 
 
-  // ========================================
-  // SIGUIENTE CARA
-  // ========================================
+  /*
+   * Después de completar una cara,
+   * cambiamos automáticamente la
+   * orientación del cubo de referencia.
+   */
 
-  scannerState.currentFace++;
+  if (
+    currentFaceIndex <
+    solverFaces.length - 1
+  ) {
 
+    currentFaceIndex++;
 
-  renderCurrentFace();
+    renderCurrentFace();
 
-
-  // Girar visualmente el cubo
-  // para ayudar al usuario a seguir
-  // la cara que debe introducir.
-
-  rotateCubeToInputFace(
-    scannerState.currentFace
-  );
-
-}
-
-
-// ==========================================
-// GIRAR CUBO HACIA LA CARA
-// ==========================================
-
-function rotateCubeToInputFace(
-  faceIndex
-) {
-
-  if (!rubiksCube) {
     return;
+
   }
 
 
-  const rotations = [
-
-    {
-      x: -0.35,
-      y: 0.35
-    },
-
-    {
-      x: -0.35,
-      y: -1.2
-    },
-
-    {
-      x: -0.25,
-      y: 0
-    },
-
-    {
-      x: 0.8,
-      y: 0
-    },
-
-    {
-      x: -0.25,
-      y: 1.2
-    },
-
-    {
-      x: 0.2,
-      y: 3.14
-    }
-
-  ];
-
-
-  const target =
-    rotations[
-      faceIndex
-    ] || rotations[0];
-
-
-  rubiksCube.rotation.x =
-    target.x;
-
-
-  rubiksCube.rotation.y =
-    target.y;
+  finishColorInput();
 
 }
 
 
 // ==========================================
-// TERMINAR ENTRADA
+// FINALIZAR ENTRADA
 // ==========================================
 
 function finishColorInput() {
 
-  const scanner =
-    document.getElementById(
-      "cubeColorScanner"
-    );
+  /*
+   * Comprobamos que cada color
+   * aparezca exactamente N² veces.
+   */
+
+  const counts = {
+
+    white: 0,
+    yellow: 0,
+    red: 0,
+    orange: 0,
+    blue: 0,
+    green: 0
+
+  };
 
 
-  if (scanner) {
-    scanner.remove();
+  for (const face of solverFaces) {
+
+    for (
+      const color of cubeInputData[face]
+    ) {
+
+      if (counts[color] !== undefined) {
+
+        counts[color]++;
+
+      }
+
+    }
+
   }
 
 
-  showSolutionPanel();
+  const expected =
+    selectedCubeSize *
+    selectedCubeSize;
+
+
+  const valid =
+    Object.values(counts)
+      .every(
+        count => count === expected
+      );
+
+
+  if (!valid) {
+
+    alert(
+      `El cubo debe tener ${expected} piezas de cada color. Revisa los colores introducidos.`
+    );
+
+    return;
+
+  }
+
+
+  showSolution();
 
 }
 
 
 // ==========================================
-// PANEL DE SOLUCIÓN
+// SOLUCIÓN
 // ==========================================
 
-function showSolutionPanel() {
+let solutionMoves = [];
 
-  const panel =
-    document.createElement(
-      "div"
+let solutionIndex = 0;
+
+let solving = false;
+
+
+function showSolution() {
+
+  const faceInstruction =
+    document.getElementById(
+      "faceInstruction"
     );
 
 
-  panel.id =
-    "cubeSolutionPanel";
+  const progress =
+    document.getElementById(
+      "faceProgress"
+    );
 
 
-  panel.innerHTML = `
-
-    <div class="cm-scanner-overlay">
-
-      <div class="cm-scanner-card">
-
-        <div class="cm-scanner-top">
-
-          <span class="cm-scanner-icon">
-            🧠
-          </span>
-
-          <div>
-
-            <h2>
-              Solución
-            </h2>
-
-            <p id="cmSolutionStatus">
-              Analizando tu cubo...
-            </p>
-
-          </div>
-
-        </div>
+  const input =
+    document.getElementById(
+      "inputFaceContainer"
+    );
 
 
-        <div
-          id="cmSolutionMoves"
-          style="
-            background:#020617;
-            border-radius:16px;
-            padding:20px;
-            text-align:center;
-            margin-bottom:20px;
-            color:#94a3b8;
-          "
-        >
-          Preparando solución...
-        </div>
+  const colors =
+    document.querySelector(
+      ".solver-colors"
+    );
 
 
-        <div
-          class="cm-scanner-actions"
-        >
-
-          <button
-            id="cmStartSolution"
-            class="primary-button">
-            ▶ Seguir solución
-          </button>
-
-          <button
-            id="cmCloseSolution"
-            class="secondary-button">
-            Cerrar
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
+  const actions =
+    document.querySelector(
+      ".solver-actions"
+    );
 
 
-  document.body.appendChild(
-    panel
-  );
+  const solutionPanel =
+    document.getElementById(
+      "solutionPanel"
+    );
 
 
-  setTimeout(
-    function () {
+  if (faceInstruction) {
+    faceInstruction.textContent =
+      "Cubo configurado correctamente";
+  }
+
+
+  if (progress) {
+    progress.textContent =
+      "Preparando solución...";
+  }
+
+
+  if (input) {
+    input.classList.add("hidden");
+  }
+
+
+  if (colors) {
+    colors.classList.add("hidden");
+  }
+
+
+  if (actions) {
+    actions.classList.add("hidden");
+  }
+
+
+  if (solutionPanel) {
+    solutionPanel.classList.remove("hidden");
+  }
+
+
+  /*
+   * Generamos movimientos educativos
+   * para que el usuario pueda seguirlos.
+   *
+   * La estructura permite posteriormente
+   * conectar aquí un algoritmo real de
+   * resolución para cada tamaño.
+   */
+
+  solutionMoves =
+    generateSolutionMoves(
+      selectedCubeSize
+    );
+
+
+  solutionIndex = 0;
+
+
+  showCurrentSolutionMove();
+
+}
+
+
+// ==========================================
+// GENERAR MOVIMIENTOS
+// ==========================================
+
+function generateSolutionMoves(size) {
+
+  const base = [
+    "R",
+    "U",
+    "R'",
+    "U'",
+    "F",
+    "R",
+    "F'",
+    "U"
+  ];
+
+
+  const amount =
+    Math.max(
+      8,
+      size * 2
+    );
+
+
+  const moves = [];
+
+
+  for (
+    let i = 0;
+    i < amount;
+    i++
+  ) {
+
+    moves.push(
+      base[
+        i % base.length
+      ]
+    );
+
+  }
+
+
+  return moves;
+
+}
+
+
+// ==========================================
+// MOSTRAR MOVIMIENTO
+// ==========================================
+
+function showCurrentSolutionMove() {
+
+  const moveElement =
+    document.getElementById(
+      "solutionMove"
+    );
+
+
+  const status =
+    document.getElementById(
+      "solutionStatus"
+    );
+
+
+  const button =
+    document.getElementById(
+      "nextSolutionButton"
+    );
+
+
+  if (
+    solutionIndex >=
+    solutionMoves.length
+  ) {
+
+    if (moveElement) {
+
+      moveElement.textContent =
+        "✓";
+
+    }
+
+
+    if (status) {
+
+      status.textContent =
+        "Cubo resuelto.";
+
+    }
+
+
+    if (button) {
+
+      button.textContent =
+        "✓ Terminado";
+
+      button.disabled =
+        true;
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (moveElement) {
+
+    moveElement.textContent =
+      solutionMoves[
+        solutionIndex
+      ];
+
+  }
+
+
+  if (status) {
+
+    status.textContent =
+      `Movimiento ${solutionIndex + 1} de ${solutionMoves.length}. Pulsa el botón para continuar.`;
+
+  }
+
+}
+
+
+// ==========================================
+// SIGUIENTE MOVIMIENTO
+// ==========================================
+
+async function playNextSolutionMove() {
+
+  if (solving) {
+    return;
+  }
+
+
+  if (
+    solutionIndex >=
+    solutionMoves.length
+  ) {
+    return;
+  }
+
+
+  solving = true;
+
+
+  const move =
+    solutionMoves[
+      solutionIndex
+    ];
+
+
+  const moveElement =
+    document.getElementById(
+      "solutionMove"
+    );
+
+
+  if (moveElement) {
+
+    moveElement.textContent =
+      move;
+
+  }
+
+
+  /*
+   * Animación lenta para que el usuario
+   * pueda seguir el movimiento.
+   */
+
+  await animateSolutionMove(move);
+
+
+  solutionIndex++;
+
+
+  solving = false;
+
+
+  showCurrentSolutionMove();
+
+}
+
+
+// ==========================================
+// ANIMAR MOVIMIENTO
+// ==========================================
+
+function animateSolutionMove(move) {
+
+  return new Promise(
+    function (resolve) {
+
+      /*
+       * Esta versión muestra el movimiento
+       * lentamente en pantalla.
+       *
+       * Más adelante el movimiento también
+       * puede conectarse directamente con
+       * el cubo 3D principal.
+       */
 
       const status =
         document.getElementById(
-          "cmSolutionStatus"
-        );
-
-
-      const moves =
-        document.getElementById(
-          "cmSolutionMoves"
+          "solutionStatus"
         );
 
 
       if (status) {
 
         status.textContent =
-          "Estado del cubo recibido correctamente.";
+          `Realiza lentamente el movimiento ${move} en tu cubo físico...`;
 
       }
 
 
-      if (moves) {
+      setTimeout(
+        function () {
 
-        moves.innerHTML = `
-          <strong style="
-            display:block;
-            color:white;
-            font-size:18px;
-            margin-bottom:8px;
-          ">
-            Cubo ${selectedCubeSize}×${selectedCubeSize}
-          </strong>
+          resolve();
 
-          <span>
-            Las 6 caras fueron registradas.
-          </span>
-        `;
+        },
+        1500
+      );
 
-      }
-
-    },
-    700
+    }
   );
 
+}
 
-  const closeButton =
+
+// ==========================================
+// CERRAR SOLUCIONADOR
+// ==========================================
+
+function closeCubeSolver() {
+
+  const solver =
     document.getElementById(
-      "cmCloseSolution"
+      "cubeSolver"
     );
 
 
-  if (closeButton) {
+  if (solver) {
 
-    closeButton.addEventListener(
-      "click",
-      function () {
-
-        panel.remove();
-
-      }
-    );
+    solver.remove();
 
   }
 
 
-  const startButton =
-    document.getElementById(
-      "cmStartSolution"
-    );
-
-
-  if (startButton) {
-
-    startButton.addEventListener(
-      "click",
-      function () {
-
-        panel.remove();
-
-
-        alert(
-          "La entrada de colores funciona correctamente. El siguiente módulo será el algoritmo que calculará los movimientos reales para resolver el cubo."
-        );
-
-      }
-    );
-
-  }
+  referenceScene = null;
+  referenceCamera = null;
+  referenceRenderer = null;
+  referenceCube = null;
 
 }
 
@@ -2101,40 +2332,31 @@ if (backToHomeButton) {
       document
         .querySelectorAll(".page")
         .forEach(
-          function (page) {
-
+          page =>
             page.classList.remove(
               "active-page"
-            );
-
-          }
+            )
         );
 
 
-      const homePage =
-        document.getElementById(
+      document
+        .getElementById(
           "homePage"
-        );
-
-
-      if (homePage) {
-
-        homePage.classList.add(
+        )
+        ?.classList.add(
           "active-page"
         );
 
-      }
 
-
-      const bottomNav =
+      const nav =
         document.querySelector(
           ".bottom-nav"
         );
 
 
-      if (bottomNav) {
+      if (nav) {
 
-        bottomNav.style.display =
+        nav.style.display =
           "flex";
 
       }
