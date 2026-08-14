@@ -3,279 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>CubeMaster</title>
 
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* ==========================================
-       SOLUCIONADOR
-    ========================================== */
-
-    #cubeSolver {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-
-      background: #020617;
-
-      overflow-y: auto;
-
-      padding: 20px;
-
-      box-sizing: border-box;
-    }
-
-    .solver-wrapper {
-      width: min(100%, 900px);
-
-      margin: 0 auto;
-
-      text-align: center;
-    }
-
-    .solver-title {
-      margin-bottom: 15px;
-    }
-
-    .solver-title h1 {
-      color: white;
-
-      margin: 0 0 8px;
-    }
-
-    .solver-title p {
-      color: #94a3b8;
-
-      margin: 0;
-    }
-
-    /* ==========================================
-       CUBO DE REFERENCIA
-    ========================================== */
-
-    .reference-cube-box {
-      width: min(100%, 520px);
-
-      height: 340px;
-
-      margin: 15px auto;
-
-      border-radius: 20px;
-
-      background:
-        radial-gradient(
-          circle at center,
-          rgba(30, 64, 175, .18),
-          transparent 65%
-        ),
-        #0f172a;
-
-      border: 1px solid rgba(255,255,255,.08);
-
-      overflow: hidden;
-
-      position: relative;
-    }
-
-    #referenceCube {
-      width: 100%;
-      height: 100%;
-    }
-
-    #referenceCube canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .face-instruction {
-      color: white;
-
-      font-size: 18px;
-
-      font-weight: bold;
-
-      margin: 10px 0;
-    }
-
-    .face-progress {
-      color: #60a5fa;
-
-      font-size: 14px;
-
-      margin-bottom: 15px;
-    }
-
-    /* ==========================================
-       COLORES
-    ========================================== */
-
-    .solver-colors {
-      display: flex;
-
-      justify-content: center;
-
-      flex-wrap: wrap;
-
-      gap: 10px;
-
-      margin: 15px auto;
-
-      max-width: 500px;
-    }
-
-    .solver-color {
-      width: 45px;
-      height: 45px;
-
-      border-radius: 50%;
-
-      border: 3px solid transparent;
-
-      cursor: pointer;
-
-      box-sizing: border-box;
-
-      transition: .2s;
-    }
-
-    .solver-color:hover {
-      transform: scale(1.08);
-    }
-
-    .solver-color.selected {
-      border-color: white;
-
-      transform: scale(1.12);
-
-      box-shadow:
-        0 0 15px
-        rgba(255,255,255,.35);
-    }
-
-    /* ==========================================
-       CUADRÍCULA
-    ========================================== */
-
-    .input-face-container {
-      width: min(100%, 360px);
-
-      margin: 20px auto;
-    }
-
-    .input-face-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(var(--cube-size), 1fr);
-
-      gap: 6px;
-
-      background: #020617;
-
-      padding: 10px;
-
-      border-radius: 15px;
-
-      border: 1px solid #334155;
-    }
-
-    .input-square {
-      aspect-ratio: 1;
-
-      border-radius: 7px;
-
-      background: #111827;
-
-      border: 2px solid #334155;
-
-      cursor: pointer;
-
-      transition: .15s;
-    }
-
-    .input-square:hover {
-      transform: scale(.95);
-    }
-
-    .solver-actions {
-      display: flex;
-
-      justify-content: center;
-
-      gap: 10px;
-
-      flex-wrap: wrap;
-
-      margin-top: 20px;
-
-      padding-bottom: 30px;
-    }
-
-    /* ==========================================
-       SOLUCIÓN
-    ========================================== */
-
-    .solution-panel {
-      width: min(100%, 600px);
-
-      margin: 20px auto;
-
-      padding: 20px;
-
-      background: #0f172a;
-
-      border: 1px solid #334155;
-
-      border-radius: 20px;
-
-      color: white;
-    }
-
-    .solution-move {
-      font-size: 40px;
-
-      font-weight: bold;
-
-      color: #60a5fa;
-
-      margin: 15px 0;
-    }
-
-    .solution-status {
-      color: #94a3b8;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 600px) {
-
-      #cubeSolver {
-        padding: 12px;
-      }
-
-      .reference-cube-box {
-        height: 290px;
-      }
-
-      .solver-color {
-        width: 40px;
-        height: 40px;
-      }
-
-    }
-  </style>
 </head>
 
 <body>
 
-  <!-- ==========================================
-       LOGIN
-  ========================================== -->
+  <!-- LOGIN -->
 
   <section id="loginScreen" class="screen active">
 
@@ -295,9 +30,7 @@
         placeholder="Correo electrónico"
       >
 
-      <button
-        id="loginButton"
-        class="primary-button">
+      <button id="loginButton" class="primary-button">
         Ingresar
       </button>
 
@@ -306,42 +39,29 @@
   </section>
 
 
-  <!-- ==========================================
-       APLICACIÓN
-  ========================================== -->
+  <!-- APP -->
 
   <section id="appScreen">
 
     <header class="header">
 
       <div>
-
         <h2>CubeMaster</h2>
-
-        <p>
-          Tu espacio para practicar
-        </p>
-
+        <p>Tu espacio para practicar</p>
       </div>
 
-      <div class="header-logo">
-        ◆
-      </div>
+      <div class="header-logo">◆</div>
 
     </header>
 
 
     <!-- INICIO -->
 
-    <main
-      id="homePage"
-      class="page active-page">
+    <main id="homePage" class="page active-page">
 
       <div class="title">
 
-        <h1>
-          Mis cubos
-        </h1>
+        <h1>Mis cubos</h1>
 
         <p>
           Elige un cubo para practicar
@@ -360,12 +80,9 @@
           </div>
 
           <h3>2×2</h3>
-
           <p>Principiante</p>
 
-          <button
-            class="practice-button"
-            data-cube="2">
+          <button class="practice-button" data-cube="2">
             Practicar
           </button>
 
@@ -381,12 +98,9 @@
           </div>
 
           <h3>3×3</h3>
-
           <p>Clásico</p>
 
-          <button
-            class="practice-button"
-            data-cube="3">
+          <button class="practice-button" data-cube="3">
             Practicar
           </button>
 
@@ -403,12 +117,9 @@
           </div>
 
           <h3>4×4</h3>
-
           <p>Avanzado</p>
 
-          <button
-            class="practice-button"
-            data-cube="4">
+          <button class="practice-button" data-cube="4">
             Practicar
           </button>
 
@@ -418,22 +129,17 @@
         <div class="cube-card">
 
           <div class="cube cube-5x5">
-
             <i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i>
-
           </div>
 
           <h3>5×5</h3>
-
           <p>Experto</p>
 
-          <button
-            class="practice-button"
-            data-cube="5">
+          <button class="practice-button" data-cube="5">
             Practicar
           </button>
 
@@ -443,23 +149,18 @@
         <div class="cube-card">
 
           <div class="cube cube-6x6">
-
             <i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i>
-
           </div>
 
           <h3>6×6</h3>
-
           <p>Experto</p>
 
-          <button
-            class="practice-button"
-            data-cube="6">
+          <button class="practice-button" data-cube="6">
             Practicar
           </button>
 
@@ -469,24 +170,19 @@
         <div class="cube-card">
 
           <div class="cube cube-7x7">
-
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
           </div>
 
           <h3>7×7</h3>
-
           <p>Profesional</p>
 
-          <button
-            class="practice-button"
-            data-cube="7">
+          <button class="practice-button" data-cube="7">
             Practicar
           </button>
 
@@ -497,19 +193,13 @@
     </main>
 
 
-    <!-- ==========================================
-         PRACTICAR
-    ========================================== -->
+    <!-- PRACTICAR -->
 
-    <main
-      id="cubePracticePage"
-      class="page">
+    <main id="cubePracticePage" class="page">
 
       <div class="cube-practice-header">
 
-        <button
-          id="backToHome"
-          class="secondary-button">
+        <button id="backToHome" class="secondary-button">
           ← Volver
         </button>
 
@@ -533,9 +223,7 @@
 
       <div class="cube-actions">
 
-        <button
-          id="solveButton"
-          class="primary-button">
+        <button id="solveButton" class="primary-button">
           🧠 Resolver
         </button>
 
@@ -544,13 +232,9 @@
     </main>
 
 
-    <!-- ==========================================
-         TEMPORIZADOR
-    ========================================== -->
+    <!-- TEMPORIZADOR -->
 
-    <main
-      id="timerPage"
-      class="page">
+    <main id="timerPage" class="page">
 
       <div class="timer-container">
 
@@ -572,21 +256,15 @@
 
         <div class="timer-buttons">
 
-          <button
-            id="startTimer"
-            class="primary-button">
+          <button id="startTimer" class="primary-button">
             Iniciar
           </button>
 
-          <button
-            id="stopTimer"
-            class="secondary-button">
+          <button id="stopTimer" class="secondary-button">
             Detener
           </button>
 
-          <button
-            id="resetTimer"
-            class="secondary-button">
+          <button id="resetTimer" class="secondary-button">
             Reiniciar
           </button>
 
@@ -597,13 +275,9 @@
     </main>
 
 
-    <!-- ==========================================
-         PERFIL
-    ========================================== -->
+    <!-- PERFIL -->
 
-    <main
-      id="profilePage"
-      class="page">
+    <main id="profilePage" class="page">
 
       <div class="profile-card">
 
@@ -643,37 +317,32 @@
     </main>
 
 
-    <!-- ==========================================
-         MENÚ
-    ========================================== -->
+    <!-- MENÚ -->
 
     <nav class="bottom-nav">
 
       <button
         class="nav-button active"
-        data-page="homePage">
-
+        data-page="homePage"
+      >
         <span>⌂</span>
         <small>Inicio</small>
-
       </button>
 
       <button
         class="nav-button"
-        data-page="timerPage">
-
+        data-page="timerPage"
+      >
         <span>⏱</span>
         <small>Temporizador</small>
-
       </button>
 
       <button
         class="nav-button"
-        data-page="profilePage">
-
+        data-page="profilePage"
+      >
         <span>♙</span>
         <small>Perfil</small>
-
       </button>
 
     </nav>
@@ -681,9 +350,7 @@
   </section>
 
 
-  <!-- ==========================================
-       THREE.JS
-  ========================================== -->
+  <!-- THREE.JS -->
 
   <script type="importmap">
   {
@@ -694,10 +361,7 @@
   }
   </script>
 
-  <script
-    type="module"
-    src="script.js">
-  </script>
+  <script type="module" src="script.js"></script>
 
 </body>
 </html>
