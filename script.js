@@ -755,58 +755,104 @@ function getFaceIndex(face, x, y, z) {
 
   switch (face) {
 
+    // ======================================
     // FRENTE
+    // ======================================
+
     case "F":
 
-      row = size - 1 - y;
-      col = x;
+      row =
+        size - 1 - y;
+
+      col =
+        x;
 
       break;
 
 
+    // ======================================
     // DERECHA
+    // ======================================
+
     case "R":
 
-      row = size - 1 - y;
-      col = size - 1 - z;
+      row =
+        size - 1 - y;
+
+      col =
+        size - 1 - z;
 
       break;
 
 
+    // ======================================
     // ATRÁS
+    // ======================================
+
     case "B":
 
-      row = size - 1 - y;
-      col = size - 1 - x;
+      row =
+        size - 1 - y;
+
+      col =
+        size - 1 - x;
 
       break;
 
 
+    // ======================================
     // IZQUIERDA
+    // ======================================
+
     case "L":
 
-      row = size - 1 - y;
-      col = z;
+      row =
+        size - 1 - y;
+
+      col =
+        z;
 
       break;
 
 
+    // ======================================
     // ABAJO
-    // ORIENTACIÓN CORREGIDA
+    // ======================================
+    //
+    // Esta orientación se mantiene para que
+    // la cara D quede correctamente orientada
+    // cuando el cubo baja.
+    //
+
     case "D":
 
-      row = size - 1 - z;
-      col = x;
+      row =
+        size - 1 - z;
+
+      col =
+        x;
 
       break;
 
 
+    // ======================================
     // ARRIBA
-    // ORIENTACIÓN CORREGIDA
+    // ======================================
+    //
+    // CORRECCIÓN IMPORTANTE
+    //
+    // La cara U necesita invertir la columna
+    // para que los colores no aparezcan
+    // volteados cuando el cubo sube.
+    //
+
     case "U":
 
-      row = size - 1 - z;
-      col = x;
+      row =
+        z;
+
+      col =
+        x;
 
       break;
 
@@ -820,7 +866,10 @@ function getFaceIndex(face, x, y, z) {
 
   }
 
-  return row * size + col;
+  return (
+    row * size +
+    col
+  );
 
 }
 
@@ -1585,13 +1634,11 @@ function rotateReferenceToFace(
 
 
   // ==========================================
-  // IZQUIERDA → ABAJO
+  // HACIA ABAJO
   // ==========================================
   //
-  // Ahora el cubo simplemente BAJA.
-  //
-  // No hacemos el movimiento intermedio
-  // hacia el frente.
+  // Baja directamente hacia la cara D.
+  // Sin giro intermedio.
   // ==========================================
 
   if (face === "D") {
@@ -1621,11 +1668,8 @@ function rotateReferenceToFace(
   // ABAJO → ARRIBA
   // ==========================================
   //
-  // Este es el movimiento que dijiste
-  // que te gustó.
-  //
-  // Desde abajo sube directamente hacia
-  // la cara superior.
+  // Mantiene el movimiento que te gustó:
+  // desde abajo sube directamente.
   // ==========================================
 
   if (
