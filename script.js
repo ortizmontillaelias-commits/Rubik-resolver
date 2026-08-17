@@ -193,7 +193,7 @@ function startTimer() {
   if (timerStatus) {
 
     timerStatus.textContent =
-      "Temporizador funcionando...";
+      "⏱️ Temporizador funcionando...";
 
   }
 
@@ -217,7 +217,7 @@ function stopTimer() {
   if (timerStatus) {
 
     timerStatus.textContent =
-      "Tiempo detenido.";
+      "⏸️ Tiempo detenido. Presiona ESPACIO o toca el cronómetro para continuar.";
 
   }
 
@@ -227,14 +227,6 @@ function stopTimer() {
 // ==========================================
 // TOCAR EL CRONÓMETRO
 // ==========================================
-//
-// CELULAR:
-// Tocar el cronómetro inicia/detiene.
-//
-// PC:
-// El cronómetro también puede recibir clic,
-// aunque el método principal en PC es ESPACIO.
-//
 
 if (timerDisplay) {
 
@@ -254,6 +246,7 @@ if (timerDisplay) {
 
     }
   );
+
 
   timerDisplay.addEventListener(
     "touchstart",
@@ -305,12 +298,7 @@ resetTimerButton?.addEventListener(
 
     }
 
-    if (timerStatus) {
-
-      timerStatus.textContent =
-        "Presiona iniciar para comenzar";
-
-    }
+    updateTimerInstruction();
 
   }
 );
@@ -319,14 +307,6 @@ resetTimerButton?.addEventListener(
 // ==========================================
 // ESPACIO EN PC
 // ==========================================
-//
-// ESPACIO:
-// - Si está detenido → inicia.
-// - Si está funcionando → detiene.
-//
-// No funciona mientras se escribe en
-// un input, textarea o elemento editable.
-//
 
 document.addEventListener(
   "keydown",
@@ -368,15 +348,26 @@ function updateTimerInstruction() {
 
   if (!timerStatus) return;
 
+  if (timerRunning) {
+
+    timerStatus.textContent =
+      "⏱️ Temporizador funcionando...";
+
+    return;
+
+  }
+
   const isMobile =
     window.matchMedia(
       "(max-width: 768px)"
     ).matches;
 
-  if (timerRunning) {
+  if (elapsedTime > 0) {
 
     timerStatus.textContent =
-      "Temporizador funcionando...";
+      isMobile
+        ? "👆 Toca el cronómetro para continuar"
+        : "⌨️ Presiona ESPACIO para continuar";
 
     return;
 
