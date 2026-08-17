@@ -163,14 +163,20 @@ function updateTimer() {
     Date.now() - startTime;
 
   if (timerDisplay) {
+
     timerDisplay.textContent =
       formatTime(elapsedTime);
+
   }
 
 }
 
 
-startTimerButton?.addEventListener("click", () => {
+// ==========================================
+// INICIAR TEMPORIZADOR
+// ==========================================
+
+function startTimer() {
 
   if (timerRunning) return;
 
@@ -183,49 +189,175 @@ startTimerButton?.addEventListener("click", () => {
     setInterval(updateTimer, 10);
 
   if (timerStatus) {
+
     timerStatus.textContent =
       "Temporizador funcionando...";
+
   }
 
-});
+}
 
 
-stopTimerButton?.addEventListener("click", () => {
+// ==========================================
+// DETENER TEMPORIZADOR
+// ==========================================
+
+function stopTimer() {
 
   if (!timerRunning) return;
 
   clearInterval(timerInterval);
 
-  timerRunning = false;
   timerInterval = null;
 
+  timerRunning = false;
+
   if (timerStatus) {
+
     timerStatus.textContent =
       "Tiempo detenido.";
+
   }
 
-});
+}
 
 
-resetTimerButton?.addEventListener("click", () => {
+// ==========================================
+// BOTÓN INICIAR
+// ==========================================
 
-  clearInterval(timerInterval);
+startTimerButton?.addEventListener(
+  "click",
+  startTimer
+);
 
-  timerInterval = null;
-  timerRunning = false;
-  elapsedTime = 0;
 
-  if (timerDisplay) {
-    timerDisplay.textContent =
-      "00:00.00";
+// ==========================================
+// BOTÓN DETENER
+// ==========================================
+
+stopTimerButton?.addEventListener(
+  "click",
+  stopTimer
+);
+
+
+// ==========================================
+// BOTÓN REINICIAR
+// ==========================================
+
+resetTimerButton?.addEventListener(
+  "click",
+  () => {
+
+    clearInterval(timerInterval);
+
+    timerInterval = null;
+
+    timerRunning = false;
+
+    elapsedTime = 0;
+
+    if (timerDisplay) {
+
+      timerDisplay.textContent =
+        "00:00.00";
+
+    }
+
+    if (timerStatus) {
+
+      timerStatus.textContent =
+        "Presiona iniciar para comenzar";
+
+    }
+
   }
+);
 
-  if (timerStatus) {
-    timerStatus.textContent =
-      "Presiona iniciar para comenzar";
+
+// ==========================================
+// ESPACIO EN PC
+// ==========================================
+//
+// ESPACIO:
+// - Si está detenido → inicia.
+// - Si está funcionando → detiene.
+//
+// No funciona mientras se escribe en
+// un input, textarea o elemento editable.
+//
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.code !== "Space") return;
+
+    const target =
+      event.target;
+
+    const isTyping =
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target.isContentEditable;
+
+    if (isTyping) return;
+
+    event.preventDefault();
+
+    if (timerRunning) {
+
+      stopTimer();
+
+    } else {
+
+      startTimer();
+
+    }
+
   }
+);
 
-});
+
+// ==========================================
+// TOQUE EN CELULAR
+// ==========================================
+//
+// Tocando el display del temporizador:
+// - Si está detenido → inicia.
+// - Si está funcionando → detiene.
+//
+// Se usa el display para evitar que tocar
+// otros botones de la aplicación active
+// accidentalmente el temporizador.
+//
+
+if (timerDisplay) {
+
+  timerDisplay.addEventListener(
+    "touchstart",
+    event => {
+
+      event.preventDefault();
+
+      if (timerRunning) {
+
+        stopTimer();
+
+      } else {
+
+        startTimer();
+
+      }
+
+    },
+    {
+      passive: false
+    }
+  );
+
+}
 
 
 // ==========================================
@@ -340,23 +472,36 @@ function openCubePractice(size) {
     document.getElementById("selectedCubeTitle");
 
   if (title) {
+
     title.textContent =
       `Cubo ${size}×${size}`;
+
   }
 
   pages.forEach(page => {
-    page.classList.remove("active-page");
+
+    page.classList.remove(
+      "active-page"
+    );
+
   });
 
   document
     .getElementById("cubePracticePage")
-    ?.classList.add("active-page");
+    ?.classList.add(
+      "active-page"
+    );
 
   const nav =
-    document.querySelector(".bottom-nav");
+    document.querySelector(
+      ".bottom-nav"
+    );
 
   if (nav) {
-    nav.style.display = "none";
+
+    nav.style.display =
+      "none";
+
   }
 
   createRubiksCube(size);
@@ -371,7 +516,9 @@ function openCubePractice(size) {
 function createRubiksCube(size) {
 
   const container =
-    document.getElementById("rubiks3D");
+    document.getElementById(
+      "rubiks3D"
+    );
 
   if (!container) return;
 
@@ -383,7 +530,9 @@ function createRubiksCube(size) {
     new THREE.Scene();
 
   cubeScene.background =
-    new THREE.Color(0x020617);
+    new THREE.Color(
+      0x020617
+    );
 
   cubeCamera =
     new THREE.PerspectiveCamera(
@@ -427,7 +576,9 @@ function createRubiksCube(size) {
       2.2
     );
 
-  cubeScene.add(ambient);
+  cubeScene.add(
+    ambient
+  );
 
   const directional =
     new THREE.DirectionalLight(
@@ -581,7 +732,6 @@ function createStickerMaterials(
 
   return [
 
-    // RIGHT
     new THREE.MeshStandardMaterial({
       color:
         x === size - 1
@@ -589,7 +739,6 @@ function createStickerMaterials(
           : black
     }),
 
-    // LEFT
     new THREE.MeshStandardMaterial({
       color:
         x === 0
@@ -597,7 +746,6 @@ function createStickerMaterials(
           : black
     }),
 
-    // UP
     new THREE.MeshStandardMaterial({
       color:
         y === size - 1
@@ -605,7 +753,6 @@ function createStickerMaterials(
           : black
     }),
 
-    // DOWN
     new THREE.MeshStandardMaterial({
       color:
         y === 0
@@ -613,7 +760,6 @@ function createStickerMaterials(
           : black
     }),
 
-    // FRONT
     new THREE.MeshStandardMaterial({
       color:
         z === size - 1
@@ -621,7 +767,6 @@ function createStickerMaterials(
           : black
     }),
 
-    // BACK
     new THREE.MeshStandardMaterial({
       color:
         z === 0
@@ -742,10 +887,15 @@ function update3DCubeColors() {
 
 
 // ==========================================
-// POSICIÓN CORRECTA DE CADA STICKER
+// POSICIÓN DE STICKER
 // ==========================================
 
-function getFaceIndex(face, x, y, z) {
+function getFaceIndex(
+  face,
+  x,
+  y,
+  z
+) {
 
   const size =
     selectedCubeSize;
@@ -754,10 +904,6 @@ function getFaceIndex(face, x, y, z) {
   let col = 0;
 
   switch (face) {
-
-    // ======================================
-    // FRENTE
-    // ======================================
 
     case "F":
 
@@ -769,11 +915,6 @@ function getFaceIndex(face, x, y, z) {
 
       break;
 
-
-    // ======================================
-    // DERECHA
-    // ======================================
-
     case "R":
 
       row =
@@ -783,11 +924,6 @@ function getFaceIndex(face, x, y, z) {
         size - 1 - z;
 
       break;
-
-
-    // ======================================
-    // ATRÁS
-    // ======================================
 
     case "B":
 
@@ -799,11 +935,6 @@ function getFaceIndex(face, x, y, z) {
 
       break;
 
-
-    // ======================================
-    // IZQUIERDA
-    // ======================================
-
     case "L":
 
       row =
@@ -813,16 +944,6 @@ function getFaceIndex(face, x, y, z) {
         z;
 
       break;
-
-
-    // ======================================
-    // ABAJO
-    // ======================================
-    //
-    // Esta orientación se mantiene para que
-    // la cara D quede correctamente orientada
-    // cuando el cubo baja.
-    //
 
     case "D":
 
@@ -834,18 +955,6 @@ function getFaceIndex(face, x, y, z) {
 
       break;
 
-
-    // ======================================
-    // ARRIBA
-    // ======================================
-    //
-    // CORRECCIÓN IMPORTANTE
-    //
-    // La cara U necesita invertir la columna
-    // para que los colores no aparezcan
-    // volteados cuando el cubo sube.
-    //
-
     case "U":
 
       row =
@@ -856,13 +965,10 @@ function getFaceIndex(face, x, y, z) {
 
       break;
 
-
     default:
 
       row = 0;
       col = 0;
-
-      break;
 
   }
 
@@ -920,14 +1026,18 @@ function setFaceSticker(
 function resizeRubiksCube() {
 
   const container =
-    document.getElementById("rubiks3D");
+    document.getElementById(
+      "rubiks3D"
+    );
 
   if (
     !container ||
     !cubeRenderer ||
     !cubeCamera
   ) {
+
     return;
+
   }
 
   const width =
@@ -940,7 +1050,9 @@ function resizeRubiksCube() {
     width <= 0 ||
     height <= 0
   ) {
+
     return;
+
   }
 
   cubeCamera.aspect =
@@ -1039,7 +1151,9 @@ function openCubeSolver() {
     );
 
   if (oldSolver) {
+
     oldSolver.remove();
+
   }
 
   const solver =
@@ -1541,42 +1655,36 @@ function rotateReferenceToFace(
 
   const targets = {
 
-    // FRENTE
     F: {
       x: 0,
       y: 0,
       z: 0
     },
 
-    // DERECHA
     R: {
       x: 0,
       y: -Math.PI / 2,
       z: 0
     },
 
-    // ATRÁS
     B: {
       x: 0,
       y: -Math.PI,
       z: 0
     },
 
-    // IZQUIERDA
     L: {
       x: 0,
       y: Math.PI / 2,
       z: 0
     },
 
-    // ABAJO
     D: {
       x: -Math.PI / 2,
       y: 0,
       z: 0
     },
 
-    // ARRIBA
     U: {
       x: Math.PI / 2,
       y: 0,
@@ -1590,25 +1698,16 @@ function rotateReferenceToFace(
 
   if (!target) return;
 
-
-  // ==========================================
-  // CANCELAR ANIMACIÓN ANTERIOR
-  // ==========================================
-
   if (referenceRotationAnimation) {
 
     cancelAnimationFrame(
       referenceRotationAnimation
     );
 
-    referenceRotationAnimation = null;
+    referenceRotationAnimation =
+      null;
 
   }
-
-
-  // ==========================================
-  // POSICIÓN INSTANTÁNEA
-  // ==========================================
 
   if (instant) {
 
@@ -1622,7 +1721,6 @@ function rotateReferenceToFace(
 
   }
 
-
   const currentX =
     referenceCube.rotation.x;
 
@@ -1631,15 +1729,6 @@ function rotateReferenceToFace(
 
   const currentZ =
     referenceCube.rotation.z;
-
-
-  // ==========================================
-  // HACIA ABAJO
-  // ==========================================
-  //
-  // Baja directamente hacia la cara D.
-  // Sin giro intermedio.
-  // ==========================================
 
   if (face === "D") {
 
@@ -1663,18 +1752,11 @@ function rotateReferenceToFace(
 
   }
 
-
-  // ==========================================
-  // ABAJO → ARRIBA
-  // ==========================================
-  //
-  // Mantiene el movimiento que te gustó:
-  // desde abajo sube directamente.
-  // ==========================================
-
   if (
     face === "U" &&
-    Math.abs(currentX + Math.PI / 2) < 0.25
+    Math.abs(
+      currentX + Math.PI / 2
+    ) < 0.25
   ) {
 
     animateReferenceRotation(
@@ -1696,11 +1778,6 @@ function rotateReferenceToFace(
     return;
 
   }
-
-
-  // ==========================================
-  // MOVIMIENTO NORMAL
-  // ==========================================
 
   animateReferenceRotation(
     target.x,
@@ -1736,11 +1813,6 @@ function animateReferenceRotation(
   const startZ =
     referenceCube.rotation.z;
 
-
-  // ==========================================
-  // GIRO MÁS CORTO EN Y
-  // ==========================================
-
   let differenceY =
     targetY - startY;
 
@@ -1765,10 +1837,8 @@ function animateReferenceRotation(
   const finalY =
     startY + differenceY;
 
-
   const animationStart =
     performance.now();
-
 
   function animation(now) {
 
@@ -1781,14 +1851,12 @@ function animateReferenceRotation(
 
     }
 
-
     const progress =
       Math.min(
         (now - animationStart) /
         duration,
         1
       );
-
 
     const eased =
       1 -
@@ -1797,14 +1865,12 @@ function animateReferenceRotation(
         3
       );
 
-
     referenceCube.rotation.x =
       startX +
       (
         targetX - startX
       ) *
       eased;
-
 
     referenceCube.rotation.y =
       startY +
@@ -1813,14 +1879,12 @@ function animateReferenceRotation(
       ) *
       eased;
 
-
     referenceCube.rotation.z =
       startZ +
       (
         targetZ - startZ
       ) *
       eased;
-
 
     if (progress < 1) {
 
@@ -1829,9 +1893,7 @@ function animateReferenceRotation(
           animation
         );
 
-    }
-
-    else {
+    } else {
 
       referenceCube.rotation.set(
         targetX,
@@ -1842,7 +1904,6 @@ function animateReferenceRotation(
       referenceRotationAnimation =
         null;
 
-
       if (onComplete) {
 
         onComplete();
@@ -1852,7 +1913,6 @@ function animateReferenceRotation(
     }
 
   }
-
 
   referenceRotationAnimation =
     requestAnimationFrame(
@@ -1878,7 +1938,9 @@ function resizeReferenceCube() {
     !referenceRenderer ||
     !referenceCamera
   ) {
+
     return;
+
   }
 
   const width =
@@ -1891,7 +1953,9 @@ function resizeReferenceCube() {
     width <= 0 ||
     height <= 0
   ) {
+
     return;
+
   }
 
   referenceCamera.aspect =
@@ -1946,7 +2010,9 @@ function animateReferenceCube() {
 function renderCurrentFace() {
 
   const face =
-    solverFaces[currentFaceIndex];
+    solverFaces[
+      currentFaceIndex
+    ];
 
   const size =
     selectedCubeSize;
@@ -1968,7 +2034,6 @@ function renderCurrentFace() {
 
   if (!container) return;
 
-
   const faceNames = {
 
     F: "FRENTE",
@@ -1980,14 +2045,12 @@ function renderCurrentFace() {
 
   };
 
-
   if (instruction) {
 
     instruction.textContent =
       `Selecciona los colores de la cara ${faceNames[face]}`;
 
   }
-
 
   if (progress) {
 
@@ -1996,9 +2059,7 @@ function renderCurrentFace() {
 
   }
 
-
   container.innerHTML = "";
-
 
   const grid =
     document.createElement(
@@ -2013,10 +2074,8 @@ function renderCurrentFace() {
     size
   );
 
-
   const total =
     size * size;
-
 
   for (
     let i = 0;
@@ -2032,10 +2091,8 @@ function renderCurrentFace() {
     square.className =
       "input-square";
 
-
     const savedColor =
       cubeInputData[face][i];
-
 
     if (savedColor) {
 
@@ -2044,7 +2101,6 @@ function renderCurrentFace() {
 
     }
 
-
     square.addEventListener(
       "click",
       () => {
@@ -2052,18 +2108,15 @@ function renderCurrentFace() {
         cubeInputData[face][i] =
           currentSelectedColor;
 
-
         square.style.background =
           solverColors[
             currentSelectedColor
           ];
 
-
         updateReferenceColors();
 
       }
     );
-
 
     grid.appendChild(
       square
@@ -2071,17 +2124,14 @@ function renderCurrentFace() {
 
   }
 
-
   container.appendChild(
     grid
   );
-
 
   rotateReferenceToFace(
     face,
     false
   );
-
 
   updateReferenceColors();
 
@@ -2116,11 +2166,9 @@ function setupSolverButtons() {
 
             });
 
-
           button.classList.add(
             "selected"
           );
-
 
           currentSelectedColor =
             button.dataset.color;
@@ -2129,7 +2177,6 @@ function setupSolverButtons() {
       );
 
     });
-
 
   document
     .getElementById(
@@ -2144,19 +2191,16 @@ function setupSolverButtons() {
             currentFaceIndex
           ];
 
-
         cubeInputData[face] =
           Array(
             selectedCubeSize *
             selectedCubeSize
           ).fill(null);
 
-
         renderCurrentFace();
 
       }
     );
-
 
   document
     .getElementById(
@@ -2167,7 +2211,6 @@ function setupSolverButtons() {
       nextFace
     );
 
-
   document
     .getElementById(
       "cancelSolverButton"
@@ -2177,7 +2220,6 @@ function setupSolverButtons() {
       closeCubeSolver
     );
 
-
   document
     .getElementById(
       "nextSolutionButton"
@@ -2186,7 +2228,6 @@ function setupSolverButtons() {
       "click",
       playNextSolutionMove
     );
-
 
   document
     .getElementById(
@@ -2211,10 +2252,8 @@ function nextFace() {
       currentFaceIndex
     ];
 
-
   const values =
     cubeInputData[face];
-
 
   if (
     values.some(
@@ -2230,7 +2269,6 @@ function nextFace() {
 
   }
 
-
   if (
     currentFaceIndex <
     solverFaces.length - 1
@@ -2243,7 +2281,6 @@ function nextFace() {
     return;
 
   }
-
 
   finishColorInput();
 
@@ -2267,7 +2304,6 @@ function finishColorInput() {
 
   };
 
-
   for (
     const face of solverFaces
   ) {
@@ -2288,11 +2324,9 @@ function finishColorInput() {
 
   }
 
-
   const expected =
     selectedCubeSize *
     selectedCubeSize;
-
 
   const valid =
     Object.values(counts)
@@ -2300,7 +2334,6 @@ function finishColorInput() {
         count =>
           count === expected
       );
-
 
   if (!valid) {
 
@@ -2311,7 +2344,6 @@ function finishColorInput() {
     return;
 
   }
-
 
   showSolution();
 
@@ -2365,7 +2397,6 @@ function showSolution() {
       "solutionPanel"
     );
 
-
   if (instruction) {
 
     instruction.textContent =
@@ -2373,14 +2404,12 @@ function showSolution() {
 
   }
 
-
   if (progress) {
 
     progress.textContent =
       "Preparando solución...";
 
   }
-
 
   if (input) {
 
@@ -2390,7 +2419,6 @@ function showSolution() {
 
   }
 
-
   if (colors) {
 
     colors.classList.add(
@@ -2398,7 +2426,6 @@ function showSolution() {
     );
 
   }
-
 
   if (actions) {
 
@@ -2408,7 +2435,6 @@ function showSolution() {
 
   }
 
-
   if (solutionPanel) {
 
     solutionPanel.classList.remove(
@@ -2417,17 +2443,14 @@ function showSolution() {
 
   }
 
-
   solutionMoves =
     generateSolutionMoves(
       selectedCubeSize
     );
 
-
   solutionIndex = 0;
 
   solving = false;
-
 
   showCurrentSolutionMove();
 
@@ -2453,16 +2476,13 @@ function generateSolutionMoves(size) {
 
   ];
 
-
   const amount =
     Math.max(
       8,
       size * 2
     );
 
-
   const moves = [];
-
 
   for (
     let i = 0;
@@ -2477,7 +2497,6 @@ function generateSolutionMoves(size) {
     );
 
   }
-
 
   return moves;
 
@@ -2505,7 +2524,6 @@ function showCurrentSolutionMove() {
       "nextSolutionButton"
     );
 
-
   if (
     solutionIndex >=
     solutionMoves.length
@@ -2518,14 +2536,12 @@ function showCurrentSolutionMove() {
 
     }
 
-
     if (status) {
 
       status.textContent =
         "Cubo resuelto.";
 
     }
-
 
     if (button) {
 
@@ -2541,7 +2557,6 @@ function showCurrentSolutionMove() {
 
   }
 
-
   if (moveElement) {
 
     moveElement.textContent =
@@ -2550,7 +2565,6 @@ function showCurrentSolutionMove() {
       ];
 
   }
-
 
   if (status) {
 
@@ -2570,7 +2584,6 @@ async function playNextSolutionMove() {
 
   if (solving) return;
 
-
   if (
     solutionIndex >=
     solutionMoves.length
@@ -2580,15 +2593,12 @@ async function playNextSolutionMove() {
 
   }
 
-
   solving = true;
-
 
   const move =
     solutionMoves[
       solutionIndex
     ];
-
 
   const moveElement =
     document.getElementById(
@@ -2600,7 +2610,6 @@ async function playNextSolutionMove() {
       "solutionStatus"
     );
 
-
   if (moveElement) {
 
     moveElement.textContent =
@@ -2608,14 +2617,12 @@ async function playNextSolutionMove() {
 
   }
 
-
   if (status) {
 
     status.textContent =
       `Realiza lentamente el movimiento ${move} en tu cubo físico...`;
 
   }
-
 
   await new Promise(
     resolve => {
@@ -2628,11 +2635,9 @@ async function playNextSolutionMove() {
     }
   );
 
-
   solutionIndex++;
 
   solving = false;
-
 
   showCurrentSolutionMove();
 
@@ -2650,13 +2655,11 @@ function closeCubeSolver() {
       "cubeSolver"
     );
 
-
   if (solver) {
 
     solver.remove();
 
   }
-
 
   if (referenceRotationAnimation) {
 
@@ -2669,13 +2672,11 @@ function closeCubeSolver() {
 
   }
 
-
   if (referenceRenderer) {
 
     referenceRenderer.dispose();
 
   }
-
 
   referenceScene = null;
   referenceCamera = null;
@@ -2703,7 +2704,6 @@ document
 
       });
 
-
       document
         .getElementById(
           "homePage"
@@ -2712,12 +2712,10 @@ document
           "active-page"
         );
 
-
       const nav =
         document.querySelector(
           ".bottom-nav"
         );
-
 
       if (nav) {
 
@@ -2726,7 +2724,6 @@ document
 
       }
 
-
       if (cubeControls) {
 
         cubeControls.dispose();
@@ -2734,7 +2731,6 @@ document
         cubeControls = null;
 
       }
-
 
       if (cubeRenderer) {
 
@@ -2751,7 +2747,6 @@ document
         cubeRenderer = null;
 
       }
-
 
       cubeScene = null;
       cubeCamera = null;
