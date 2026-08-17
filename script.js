@@ -895,9 +895,7 @@ function animateMove(move) {
     rubiksCube.add(rotationGroup);
 
     pieces.forEach(piece => {
-
       rotationGroup.attach(piece);
-
     });
 
     const startRotation =
@@ -919,7 +917,6 @@ function animateMove(move) {
           1
         );
 
-      // Movimiento suave pero lento.
       const eased =
         progress < 0.5
           ? 4 * progress * progress * progress
@@ -1063,7 +1060,6 @@ async function processMoveQueue() {
 
     await animateMove(move);
 
-    // Pausa pequeña entre movimientos.
     await new Promise(
       resolve =>
         setTimeout(
@@ -1111,22 +1107,6 @@ function executeAlgorithm(algorithm) {
 
   processMoveQueue();
 }
-
-
-// ======================================================
-// PRUEBA DEL MOTOR
-// ======================================================
-
-// Estas funciones quedan disponibles
-// para probar el motor desde la consola.
-//
-// executeMove("R");
-// executeMove("R'");
-// executeMove("R2");
-//
-// executeAlgorithm(
-//   "R U R' U' F R F' U"
-// );
 
 
 // ======================================================
@@ -1749,8 +1729,67 @@ function setReferenceSticker(
 
 
 // ======================================================
-// ORIENTACIÓN REFERENCIA
+// ORIENTACIÓN DE LAS CARAS
 // ======================================================
+//
+// IMPORTANTE:
+//
+// El cubo siempre parte de FRENTE.
+//
+// F -> R -> B -> L
+// Después:
+//
+// L -> D
+// D -> U
+//
+// Para D NO hacemos un giro sobre Z.
+// Solamente bajamos la vista hacia la cara
+// inferior.
+//
+// Después de D, pasamos directamente a U.
+//
+// ======================================================
+
+const faceOrientations = {
+
+  F: {
+    x: 0,
+    y: 0,
+    z: 0
+  },
+
+  R: {
+    x: 0,
+    y: -Math.PI / 2,
+    z: 0
+  },
+
+  B: {
+    x: 0,
+    y: -Math.PI,
+    z: 0
+  },
+
+  L: {
+    x: 0,
+    y: Math.PI / 2,
+    z: 0
+  },
+
+  D: {
+    x: Math.PI / 2,
+    y: 0,
+    z: 0
+  },
+
+  U: {
+    x: -Math.PI / 2,
+    y: 0,
+    z: 0
+  }
+
+};
+
 
 function rotateReferenceToFace(
   face,
@@ -1759,48 +1798,8 @@ function rotateReferenceToFace(
 
   if (!referenceCube) return;
 
-  const targets = {
-
-    F: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-
-    R: {
-      x: 0,
-      y: -Math.PI / 2,
-      z: 0
-    },
-
-    B: {
-      x: 0,
-      y: -Math.PI,
-      z: 0
-    },
-
-    L: {
-      x: 0,
-      y: Math.PI / 2,
-      z: 0
-    },
-
-    D: {
-      x: -Math.PI / 2,
-      y: 0,
-      z: 0
-    },
-
-    U: {
-      x: Math.PI / 2,
-      y: 0,
-      z: 0
-    }
-
-  };
-
   const target =
-    targets[face];
+    faceOrientations[face];
 
   if (!target) return;
 
@@ -1835,7 +1834,7 @@ function rotateReferenceToFace(
 
 
 // ======================================================
-// ANIMACIÓN REFERENCIA LENTA
+// ANIMACIÓN DE ORIENTACIÓN
 // ======================================================
 
 function animateReferenceRotation(
@@ -1862,15 +1861,19 @@ function animateReferenceRotation(
   while (
     differenceY > Math.PI
   ) {
+
     differenceY -=
       Math.PI * 2;
+
   }
 
   while (
     differenceY < -Math.PI
   ) {
+
     differenceY +=
       Math.PI * 2;
+
   }
 
   const finalY =
@@ -1944,7 +1947,9 @@ function animateReferenceRotation(
 
       referenceRotationAnimation =
         null;
+
     }
+
   }
 
   referenceRotationAnimation =
@@ -2104,7 +2109,11 @@ function renderCurrentFace() {
   const total =
     size * size;
 
-  for (let i = 0; i < total; i++) {
+  for (
+    let i = 0;
+    i < total;
+    i++
+  ) {
 
     const square =
       document.createElement(
@@ -2364,17 +2373,8 @@ function finishColorInput() {
 
 
 // ======================================================
-// SOLUCIÓN DEMO DEL MOTOR
+// SOLUCIÓN DEMO
 // ======================================================
-//
-// ESTA PARTE ES TEMPORAL.
-//
-// Aquí estamos comprobando que el motor puede
-// ejecutar movimientos lentamente.
-//
-// Después sustituiremos esto por el solucionador
-// real correspondiente a cada tamaño.
-//
 
 let solutionMoves = [];
 let solutionIndex = 0;
@@ -2533,7 +2533,7 @@ function showSolution() {
 
 
 // ======================================================
-// MOSTRAR MOVIMIENTO ACTUAL
+// MOSTRAR MOVIMIENTO
 // ======================================================
 
 function showCurrentSolutionMove() {
@@ -2649,15 +2649,7 @@ async function playNextSolutionMove() {
       `Ejecutando ${move} lentamente...`;
   }
 
-  /*
-    Aquí se utiliza el motor real.
-  */
-
   executeMove(move);
-
-  // Esperamos aproximadamente
-  // el tiempo del movimiento antes
-  // de permitir el siguiente.
 
   await new Promise(
     resolve =>
