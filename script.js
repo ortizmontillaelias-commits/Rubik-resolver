@@ -9,26 +9,17 @@ import {
 // LOGIN
 // ==========================================
 
-const loginButton =
-  document.getElementById("loginButton");
-
-const emailInput =
-  document.getElementById("emailInput");
+const loginButton = document.getElementById("loginButton");
+const emailInput = document.getElementById("emailInput");
 
 loginButton?.addEventListener("click", login);
 
 emailInput?.addEventListener("keydown", event => {
-
-  if (event.key === "Enter") {
-    login();
-  }
-
+  if (event.key === "Enter") login();
 });
 
 function login() {
-
-  const email =
-    emailInput.value.trim();
+  const email = emailInput.value.trim();
 
   if (!email) {
     alert("Escribe tu correo electrónico.");
@@ -40,37 +31,18 @@ function login() {
     return;
   }
 
-  document
-    .getElementById("loginScreen")
-    ?.classList.add("hidden");
+  document.getElementById("loginScreen")?.classList.add("hidden");
+  document.getElementById("appScreen")?.classList.add("active");
 
-  document
-    .getElementById("appScreen")
-    ?.classList.add("active");
+  const profileEmail = document.getElementById("profileEmail");
+  const profileName = document.getElementById("profileName");
+  const profileAvatar = document.getElementById("profileAvatar");
 
-  const profileEmail =
-    document.getElementById("profileEmail");
-
-  const profileName =
-    document.getElementById("profileName");
-
-  const profileAvatar =
-    document.getElementById("profileAvatar");
-
-  if (profileEmail) {
-    profileEmail.textContent = email;
-  }
-
-  if (profileName) {
-    profileName.textContent =
-      email.split("@")[0];
-  }
-
+  if (profileEmail) profileEmail.textContent = email;
+  if (profileName) profileName.textContent = email.split("@")[0];
   if (profileAvatar) {
-    profileAvatar.textContent =
-      email.charAt(0).toUpperCase();
+    profileAvatar.textContent = email.charAt(0).toUpperCase();
   }
-
 }
 
 
@@ -78,18 +50,13 @@ function login() {
 // NAVEGACIÓN
 // ==========================================
 
-const navigationButtons =
-  document.querySelectorAll(".nav-button");
-
-const pages =
-  document.querySelectorAll(".page");
+const navigationButtons = document.querySelectorAll(".nav-button");
+const pages = document.querySelectorAll(".page");
 
 navigationButtons.forEach(button => {
-
   button.addEventListener("click", () => {
 
-    const pageId =
-      button.dataset.page;
+    const pageId = button.dataset.page;
 
     pages.forEach(page => {
       page.classList.remove("active-page");
@@ -99,14 +66,10 @@ navigationButtons.forEach(button => {
       nav.classList.remove("active");
     });
 
-    document
-      .getElementById(pageId)
-      ?.classList.add("active-page");
+    document.getElementById(pageId)?.classList.add("active-page");
 
     button.classList.add("active");
-
   });
-
 });
 
 
@@ -119,30 +82,15 @@ let startTime = 0;
 let elapsedTime = 0;
 let timerRunning = false;
 
-const timerDisplay =
-  document.getElementById("timerDisplay");
-
-const timerStatus =
-  document.getElementById("timerStatus");
-
-const resetTimerButton =
-  document.getElementById("resetTimer");
-
-
-// ==========================================
-// FORMATO DEL TIEMPO
-// ==========================================
+const timerDisplay = document.getElementById("timerDisplay");
+const timerStatus = document.getElementById("timerStatus");
+const resetTimerButton = document.getElementById("resetTimer");
 
 function formatTime(ms) {
 
-  const minutes =
-    Math.floor(ms / 60000);
-
-  const seconds =
-    Math.floor((ms % 60000) / 1000);
-
-  const centiseconds =
-    Math.floor((ms % 1000) / 10);
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  const centiseconds = Math.floor((ms % 1000) / 10);
 
   return (
     String(minutes).padStart(2, "0") +
@@ -151,58 +99,28 @@ function formatTime(ms) {
     "." +
     String(centiseconds).padStart(2, "0")
   );
-
 }
-
-
-// ==========================================
-// ACTUALIZAR TEMPORIZADOR
-// ==========================================
 
 function updateTimer() {
 
-  elapsedTime =
-    Date.now() - startTime;
+  elapsedTime = Date.now() - startTime;
 
   if (timerDisplay) {
-
-    timerDisplay.textContent =
-      formatTime(elapsedTime);
-
+    timerDisplay.textContent = formatTime(elapsedTime);
   }
-
 }
-
-
-// ==========================================
-// INICIAR TEMPORIZADOR
-// ==========================================
 
 function startTimer() {
 
   if (timerRunning) return;
 
   timerRunning = true;
+  startTime = Date.now() - elapsedTime;
 
-  startTime =
-    Date.now() - elapsedTime;
+  timerInterval = setInterval(updateTimer, 10);
 
-  timerInterval =
-    setInterval(updateTimer, 10);
-
-  if (timerStatus) {
-
-    timerStatus.textContent =
-      "⏱️ Temporizador funcionando...";
-
-  }
-
+  updateTimerInstruction();
 }
-
-
-// ==========================================
-// DETENER TEMPORIZADOR
-// ==========================================
 
 function stopTimer() {
 
@@ -211,42 +129,22 @@ function stopTimer() {
   clearInterval(timerInterval);
 
   timerInterval = null;
-
   timerRunning = false;
 
-  if (timerStatus) {
-
-    timerStatus.textContent =
-      "⏸️ Tiempo detenido. Presiona ESPACIO o toca el cronómetro para continuar.";
-
-  }
-
+  updateTimerInstruction();
 }
-
-
-// ==========================================
-// TOCAR EL CRONÓMETRO
-// ==========================================
 
 if (timerDisplay) {
 
-  timerDisplay.addEventListener(
-    "click",
-    () => {
+  timerDisplay.addEventListener("click", () => {
 
-      if (timerRunning) {
-
-        stopTimer();
-
-      } else {
-
-        startTimer();
-
-      }
-
+    if (timerRunning) {
+      stopTimer();
+    } else {
+      startTimer();
     }
-  );
 
+  });
 
   timerDisplay.addEventListener(
     "touchstart",
@@ -255,94 +153,55 @@ if (timerDisplay) {
       event.preventDefault();
 
       if (timerRunning) {
-
         stopTimer();
-
       } else {
-
         startTimer();
-
       }
 
     },
-    {
-      passive: false
-    }
+    { passive: false }
   );
-
 }
 
+resetTimerButton?.addEventListener("click", event => {
 
-// ==========================================
-// REINICIAR TEMPORIZADOR
-// ==========================================
+  event.stopPropagation();
 
-resetTimerButton?.addEventListener(
-  "click",
-  event => {
+  clearInterval(timerInterval);
 
-    event.stopPropagation();
+  timerInterval = null;
+  timerRunning = false;
+  elapsedTime = 0;
 
-    clearInterval(timerInterval);
-
-    timerInterval = null;
-
-    timerRunning = false;
-
-    elapsedTime = 0;
-
-    if (timerDisplay) {
-
-      timerDisplay.textContent =
-        "00:00.00";
-
-    }
-
-    updateTimerInstruction();
-
+  if (timerDisplay) {
+    timerDisplay.textContent = "00:00.00";
   }
-);
 
+  updateTimerInstruction();
+});
 
-// ==========================================
-// ESPACIO EN PC
-// ==========================================
+document.addEventListener("keydown", event => {
 
-document.addEventListener(
-  "keydown",
-  event => {
+  if (event.code !== "Space") return;
 
-    if (event.code !== "Space") return;
+  const target = event.target;
 
-    const target =
-      event.target;
+  const isTyping =
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target.isContentEditable;
 
-    const isTyping =
-      target instanceof HTMLInputElement ||
-      target instanceof HTMLTextAreaElement ||
-      target.isContentEditable;
+  if (isTyping) return;
 
-    if (isTyping) return;
+  event.preventDefault();
 
-    event.preventDefault();
-
-    if (timerRunning) {
-
-      stopTimer();
-
-    } else {
-
-      startTimer();
-
-    }
-
+  if (timerRunning) {
+    stopTimer();
+  } else {
+    startTimer();
   }
-);
 
-
-// ==========================================
-// MENSAJE SEGÚN DISPOSITIVO
-// ==========================================
+});
 
 function updateTimerInstruction() {
 
@@ -354,49 +213,32 @@ function updateTimerInstruction() {
       "⏱️ Temporizador funcionando...";
 
     return;
-
   }
 
   const isMobile =
-    window.matchMedia(
-      "(max-width: 768px)"
-    ).matches;
+    window.matchMedia("(max-width: 768px)").matches;
 
   if (elapsedTime > 0) {
 
-    timerStatus.textContent =
-      isMobile
-        ? "👆 Toca el cronómetro para continuar"
-        : "⌨️ Presiona ESPACIO para continuar";
+    timerStatus.textContent = isMobile
+      ? "👆 Toca el cronómetro para continuar"
+      : "⌨️ Presiona ESPACIO para continuar";
 
     return;
-
   }
 
-  if (isMobile) {
-
-    timerStatus.textContent =
-      "👆 Toca el cronómetro para iniciar y detener";
-
-  } else {
-
-    timerStatus.textContent =
-      "⌨️ Presiona ESPACIO para iniciar y detener";
-
-  }
-
+  timerStatus.textContent = isMobile
+    ? "👆 Toca el cronómetro para iniciar y detener"
+    : "⌨️ Presiona ESPACIO para iniciar y detener";
 }
 
 updateTimerInstruction();
 
-window.addEventListener(
-  "resize",
-  updateTimerInstruction
-);
+window.addEventListener("resize", updateTimerInstruction);
 
 
 // ==========================================
-// VARIABLES DEL CUBO 3D
+// VARIABLES DEL CUBO
 // ==========================================
 
 let cubeScene = null;
@@ -411,7 +253,7 @@ let selectedCubeSize = 3;
 
 
 // ==========================================
-// COLORES DEL CUBO
+// COLORES
 // ==========================================
 
 const cubeColors = {
@@ -425,22 +267,14 @@ const cubeColors = {
 
 };
 
-
-// ==========================================
-// ORDEN DEL SOLUCIONADOR
-// ==========================================
-
 const solverFaces = [
-
   "F",
   "R",
   "B",
   "L",
   "D",
   "U"
-
 ];
-
 
 const faceColor = {
 
@@ -453,7 +287,6 @@ const faceColor = {
 
 };
 
-
 const solverColors = {
 
   white: "#ffffff",
@@ -465,11 +298,8 @@ const solverColors = {
 
 };
 
-
 let currentFaceIndex = 0;
-
 let currentSelectedColor = "white";
-
 let cubeInputData = {};
 
 
@@ -477,22 +307,19 @@ let cubeInputData = {};
 // BOTONES PRACTICAR
 // ==========================================
 
-document
-  .querySelectorAll(".practice-button")
-  .forEach(button => {
+document.querySelectorAll(".practice-button").forEach(button => {
 
-    button.addEventListener("click", () => {
+  button.addEventListener("click", () => {
 
-      const size =
-        Number(button.dataset.cube);
+    const size = Number(button.dataset.cube);
 
-      if (!size) return;
+    if (!size) return;
 
-      openCubePractice(size);
-
-    });
+    openCubePractice(size);
 
   });
+
+});
 
 
 // ==========================================
@@ -507,40 +334,24 @@ function openCubePractice(size) {
     document.getElementById("selectedCubeTitle");
 
   if (title) {
-
-    title.textContent =
-      `Cubo ${size}×${size}`;
-
+    title.textContent = `Cubo ${size}×${size}`;
   }
 
   pages.forEach(page => {
-
-    page.classList.remove(
-      "active-page"
-    );
-
+    page.classList.remove("active-page");
   });
 
   document
     .getElementById("cubePracticePage")
-    ?.classList.add(
-      "active-page"
-    );
+    ?.classList.add("active-page");
 
-  const nav =
-    document.querySelector(
-      ".bottom-nav"
-    );
+  const nav = document.querySelector(".bottom-nav");
 
   if (nav) {
-
-    nav.style.display =
-      "none";
-
+    nav.style.display = "none";
   }
 
   createRubiksCube(size);
-
 }
 
 
@@ -551,23 +362,17 @@ function openCubePractice(size) {
 function createRubiksCube(size) {
 
   const container =
-    document.getElementById(
-      "rubiks3D"
-    );
+    document.getElementById("rubiks3D");
 
   if (!container) return;
 
   container.innerHTML = "";
-
   cubePieces = [];
 
-  cubeScene =
-    new THREE.Scene();
+  cubeScene = new THREE.Scene();
 
   cubeScene.background =
-    new THREE.Color(
-      0x020617
-    );
+    new THREE.Color(0x020617);
 
   cubeCamera =
     new THREE.PerspectiveCamera(
@@ -583,11 +388,7 @@ function createRubiksCube(size) {
     size * 4.2
   );
 
-  cubeCamera.lookAt(
-    0,
-    0,
-    0
-  );
+  cubeCamera.lookAt(0, 0, 0);
 
   cubeRenderer =
     new THREE.WebGLRenderer({
@@ -595,10 +396,7 @@ function createRubiksCube(size) {
     });
 
   cubeRenderer.setPixelRatio(
-    Math.min(
-      window.devicePixelRatio,
-      2
-    )
+    Math.min(window.devicePixelRatio, 2)
   );
 
   container.appendChild(
@@ -611,9 +409,7 @@ function createRubiksCube(size) {
       2.2
     );
 
-  cubeScene.add(
-    ambient
-  );
+  cubeScene.add(ambient);
 
   const directional =
     new THREE.DirectionalLight(
@@ -621,22 +417,13 @@ function createRubiksCube(size) {
       3
     );
 
-  directional.position.set(
-    5,
-    8,
-    10
-  );
+  directional.position.set(5, 8, 10);
 
-  cubeScene.add(
-    directional
-  );
+  cubeScene.add(directional);
 
-  rubiksCube =
-    new THREE.Group();
+  rubiksCube = new THREE.Group();
 
-  cubeScene.add(
-    rubiksCube
-  );
+  cubeScene.add(rubiksCube);
 
   createCubePieces(size);
 
@@ -646,31 +433,17 @@ function createRubiksCube(size) {
       cubeRenderer.domElement
     );
 
-  cubeControls.enableDamping =
-    true;
+  cubeControls.enableDamping = true;
+  cubeControls.dampingFactor = 0.08;
+  cubeControls.enablePan = false;
 
-  cubeControls.dampingFactor =
-    0.08;
+  cubeControls.minDistance = size * 2;
+  cubeControls.maxDistance = size * 7;
 
-  cubeControls.enablePan =
-    false;
-
-  cubeControls.minDistance =
-    size * 2;
-
-  cubeControls.maxDistance =
-    size * 7;
-
-  cubeControls.target.set(
-    0,
-    0,
-    0
-  );
+  cubeControls.target.set(0, 0, 0);
 
   resizeRubiksCube();
-
   animateCube();
-
 }
 
 
@@ -680,26 +453,13 @@ function createRubiksCube(size) {
 
 function createCubePieces(size) {
 
-  const start =
-    -(size - 1) / 2;
+  const start = -(size - 1) / 2;
 
-  for (
-    let x = 0;
-    x < size;
-    x++
-  ) {
+  for (let x = 0; x < size; x++) {
 
-    for (
-      let y = 0;
-      y < size;
-      y++
-    ) {
+    for (let y = 0; y < size; y++) {
 
-      for (
-        let z = 0;
-        z < size;
-        z++
-      ) {
+      for (let z = 0; z < size; z++) {
 
         const geometry =
           new THREE.BoxGeometry(
@@ -734,20 +494,12 @@ function createCubePieces(size) {
           z
         };
 
-        rubiksCube.add(
-          piece
-        );
-
-        cubePieces.push(
-          piece
-        );
+        rubiksCube.add(piece);
+        cubePieces.push(piece);
 
       }
-
     }
-
   }
-
 }
 
 
@@ -762,8 +514,7 @@ function createStickerMaterials(
   size
 ) {
 
-  const black =
-    0x101010;
+  const black = 0x101010;
 
   return [
 
@@ -810,130 +561,64 @@ function createStickerMaterials(
     })
 
   ];
-
 }
 
 
 // ==========================================
-// ACTUALIZAR COLORES CUBO 3D
+// COLORES DEL CUBO
 // ==========================================
 
 function update3DCubeColors() {
 
   if (!rubiksCube) return;
 
-  const size =
-    selectedCubeSize;
+  const size = selectedCubeSize;
 
   cubePieces.forEach(piece => {
 
-    const {
-      x,
-      y,
-      z
-    } = piece.userData;
+    const { x, y, z } = piece.userData;
 
-    const materials =
-      piece.material;
+    const materials = piece.material;
 
     materials.forEach(material => {
-
-      material.color.setHex(
-        0x101010
-      );
-
+      material.color.setHex(0x101010);
     });
 
     if (x === size - 1) {
-
-      setFaceSticker(
-        materials[0],
-        "R",
-        x,
-        y,
-        z
-      );
-
+      setFaceSticker(materials[0], "R", x, y, z);
     }
 
     if (x === 0) {
-
-      setFaceSticker(
-        materials[1],
-        "L",
-        x,
-        y,
-        z
-      );
-
+      setFaceSticker(materials[1], "L", x, y, z);
     }
 
     if (y === size - 1) {
-
-      setFaceSticker(
-        materials[2],
-        "U",
-        x,
-        y,
-        z
-      );
-
+      setFaceSticker(materials[2], "U", x, y, z);
     }
 
     if (y === 0) {
-
-      setFaceSticker(
-        materials[3],
-        "D",
-        x,
-        y,
-        z
-      );
-
+      setFaceSticker(materials[3], "D", x, y, z);
     }
 
     if (z === size - 1) {
-
-      setFaceSticker(
-        materials[4],
-        "F",
-        x,
-        y,
-        z
-      );
-
+      setFaceSticker(materials[4], "F", x, y, z);
     }
 
     if (z === 0) {
-
-      setFaceSticker(
-        materials[5],
-        "B",
-        x,
-        y,
-        z
-      );
-
+      setFaceSticker(materials[5], "B", x, y, z);
     }
 
   });
-
 }
 
 
 // ==========================================
-// POSICIÓN DE STICKER
+// ÍNDICE DE CARA
 // ==========================================
 
-function getFaceIndex(
-  face,
-  x,
-  y,
-  z
-) {
+function getFaceIndex(face, x, y, z) {
 
-  const size =
-    selectedCubeSize;
+  const size = selectedCubeSize;
 
   let row = 0;
   let col = 0;
@@ -941,82 +626,43 @@ function getFaceIndex(
   switch (face) {
 
     case "F":
-
-      row =
-        size - 1 - y;
-
-      col =
-        x;
-
+      row = size - 1 - y;
+      col = x;
       break;
 
     case "R":
-
-      row =
-        size - 1 - y;
-
-      col =
-        size - 1 - z;
-
+      row = size - 1 - y;
+      col = size - 1 - z;
       break;
 
     case "B":
-
-      row =
-        size - 1 - y;
-
-      col =
-        size - 1 - x;
-
+      row = size - 1 - y;
+      col = size - 1 - x;
       break;
 
     case "L":
-
-      row =
-        size - 1 - y;
-
-      col =
-        z;
-
+      row = size - 1 - y;
+      col = z;
       break;
 
     case "D":
-
-      row =
-        size - 1 - z;
-
-      col =
-        x;
-
+      row = size - 1 - z;
+      col = x;
       break;
 
     case "U":
-
-      row =
-        z;
-
-      col =
-        x;
-
+      row = z;
+      col = x;
       break;
-
-    default:
-
-      row = 0;
-      col = 0;
 
   }
 
-  return (
-    row * size +
-    col
-  );
-
+  return row * size + col;
 }
 
 
 // ==========================================
-// PINTAR STICKER
+// STICKER
 // ==========================================
 
 function setFaceSticker(
@@ -1027,72 +673,44 @@ function setFaceSticker(
   z
 ) {
 
-  const data =
-    cubeInputData[face];
+  const data = cubeInputData[face];
 
   if (!data) return;
 
   const index =
-    getFaceIndex(
-      face,
-      x,
-      y,
-      z
-    );
+    getFaceIndex(face, x, y, z);
 
-  const selected =
-    data[index];
+  const selected = data[index];
 
   if (selected) {
-
     material.color.set(
       solverColors[selected]
     );
-
   }
-
 }
 
 
 // ==========================================
-// RESIZE CUBO
+// RESIZE
 // ==========================================
 
 function resizeRubiksCube() {
 
   const container =
-    document.getElementById(
-      "rubiks3D"
-    );
+    document.getElementById("rubiks3D");
 
   if (
     !container ||
     !cubeRenderer ||
     !cubeCamera
-  ) {
+  ) return;
 
-    return;
+  const width = container.clientWidth;
+  const height = container.clientHeight;
 
-  }
+  if (width <= 0 || height <= 0) return;
 
-  const width =
-    container.clientWidth;
-
-  const height =
-    container.clientHeight;
-
-  if (
-    width <= 0 ||
-    height <= 0
-  ) {
-
-    return;
-
-  }
-
-  cubeCamera.aspect =
-    width / height;
-
+  cubeCamera.aspect = width / height;
   cubeCamera.updateProjectionMatrix();
 
   cubeRenderer.setSize(
@@ -1100,7 +718,6 @@ function resizeRubiksCube() {
     height,
     false
   );
-
 }
 
 window.addEventListener(
@@ -1133,7 +750,6 @@ function animateCube() {
     );
 
   }
-
 }
 
 
@@ -1148,6 +764,10 @@ let referenceCube = null;
 
 let referenceRotationAnimation = null;
 
+let solutionMoves = [];
+let solutionIndex = 0;
+let solving = false;
+
 
 // ==========================================
 // ABRIR SOLUCIONADOR
@@ -1159,7 +779,6 @@ document
     "click",
     openCubeSolver
   );
-
 
 function openCubeSolver() {
 
@@ -1176,28 +795,19 @@ function openCubeSolver() {
   });
 
   currentFaceIndex = 0;
-
-  currentSelectedColor =
-    "white";
+  currentSelectedColor = "white";
 
   const oldSolver =
-    document.getElementById(
-      "cubeSolver"
-    );
+    document.getElementById("cubeSolver");
 
   if (oldSolver) {
-
     oldSolver.remove();
-
   }
 
   const solver =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
-  solver.id =
-    "cubeSolver";
+  solver.id = "cubeSolver";
 
   solver.innerHTML = `
 
@@ -1327,42 +937,31 @@ function openCubeSolver() {
       </div>
 
     </div>
-
   `;
 
-  document.body.appendChild(
-    solver
-  );
+  document.body.appendChild(solver);
 
   createReferenceCube();
-
   setupSolverButtons();
-
   renderCurrentFace();
-
 }
 
 
 // ==========================================
-// CREAR CUBO DE REFERENCIA
+// CUBO DE REFERENCIA
 // ==========================================
 
 function createReferenceCube() {
 
   const container =
-    document.getElementById(
-      "referenceCube"
-    );
+    document.getElementById("referenceCube");
 
   if (!container) return;
 
-  referenceScene =
-    new THREE.Scene();
+  referenceScene = new THREE.Scene();
 
   referenceScene.background =
-    new THREE.Color(
-      0x0f172a
-    );
+    new THREE.Color(0x0f172a);
 
   referenceCamera =
     new THREE.PerspectiveCamera(
@@ -1378,11 +977,7 @@ function createReferenceCube() {
     8
   );
 
-  referenceCamera.lookAt(
-    0,
-    0,
-    0
-  );
+  referenceCamera.lookAt(0, 0, 0);
 
   referenceRenderer =
     new THREE.WebGLRenderer({
@@ -1407,9 +1002,7 @@ function createReferenceCube() {
       2.3
     );
 
-  referenceScene.add(
-    ambient
-  );
+  referenceScene.add(ambient);
 
   const light =
     new THREE.DirectionalLight(
@@ -1423,9 +1016,7 @@ function createReferenceCube() {
     10
   );
 
-  referenceScene.add(
-    light
-  );
+  referenceScene.add(light);
 
   referenceCube =
     new THREE.Group();
@@ -1443,9 +1034,7 @@ function createReferenceCube() {
   createReferencePieces();
 
   resizeReferenceCube();
-
   animateReferenceCube();
-
 }
 
 
@@ -1455,29 +1044,14 @@ function createReferenceCube() {
 
 function createReferencePieces() {
 
-  const size =
-    selectedCubeSize;
+  const size = selectedCubeSize;
+  const start = -(size - 1) / 2;
 
-  const start =
-    -(size - 1) / 2;
+  for (let x = 0; x < size; x++) {
 
-  for (
-    let x = 0;
-    x < size;
-    x++
-  ) {
+    for (let y = 0; y < size; y++) {
 
-    for (
-      let y = 0;
-      y < size;
-      y++
-    ) {
-
-      for (
-        let z = 0;
-        z < size;
-        z++
-      ) {
+      for (let z = 0; z < size; z++) {
 
         const geometry =
           new THREE.BoxGeometry(
@@ -1512,129 +1086,96 @@ function createReferencePieces() {
           z
         };
 
-        referenceCube.add(
-          piece
-        );
+        referenceCube.add(piece);
 
       }
-
     }
-
   }
 
   updateReferenceColors();
-
 }
 
 
 // ==========================================
-// ACTUALIZAR COLORES REFERENCIA
+// COLORES REFERENCIA
 // ==========================================
 
 function updateReferenceColors() {
 
   if (!referenceCube) return;
 
-  const size =
-    selectedCubeSize;
+  const size = selectedCubeSize;
 
-  referenceCube.children.forEach(
-    piece => {
+  referenceCube.children.forEach(piece => {
 
-      const {
+    const { x, y, z } = piece.userData;
+    const materials = piece.material;
+
+    materials.forEach(material => {
+      material.color.setHex(0x101010);
+    });
+
+    if (x === size - 1) {
+      setReferenceSticker(
+        materials[0],
+        "R",
         x,
         y,
         z
-      } = piece.userData;
-
-      const materials =
-        piece.material;
-
-      materials.forEach(
-        material => {
-
-          material.color.setHex(
-            0x101010
-          );
-
-        }
       );
-
-      if (x === size - 1) {
-
-        setReferenceSticker(
-          materials[0],
-          "R",
-          x,
-          y,
-          z
-        );
-
-      }
-
-      if (x === 0) {
-
-        setReferenceSticker(
-          materials[1],
-          "L",
-          x,
-          y,
-          z
-        );
-
-      }
-
-      if (y === size - 1) {
-
-        setReferenceSticker(
-          materials[2],
-          "U",
-          x,
-          y,
-          z
-        );
-
-      }
-
-      if (y === 0) {
-
-        setReferenceSticker(
-          materials[3],
-          "D",
-          x,
-          y,
-          z
-        );
-
-      }
-
-      if (z === size - 1) {
-
-        setReferenceSticker(
-          materials[4],
-          "F",
-          x,
-          y,
-          z
-        );
-
-      }
-
-      if (z === 0) {
-
-        setReferenceSticker(
-          materials[5],
-          "B",
-          x,
-          y,
-          z
-        );
-
-      }
-
     }
-  );
 
+    if (x === 0) {
+      setReferenceSticker(
+        materials[1],
+        "L",
+        x,
+        y,
+        z
+      );
+    }
+
+    if (y === size - 1) {
+      setReferenceSticker(
+        materials[2],
+        "U",
+        x,
+        y,
+        z
+      );
+    }
+
+    if (y === 0) {
+      setReferenceSticker(
+        materials[3],
+        "D",
+        x,
+        y,
+        z
+      );
+    }
+
+    if (z === size - 1) {
+      setReferenceSticker(
+        materials[4],
+        "F",
+        x,
+        y,
+        z
+      );
+    }
+
+    if (z === 0) {
+      setReferenceSticker(
+        materials[5],
+        "B",
+        x,
+        y,
+        z
+      );
+    }
+
+  });
 }
 
 
@@ -1663,22 +1204,18 @@ function setReferenceSticker(
       z
     );
 
-  const color =
-    data[index];
+  const color = data[index];
 
   if (color) {
-
     material.color.set(
       solverColors[color]
     );
-
   }
-
 }
 
 
 // ==========================================
-// ORIENTACIÓN DEL CUBO
+// ORIENTACIÓN
 // ==========================================
 
 function rotateReferenceToFace(
@@ -1728,8 +1265,7 @@ function rotateReferenceToFace(
 
   };
 
-  const target =
-    targets[face];
+  const target = targets[face];
 
   if (!target) return;
 
@@ -1739,9 +1275,7 @@ function rotateReferenceToFace(
       referenceRotationAnimation
     );
 
-    referenceRotationAnimation =
-      null;
-
+    referenceRotationAnimation = null;
   }
 
   if (instant) {
@@ -1753,7 +1287,6 @@ function rotateReferenceToFace(
     );
 
     return;
-
   }
 
   const currentX =
@@ -1765,13 +1298,17 @@ function rotateReferenceToFace(
   const currentZ =
     referenceCube.rotation.z;
 
+  /*
+    BAJAR HACIA D SIN HACER UNA VUELTA
+  */
+
   if (face === "D") {
 
     animateReferenceRotation(
       -Math.PI / 2,
       currentY,
       currentZ,
-      850,
+      1600,
       () => {
 
         referenceCube.rotation.set(
@@ -1784,8 +1321,11 @@ function rotateReferenceToFace(
     );
 
     return;
-
   }
+
+  /*
+    SUBIR HACIA U
+  */
 
   if (
     face === "U" &&
@@ -1798,7 +1338,7 @@ function rotateReferenceToFace(
       Math.PI / 2,
       0,
       0,
-      1000,
+      1700,
       () => {
 
         referenceCube.rotation.set(
@@ -1811,29 +1351,31 @@ function rotateReferenceToFace(
     );
 
     return;
-
   }
+
+  /*
+    MOVIMIENTO NORMAL LENTO
+  */
 
   animateReferenceRotation(
     target.x,
     target.y,
     target.z,
-    900,
+    1600,
     null
   );
-
 }
 
 
 // ==========================================
-// ANIMACIÓN DE GIRO
+// ANIMACIÓN LENTA DE ORIENTACIÓN
 // ==========================================
 
 function animateReferenceRotation(
   targetX,
   targetY,
   targetZ,
-  duration = 900,
+  duration = 1600,
   onComplete = null
 ) {
 
@@ -1851,22 +1393,12 @@ function animateReferenceRotation(
   let differenceY =
     targetY - startY;
 
-  while (
-    differenceY > Math.PI
-  ) {
-
-    differenceY -=
-      Math.PI * 2;
-
+  while (differenceY > Math.PI) {
+    differenceY -= Math.PI * 2;
   }
 
-  while (
-    differenceY < -Math.PI
-  ) {
-
-    differenceY +=
-      Math.PI * 2;
-
+  while (differenceY < -Math.PI) {
+    differenceY += Math.PI * 2;
   }
 
   const finalY =
@@ -1883,15 +1415,17 @@ function animateReferenceRotation(
         null;
 
       return;
-
     }
 
     const progress =
       Math.min(
-        (now - animationStart) /
-        duration,
+        (now - animationStart) / duration,
         1
       );
+
+    /*
+      Movimiento suave y lento
+    */
 
     const eased =
       1 -
@@ -1902,23 +1436,17 @@ function animateReferenceRotation(
 
     referenceCube.rotation.x =
       startX +
-      (
-        targetX - startX
-      ) *
+      (targetX - startX) *
       eased;
 
     referenceCube.rotation.y =
       startY +
-      (
-        finalY - startY
-      ) *
+      (finalY - startY) *
       eased;
 
     referenceCube.rotation.z =
       startZ +
-      (
-        targetZ - startZ
-      ) *
+      (targetZ - startZ) *
       eased;
 
     if (progress < 1) {
@@ -1936,24 +1464,18 @@ function animateReferenceRotation(
         targetZ
       );
 
-      referenceRotationAnimation =
-        null;
+      referenceRotationAnimation = null;
 
       if (onComplete) {
-
         onComplete();
-
       }
-
     }
-
   }
 
   referenceRotationAnimation =
     requestAnimationFrame(
       animation
     );
-
 }
 
 
@@ -1972,11 +1494,7 @@ function resizeReferenceCube() {
     !container ||
     !referenceRenderer ||
     !referenceCamera
-  ) {
-
-    return;
-
-  }
+  ) return;
 
   const width =
     container.clientWidth;
@@ -1984,14 +1502,7 @@ function resizeReferenceCube() {
   const height =
     container.clientHeight;
 
-  if (
-    width <= 0 ||
-    height <= 0
-  ) {
-
-    return;
-
-  }
+  if (width <= 0 || height <= 0) return;
 
   referenceCamera.aspect =
     width / height;
@@ -2003,7 +1514,6 @@ function resizeReferenceCube() {
     height,
     false
   );
-
 }
 
 window.addEventListener(
@@ -2032,22 +1542,18 @@ function animateReferenceCube() {
       referenceScene,
       referenceCamera
     );
-
   }
-
 }
 
 
 // ==========================================
-// RENDERIZAR CARA ACTUAL
+// CARA ACTUAL
 // ==========================================
 
 function renderCurrentFace() {
 
   const face =
-    solverFaces[
-      currentFaceIndex
-    ];
+    solverFaces[currentFaceIndex];
 
   const size =
     selectedCubeSize;
@@ -2097,9 +1603,7 @@ function renderCurrentFace() {
   container.innerHTML = "";
 
   const grid =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   grid.className =
     "input-face-grid";
@@ -2112,16 +1616,10 @@ function renderCurrentFace() {
   const total =
     size * size;
 
-  for (
-    let i = 0;
-    i < total;
-    i++
-  ) {
+  for (let i = 0; i < total; i++) {
 
     const square =
-      document.createElement(
-        "button"
-      );
+      document.createElement("button");
 
     square.className =
       "input-square";
@@ -2144,24 +1642,23 @@ function renderCurrentFace() {
           currentSelectedColor;
 
         square.style.background =
-          solverColors[
-            currentSelectedColor
-          ];
+          solverColors[currentSelectedColor];
 
         updateReferenceColors();
 
       }
     );
 
-    grid.appendChild(
-      square
-    );
-
+    grid.appendChild(square);
   }
 
-  container.appendChild(
-    grid
-  );
+  container.appendChild(grid);
+
+  /*
+    La cara ahora cambia lentamente
+    para que el usuario pueda seguir
+    el movimiento.
+  */
 
   rotateReferenceToFace(
     face,
@@ -2169,20 +1666,17 @@ function renderCurrentFace() {
   );
 
   updateReferenceColors();
-
 }
 
 
 // ==========================================
-// BOTONES DEL SOLUCIONADOR
+// BOTONES SOLUCIONADOR
 // ==========================================
 
 function setupSolverButtons() {
 
   document
-    .querySelectorAll(
-      ".solver-color"
-    )
+    .querySelectorAll(".solver-color")
     .forEach(button => {
 
       button.addEventListener(
@@ -2190,20 +1684,12 @@ function setupSolverButtons() {
         () => {
 
           document
-            .querySelectorAll(
-              ".solver-color"
-            )
+            .querySelectorAll(".solver-color")
             .forEach(b => {
-
-              b.classList.remove(
-                "selected"
-              );
-
+              b.classList.remove("selected");
             });
 
-          button.classList.add(
-            "selected"
-          );
+          button.classList.add("selected");
 
           currentSelectedColor =
             button.dataset.color;
@@ -2214,17 +1700,13 @@ function setupSolverButtons() {
     });
 
   document
-    .getElementById(
-      "clearFaceButton"
-    )
+    .getElementById("clearFaceButton")
     ?.addEventListener(
       "click",
       () => {
 
         const face =
-          solverFaces[
-            currentFaceIndex
-          ];
+          solverFaces[currentFaceIndex];
 
         cubeInputData[face] =
           Array(
@@ -2238,41 +1720,32 @@ function setupSolverButtons() {
     );
 
   document
-    .getElementById(
-      "nextFaceButton"
-    )
+    .getElementById("nextFaceButton")
     ?.addEventListener(
       "click",
       nextFace
     );
 
   document
-    .getElementById(
-      "cancelSolverButton"
-    )
+    .getElementById("cancelSolverButton")
     ?.addEventListener(
       "click",
       closeCubeSolver
     );
 
   document
-    .getElementById(
-      "nextSolutionButton"
-    )
+    .getElementById("nextSolutionButton")
     ?.addEventListener(
       "click",
       playNextSolutionMove
     );
 
   document
-    .getElementById(
-      "closeSolutionButton"
-    )
+    .getElementById("closeSolutionButton")
     ?.addEventListener(
       "click",
       closeCubeSolver
     );
-
 }
 
 
@@ -2283,17 +1756,13 @@ function setupSolverButtons() {
 function nextFace() {
 
   const face =
-    solverFaces[
-      currentFaceIndex
-    ];
+    solverFaces[currentFaceIndex];
 
   const values =
     cubeInputData[face];
 
   if (
-    values.some(
-      color => !color
-    )
+    values.some(color => !color)
   ) {
 
     alert(
@@ -2301,7 +1770,6 @@ function nextFace() {
     );
 
     return;
-
   }
 
   if (
@@ -2314,11 +1782,9 @@ function nextFace() {
     renderCurrentFace();
 
     return;
-
   }
 
   finishColorInput();
-
 }
 
 
@@ -2339,24 +1805,15 @@ function finishColorInput() {
 
   };
 
-  for (
-    const face of solverFaces
-  ) {
+  for (const face of solverFaces) {
 
-    for (
-      const color of cubeInputData[face]
-    ) {
+    for (const color of cubeInputData[face]) {
 
-      if (
-        counts[color] !== undefined
-      ) {
-
+      if (counts[color] !== undefined) {
         counts[color]++;
-
       }
 
     }
-
   }
 
   const expected =
@@ -2377,23 +1834,10 @@ function finishColorInput() {
     );
 
     return;
-
   }
 
   showSolution();
-
 }
-
-
-// ==========================================
-// SOLUCIÓN
-// ==========================================
-
-let solutionMoves = [];
-
-let solutionIndex = 0;
-
-let solving = false;
 
 
 // ==========================================
@@ -2433,49 +1877,29 @@ function showSolution() {
     );
 
   if (instruction) {
-
     instruction.textContent =
       "Cubo configurado correctamente";
-
   }
 
   if (progress) {
-
     progress.textContent =
-      "Preparando solución...";
-
+      "Solución lista";
   }
 
   if (input) {
-
-    input.classList.add(
-      "hidden"
-    );
-
+    input.classList.add("hidden");
   }
 
   if (colors) {
-
-    colors.classList.add(
-      "hidden"
-    );
-
+    colors.classList.add("hidden");
   }
 
   if (actions) {
-
-    actions.classList.add(
-      "hidden"
-    );
-
+    actions.classList.add("hidden");
   }
 
   if (solutionPanel) {
-
-    solutionPanel.classList.remove(
-      "hidden"
-    );
-
+    solutionPanel.classList.remove("hidden");
   }
 
   solutionMoves =
@@ -2484,11 +1908,9 @@ function showSolution() {
     );
 
   solutionIndex = 0;
-
   solving = false;
 
   showCurrentSolutionMove();
-
 }
 
 
@@ -2519,22 +1941,14 @@ function generateSolutionMoves(size) {
 
   const moves = [];
 
-  for (
-    let i = 0;
-    i < amount;
-    i++
-  ) {
+  for (let i = 0; i < amount; i++) {
 
     moves.push(
-      base[
-        i % base.length
-      ]
+      base[i % base.length]
     );
-
   }
 
   return moves;
-
 }
 
 
@@ -2565,31 +1979,22 @@ function showCurrentSolutionMove() {
   ) {
 
     if (moveElement) {
-
-      moveElement.textContent =
-        "✓";
-
+      moveElement.textContent = "✓";
     }
 
     if (status) {
-
       status.textContent =
         "Cubo resuelto.";
-
     }
 
     if (button) {
-
       button.textContent =
         "✓ Terminado";
 
-      button.disabled =
-        true;
-
+      button.disabled = true;
     }
 
     return;
-
   }
 
   if (moveElement) {
@@ -2604,15 +2009,20 @@ function showCurrentSolutionMove() {
   if (status) {
 
     status.textContent =
-      `Movimiento ${solutionIndex + 1} de ${solutionMoves.length}. Pulsa el botón para continuar.`;
+      `Movimiento ${solutionIndex + 1} de ${solutionMoves.length}. Pulsa el botón para comenzar.`;
 
   }
 
+  if (button) {
+    button.disabled = false;
+    button.textContent =
+      "▶ Siguiente movimiento";
+  }
 }
 
 
 // ==========================================
-// SIGUIENTE MOVIMIENTO
+// MOVIMIENTO LENTO
 // ==========================================
 
 async function playNextSolutionMove() {
@@ -2622,11 +2032,7 @@ async function playNextSolutionMove() {
   if (
     solutionIndex >=
     solutionMoves.length
-  ) {
-
-    return;
-
-  }
+  ) return;
 
   solving = true;
 
@@ -2645,37 +2051,252 @@ async function playNextSolutionMove() {
       "solutionStatus"
     );
 
+  const button =
+    document.getElementById(
+      "nextSolutionButton"
+    );
+
   if (moveElement) {
-
-    moveElement.textContent =
-      move;
-
+    moveElement.textContent = move;
   }
 
   if (status) {
 
     status.textContent =
-      `Realiza lentamente el movimiento ${move} en tu cubo físico...`;
+      `👀 Observa el movimiento ${move}. El cubo se moverá lentamente...`;
 
   }
 
-  await new Promise(
-    resolve => {
+  if (button) {
+    button.disabled = true;
+  }
 
-      setTimeout(
-        resolve,
-        1200
-      );
+  /*
+    PAUSA ANTES DEL GIRO
+    para que el usuario vea
+    qué movimiento debe realizar.
+  */
 
-    }
-  );
+  await wait(700);
+
+  /*
+    AQUÍ HACEMOS EL MOVIMIENTO
+    LENTO DEL CUBO.
+  */
+
+  await animateSolutionMove(move);
+
+  /*
+    PEQUEÑA PAUSA DESPUÉS
+    DEL MOVIMIENTO.
+  */
+
+  await wait(700);
 
   solutionIndex++;
 
   solving = false;
 
   showCurrentSolutionMove();
+}
 
+
+// ==========================================
+// ESPERA
+// ==========================================
+
+function wait(milliseconds) {
+
+  return new Promise(resolve => {
+
+    setTimeout(
+      resolve,
+      milliseconds
+    );
+
+  });
+}
+
+
+// ==========================================
+// ANIMAR MOVIMIENTO DEL CUBO
+// ==========================================
+
+function animateSolutionMove(move) {
+
+  return new Promise(resolve => {
+
+    if (!referenceCube) {
+
+      resolve();
+      return;
+
+    }
+
+    /*
+      Duración del giro.
+
+      1800 ms = 1.8 segundos.
+      Esto hace que el movimiento
+      sea claramente visible.
+    */
+
+    const duration = 1800;
+
+    const startX =
+      referenceCube.rotation.x;
+
+    const startY =
+      referenceCube.rotation.y;
+
+    const startZ =
+      referenceCube.rotation.z;
+
+    let targetX = startX;
+    let targetY = startY;
+    let targetZ = startZ;
+
+    /*
+      Determinamos la cara
+      del movimiento.
+    */
+
+    const face =
+      move.replace("'", "");
+
+    const direction =
+      move.includes("'")
+        ? -1
+        : 1;
+
+    const amount =
+      Math.PI / 2 * direction;
+
+    /*
+      R / L
+    */
+
+    if (face === "R") {
+
+      targetY += amount;
+
+    }
+
+    /*
+      L
+    */
+
+    else if (face === "L") {
+
+      targetY -= amount;
+
+    }
+
+    /*
+      U / D
+    */
+
+    else if (face === "U") {
+
+      targetX += amount;
+
+    }
+
+    else if (face === "D") {
+
+      targetX -= amount;
+
+    }
+
+    /*
+      F / B
+    */
+
+    else if (face === "F") {
+
+      targetZ += amount;
+
+    }
+
+    else if (face === "B") {
+
+      targetZ -= amount;
+
+    }
+
+    const startTime =
+      performance.now();
+
+    function animate(now) {
+
+      if (!referenceCube) {
+
+        resolve();
+        return;
+
+      }
+
+      const progress =
+        Math.min(
+          (now - startTime) /
+          duration,
+          1
+        );
+
+      /*
+        Suavizado lento:
+        empieza despacio,
+        acelera un poco,
+        y termina despacio.
+      */
+
+      const eased =
+        progress < 0.5
+          ? 2 * progress * progress
+          : 1 -
+            Math.pow(
+              -2 * progress + 2,
+              2
+            ) / 2;
+
+      referenceCube.rotation.x =
+        startX +
+        (targetX - startX) *
+        eased;
+
+      referenceCube.rotation.y =
+        startY +
+        (targetY - startY) *
+        eased;
+
+      referenceCube.rotation.z =
+        startZ +
+        (targetZ - startZ) *
+        eased;
+
+      if (progress < 1) {
+
+        requestAnimationFrame(
+          animate
+        );
+
+      } else {
+
+        referenceCube.rotation.set(
+          targetX,
+          targetY,
+          targetZ
+        );
+
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(
+      animate
+    );
+
+  });
 }
 
 
@@ -2691,9 +2312,7 @@ function closeCubeSolver() {
     );
 
   if (solver) {
-
     solver.remove();
-
   }
 
   if (referenceRotationAnimation) {
@@ -2702,15 +2321,11 @@ function closeCubeSolver() {
       referenceRotationAnimation
     );
 
-    referenceRotationAnimation =
-      null;
-
+    referenceRotationAnimation = null;
   }
 
   if (referenceRenderer) {
-
     referenceRenderer.dispose();
-
   }
 
   referenceScene = null;
@@ -2718,6 +2333,9 @@ function closeCubeSolver() {
   referenceRenderer = null;
   referenceCube = null;
 
+  solutionMoves = [];
+  solutionIndex = 0;
+  solving = false;
 }
 
 
@@ -2740,9 +2358,7 @@ document
       });
 
       document
-        .getElementById(
-          "homePage"
-        )
+        .getElementById("homePage")
         ?.classList.add(
           "active-page"
         );
@@ -2753,16 +2369,12 @@ document
         );
 
       if (nav) {
-
-        nav.style.display =
-          "flex";
-
+        nav.style.display = "flex";
       }
 
       if (cubeControls) {
 
         cubeControls.dispose();
-
         cubeControls = null;
 
       }
@@ -2771,16 +2383,11 @@ document
 
         cubeRenderer.dispose();
 
-        if (
-          cubeRenderer.domElement
-        ) {
-
+        if (cubeRenderer.domElement) {
           cubeRenderer.domElement.remove();
-
         }
 
         cubeRenderer = null;
-
       }
 
       cubeScene = null;
