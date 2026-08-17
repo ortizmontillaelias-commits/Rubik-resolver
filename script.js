@@ -125,15 +125,13 @@ const timerDisplay =
 const timerStatus =
   document.getElementById("timerStatus");
 
-const startTimerButton =
-  document.getElementById("startTimer");
-
-const stopTimerButton =
-  document.getElementById("stopTimer");
-
 const resetTimerButton =
   document.getElementById("resetTimer");
 
+
+// ==========================================
+// FORMATO DEL TIEMPO
+// ==========================================
 
 function formatTime(ms) {
 
@@ -156,6 +154,10 @@ function formatTime(ms) {
 
 }
 
+
+// ==========================================
+// ACTUALIZAR TEMPORIZADOR
+// ==========================================
 
 function updateTimer() {
 
@@ -223,32 +225,70 @@ function stopTimer() {
 
 
 // ==========================================
-// BOTÓN INICIAR
+// TOCAR EL CRONÓMETRO
 // ==========================================
+//
+// CELULAR:
+// Tocar el cronómetro inicia/detiene.
+//
+// PC:
+// El cronómetro también puede recibir clic,
+// aunque el método principal en PC es ESPACIO.
+//
 
-startTimerButton?.addEventListener(
-  "click",
-  startTimer
-);
+if (timerDisplay) {
+
+  timerDisplay.addEventListener(
+    "click",
+    () => {
+
+      if (timerRunning) {
+
+        stopTimer();
+
+      } else {
+
+        startTimer();
+
+      }
+
+    }
+  );
+
+  timerDisplay.addEventListener(
+    "touchstart",
+    event => {
+
+      event.preventDefault();
+
+      if (timerRunning) {
+
+        stopTimer();
+
+      } else {
+
+        startTimer();
+
+      }
+
+    },
+    {
+      passive: false
+    }
+  );
+
+}
 
 
 // ==========================================
-// BOTÓN DETENER
-// ==========================================
-
-stopTimerButton?.addEventListener(
-  "click",
-  stopTimer
-);
-
-
-// ==========================================
-// BOTÓN REINICIAR
+// REINICIAR TEMPORIZADOR
 // ==========================================
 
 resetTimerButton?.addEventListener(
   "click",
-  () => {
+  event => {
+
+    event.stopPropagation();
 
     clearInterval(timerInterval);
 
@@ -321,43 +361,47 @@ document.addEventListener(
 
 
 // ==========================================
-// TOQUE EN CELULAR
+// MENSAJE SEGÚN DISPOSITIVO
 // ==========================================
-//
-// Tocando el display del temporizador:
-// - Si está detenido → inicia.
-// - Si está funcionando → detiene.
-//
-// Se usa el display para evitar que tocar
-// otros botones de la aplicación active
-// accidentalmente el temporizador.
-//
 
-if (timerDisplay) {
+function updateTimerInstruction() {
 
-  timerDisplay.addEventListener(
-    "touchstart",
-    event => {
+  if (!timerStatus) return;
 
-      event.preventDefault();
+  const isMobile =
+    window.matchMedia(
+      "(max-width: 768px)"
+    ).matches;
 
-      if (timerRunning) {
+  if (timerRunning) {
 
-        stopTimer();
+    timerStatus.textContent =
+      "Temporizador funcionando...";
 
-      } else {
+    return;
 
-        startTimer();
+  }
 
-      }
+  if (isMobile) {
 
-    },
-    {
-      passive: false
-    }
-  );
+    timerStatus.textContent =
+      "👆 Toca el cronómetro para iniciar y detener";
+
+  } else {
+
+    timerStatus.textContent =
+      "⌨️ Presiona ESPACIO para iniciar y detener";
+
+  }
 
 }
+
+updateTimerInstruction();
+
+window.addEventListener(
+  "resize",
+  updateTimerInstruction
+);
 
 
 // ==========================================
