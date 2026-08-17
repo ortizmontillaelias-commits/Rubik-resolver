@@ -755,9 +755,7 @@ function getFaceIndex(face, x, y, z) {
 
   switch (face) {
 
-    // =====================================
     // FRENTE
-    // =====================================
     case "F":
 
       row = size - 1 - y;
@@ -766,9 +764,7 @@ function getFaceIndex(face, x, y, z) {
       break;
 
 
-    // =====================================
     // DERECHA
-    // =====================================
     case "R":
 
       row = size - 1 - y;
@@ -777,9 +773,7 @@ function getFaceIndex(face, x, y, z) {
       break;
 
 
-    // =====================================
     // ATRÁS
-    // =====================================
     case "B":
 
       row = size - 1 - y;
@@ -788,9 +782,7 @@ function getFaceIndex(face, x, y, z) {
       break;
 
 
-    // =====================================
     // IZQUIERDA
-    // =====================================
     case "L":
 
       row = size - 1 - y;
@@ -799,11 +791,8 @@ function getFaceIndex(face, x, y, z) {
       break;
 
 
-    // =====================================
     // ABAJO
-    // =====================================
     // ORIENTACIÓN CORREGIDA
-    // =====================================
     case "D":
 
       row = size - 1 - z;
@@ -812,11 +801,8 @@ function getFaceIndex(face, x, y, z) {
       break;
 
 
-    // =====================================
     // ARRIBA
-    // =====================================
     // ORIENTACIÓN CORREGIDA
-    // =====================================
     case "U":
 
       row = size - 1 - z;
@@ -1506,54 +1492,42 @@ function rotateReferenceToFace(
 
   const targets = {
 
-    // =====================================
     // FRENTE
-    // =====================================
     F: {
       x: 0,
       y: 0,
       z: 0
     },
 
-    // =====================================
     // DERECHA
-    // =====================================
     R: {
       x: 0,
       y: -Math.PI / 2,
       z: 0
     },
 
-    // =====================================
     // ATRÁS
-    // =====================================
     B: {
       x: 0,
       y: -Math.PI,
       z: 0
     },
 
-    // =====================================
     // IZQUIERDA
-    // =====================================
     L: {
       x: 0,
       y: Math.PI / 2,
       z: 0
     },
 
-    // =====================================
     // ABAJO
-    // =====================================
     D: {
       x: -Math.PI / 2,
       y: 0,
       z: 0
     },
 
-    // =====================================
     // ARRIBA
-    // =====================================
     U: {
       x: Math.PI / 2,
       y: 0,
@@ -1614,39 +1588,25 @@ function rotateReferenceToFace(
   // IZQUIERDA → ABAJO
   // ==========================================
   //
-  // Cuando terminamos la cara izquierda,
-  // NO damos una vuelta completa.
+  // Ahora el cubo simplemente BAJA.
   //
-  // Primero llevamos el frente a una posición
-  // neutra y después BAJAMOS el cubo.
+  // No hacemos el movimiento intermedio
+  // hacia el frente.
   // ==========================================
 
-  if (
-    face === "D" &&
-    Math.abs(currentY - Math.PI / 2) < 0.25
-  ) {
+  if (face === "D") {
 
     animateReferenceRotation(
-      currentX,
-      0,
+      -Math.PI / 2,
+      currentY,
       currentZ,
-      450,
+      850,
       () => {
 
-        animateReferenceRotation(
+        referenceCube.rotation.set(
           -Math.PI / 2,
           0,
-          0,
-          650,
-          () => {
-
-            referenceCube.rotation.set(
-              -Math.PI / 2,
-              0,
-              0
-            );
-
-          }
+          0
         );
 
       }
@@ -1661,10 +1621,11 @@ function rotateReferenceToFace(
   // ABAJO → ARRIBA
   // ==========================================
   //
-  // Al terminar la cara inferior,
-  // vamos DIRECTAMENTE hacia la cara superior.
+  // Este es el movimiento que dijiste
+  // que te gustó.
   //
-  // No hacemos una vuelta completa alrededor.
+  // Desde abajo sube directamente hacia
+  // la cara superior.
   // ==========================================
 
   if (
@@ -1733,7 +1694,7 @@ function animateReferenceRotation(
 
 
   // ==========================================
-  // CALCULAR GIRO MÁS CORTO EN Y
+  // GIRO MÁS CORTO EN Y
   // ==========================================
 
   let differenceY =
@@ -1785,10 +1746,6 @@ function animateReferenceRotation(
       );
 
 
-    // ========================================
-    // SUAVIZADO
-    // ========================================
-
     const eased =
       1 -
       Math.pow(
@@ -1796,10 +1753,6 @@ function animateReferenceRotation(
         3
       );
 
-
-    // ========================================
-    // ROTACIÓN X
-    // ========================================
 
     referenceCube.rotation.x =
       startX +
@@ -1809,10 +1762,6 @@ function animateReferenceRotation(
       eased;
 
 
-    // ========================================
-    // ROTACIÓN Y
-    // ========================================
-
     referenceCube.rotation.y =
       startY +
       (
@@ -1821,10 +1770,6 @@ function animateReferenceRotation(
       eased;
 
 
-    // ========================================
-    // ROTACIÓN Z
-    // ========================================
-
     referenceCube.rotation.z =
       startZ +
       (
@@ -1832,10 +1777,6 @@ function animateReferenceRotation(
       ) *
       eased;
 
-
-    // ========================================
-    // CONTINUAR
-    // ========================================
 
     if (progress < 1) {
 
@@ -1857,10 +1798,6 @@ function animateReferenceRotation(
       referenceRotationAnimation =
         null;
 
-
-      // ======================================
-      // EJECUTAR SIGUIENTE PARTE
-      // ======================================
 
       if (onComplete) {
 
@@ -1991,15 +1928,10 @@ function renderCurrentFace() {
   const faceNames = {
 
     F: "FRENTE",
-
     R: "DERECHA",
-
     B: "ATRÁS",
-
     L: "IZQUIERDA",
-
     D: "ABAJO",
-
     U: "ARRIBA"
 
   };
@@ -2029,10 +1961,8 @@ function renderCurrentFace() {
       "div"
     );
 
-
   grid.className =
     "input-face-grid";
-
 
   grid.style.setProperty(
     "--cube-size",
@@ -2054,7 +1984,6 @@ function renderCurrentFace() {
       document.createElement(
         "button"
       );
-
 
     square.className =
       "input-square";
@@ -2103,10 +2032,6 @@ function renderCurrentFace() {
     grid
   );
 
-
-  // ==========================================
-  // ORIENTAR CUBO
-  // ==========================================
 
   rotateReferenceToFace(
     face,
@@ -2526,12 +2451,10 @@ function showCurrentSolutionMove() {
       "solutionMove"
     );
 
-
   const status =
     document.getElementById(
       "solutionStatus"
     );
-
 
   const button =
     document.getElementById(
@@ -2569,7 +2492,6 @@ function showCurrentSolutionMove() {
         true;
 
     }
-
 
     return;
 
@@ -2609,7 +2531,9 @@ async function playNextSolutionMove() {
     solutionIndex >=
     solutionMoves.length
   ) {
+
     return;
+
   }
 
 
@@ -2626,7 +2550,6 @@ async function playNextSolutionMove() {
     document.getElementById(
       "solutionMove"
     );
-
 
   const status =
     document.getElementById(
