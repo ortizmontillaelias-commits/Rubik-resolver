@@ -1732,21 +1732,31 @@ function setReferenceSticker(
 // ORIENTACIÓN DE LAS CARAS
 // ======================================================
 //
+// ORDEN:
+//
+// F → R → B → L → D → U
+//
+// F = Frente
+// R = Derecha
+// B = Atrás
+// L = Izquierda
+// D = Abajo
+// U = Arriba
+//
 // IMPORTANTE:
 //
-// El cubo siempre parte de FRENTE.
+// Esta versión utiliza QUATERNIONS.
 //
-// F -> R -> B -> L
-// Después:
+// De esta forma Three.js interpola entre
+// orientaciones y evita las vueltas extra
+// producidas por interpolar directamente
+// los ejes X/Y/Z.
 //
-// L -> D
-// D -> U
+// L → D
+// El cubo baja directamente.
 //
-// Para D NO hacemos un giro sobre Z.
-// Solamente bajamos la vista hacia la cara
-// inferior.
-//
-// Después de D, pasamos directamente a U.
+// D → U
+// El cubo sube directamente.
 //
 // ======================================================
 
@@ -1791,6 +1801,29 @@ const faceOrientations = {
 };
 
 
+function getFaceQuaternion(face) {
+
+  const target =
+    faceOrientations[face];
+
+  if (!target) return null;
+
+  const quaternion =
+    new THREE.Quaternion();
+
+  quaternion.setFromEuler(
+    new THREE.Euler(
+      target.x,
+      target.y,
+      target.z,
+      "XYZ"
+    )
+  );
+
+  return quaternion;
+}
+
+
 function rotateReferenceToFace(
   face,
   instant = false
@@ -1798,10 +1831,10 @@ function rotateReferenceToFace(
 
   if (!referenceCube) return;
 
-  const target =
-    faceOrientations[face];
+  const targetQuaternion =
+    getFaceQuaternion(face);
 
-  if (!target) return;
+  if (!targetQuaternion) return;
 
   if (referenceRotationAnimation) {
 
@@ -1815,19 +1848,15 @@ function rotateReferenceToFace(
 
   if (instant) {
 
-    referenceCube.rotation.set(
-      target.x,
-      target.y,
-      target.z
+    referenceCube.quaternion.copy(
+      targetQuaternion
     );
 
     return;
   }
 
   animateReferenceRotation(
-    target.x,
-    target.y,
-    target.z,
+    targetQuaternion,
     1200
   );
 }
@@ -1838,46 +1867,17 @@ function rotateReferenceToFace(
 // ======================================================
 
 function animateReferenceRotation(
-  targetX,
-  targetY,
-  targetZ,
+  targetQuaternion,
   duration = 1200
 ) {
 
   if (!referenceCube) return;
 
-  const startX =
-    referenceCube.rotation.x;
+  const startQuaternion =
+    referenceCube.quaternion.clone();
 
-  const startY =
-    referenceCube.rotation.y;
-
-  const startZ =
-    referenceCube.rotation.z;
-
-  let differenceY =
-    targetY - startY;
-
-  while (
-    differenceY > Math.PI
-  ) {
-
-    differenceY -=
-      Math.PI * 2;
-
-  }
-
-  while (
-    differenceY < -Math.PI
-  ) {
-
-    differenceY +=
-      Math.PI * 2;
-
-  }
-
-  const finalY =
-    startY + differenceY;
+  const finalQuaternion =
+    targetQuaternion.clone();
 
   const animationStart =
     performance.now();
@@ -1906,29 +1906,12 @@ function animateReferenceRotation(
         3
       );
 
-    referenceCube.rotation.x =
-      startX +
-      (
-        targetX -
-        startX
-      ) *
-      eased;
-
-    referenceCube.rotation.y =
-      startY +
-      (
-        finalY -
-        startY
-      ) *
-      eased;
-
-    referenceCube.rotation.z =
-      startZ +
-      (
-        targetZ -
-        startZ
-      ) *
-      eased;
+    referenceCube.quaternion
+      .copy(startQuaternion)
+      .slerp(
+        finalQuaternion,
+        eased
+      );
 
     if (progress < 1) {
 
@@ -1939,10 +1922,8 @@ function animateReferenceRotation(
 
     } else {
 
-      referenceCube.rotation.set(
-        targetX,
-        targetY,
-        targetZ
+      referenceCube.quaternion.copy(
+        finalQuaternion
       );
 
       referenceRotationAnimation =
