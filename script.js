@@ -581,6 +581,7 @@ function createStickerMaterials(
 
   return [
 
+    // RIGHT
     new THREE.MeshStandardMaterial({
       color:
         x === size - 1
@@ -588,6 +589,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // LEFT
     new THREE.MeshStandardMaterial({
       color:
         x === 0
@@ -595,6 +597,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // TOP / UP
     new THREE.MeshStandardMaterial({
       color:
         y === size - 1
@@ -602,6 +605,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // BOTTOM / DOWN
     new THREE.MeshStandardMaterial({
       color:
         y === 0
@@ -609,6 +613,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // FRONT
     new THREE.MeshStandardMaterial({
       color:
         z === size - 1
@@ -616,6 +621,7 @@ function createStickerMaterials(
           : black
     }),
 
+    // BACK
     new THREE.MeshStandardMaterial({
       color:
         z === 0
@@ -741,7 +747,8 @@ function update3DCubeColors() {
 
 function getFaceIndex(face, x, y, z) {
 
-  const size = selectedCubeSize;
+  const size =
+    selectedCubeSize;
 
   let row = 0;
   let col = 0;
@@ -753,8 +760,11 @@ function getFaceIndex(face, x, y, z) {
     // =====================================
     case "F":
 
-      row = size - 1 - y;
-      col = x;
+      row =
+        size - 1 - y;
+
+      col =
+        x;
 
       break;
 
@@ -764,8 +774,11 @@ function getFaceIndex(face, x, y, z) {
     // =====================================
     case "R":
 
-      row = size - 1 - y;
-      col = size - 1 - z;
+      row =
+        size - 1 - y;
+
+      col =
+        size - 1 - z;
 
       break;
 
@@ -775,8 +788,11 @@ function getFaceIndex(face, x, y, z) {
     // =====================================
     case "B":
 
-      row = size - 1 - y;
-      col = size - 1 - x;
+      row =
+        size - 1 - y;
+
+      col =
+        size - 1 - x;
 
       break;
 
@@ -786,8 +802,11 @@ function getFaceIndex(face, x, y, z) {
     // =====================================
     case "L":
 
-      row = size - 1 - y;
-      col = z;
+      row =
+        size - 1 - y;
+
+      col =
+        z;
 
       break;
 
@@ -795,10 +814,14 @@ function getFaceIndex(face, x, y, z) {
     // =====================================
     // ABAJO
     // =====================================
+    // CORREGIDO
     case "D":
 
-      row = z;
-      col = x;
+      row =
+        size - 1 - z;
+
+      col =
+        x;
 
       break;
 
@@ -806,10 +829,14 @@ function getFaceIndex(face, x, y, z) {
     // =====================================
     // ARRIBA
     // =====================================
+    // CORREGIDO
     case "U":
 
-      row = size - 1 - z;
-      col = x;
+      row =
+        z;
+
+      col =
+        x;
 
       break;
 
@@ -823,7 +850,10 @@ function getFaceIndex(face, x, y, z) {
 
   }
 
-  return row * size + col;
+  return (
+    row * size +
+    col
+  );
 
 }
 
