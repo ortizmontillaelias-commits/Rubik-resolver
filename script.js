@@ -340,14 +340,14 @@ function executeMove(move) {
 }
 
 // ======================================================
-// SOLUCIONADOR Y CUBO DE REFERENCIA (BAJADA DIRECTA EN CARA 4 / D)
+// SOLUCIONADOR Y CUBO DE REFERENCIA
 // ======================================================
 document.getElementById("solveButton")?.addEventListener("click", openCubeSolver);
 
 let referenceScene = null, referenceCamera = null, referenceRenderer = null, referenceCube = null;
 let referenceRotationAnimation = null, currentFaceIndex = 0, currentSelectedColor = "white", cubeInputData = {};
 
-// Secuencia: 0:F, 1:R, 2:B, 3:L (Cara 4), 4:D (Cara 5 - Abajo), 5:U (Cara 6 - Arriba)
+// Secuencia normal: F -> R -> B -> L -> D -> U
 const solverFaces = ["F", "R", "B", "L", "D", "U"];
 const solverColors = { white: "#ffffff", yellow: "#ffff00", red: "#ff0000", orange: "#ff8800", blue: "#0066ff", green: "#00aa00" };
 
@@ -462,26 +462,47 @@ function setReferenceSticker(material, face, x, y, z) {
   if (color) material.color.set(solverColors[color]);
 }
 
-// Orientación de ángulos de Euler exacta para evitar rotación de 360° al ir a la cara D
-const faceOrientations = {
-  F: { x: 0, y: 0, z: 0 },
-  R: { x: 0, y: -Math.PI / 2, z: 0 },
-  B: { x: 0, y: -Math.PI, z: 0 },
-  L: { x: 0, y: Math.PI / 2, z: 0 },
-  D: { x: -Math.PI / 2, y: Math.PI / 2, z: 0 }, // Alineado directamente con la cara L para bajar sin girar sobre sí mismo
-  U: { x: Math.PI / 2, y: 0, z: 0 },
-};
+// Transición limpia paso a paso mediante rotación basada en el objetivo
+function getTargetQuaternionForFace(targetFace) {
+  const q = new THREE.Quaternion();
+  switch (targetFace) {
+    case "F":
+      q.setFromEuler(new THREE.Euler(0, 0, 0));
+      break;
+    case "R":
+      q.setFromEuler(new THREE.Euler(0, -Math.PI / 2, 0));
+      break;
+    case "B":
+      q.setFromEuler(new THREE.Euler(0, -Math.PI, 0));
+      break;
+    case "L":
+      q.setFromEuler(new THREE.Euler(0, Math.PI / 2, 0));
+      break;
+    case "D": {
+      // Inclinación directa desde la vista L
+      const qL = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 2, 0));
+      const qPitch = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+      q.multiplyQuaternions(qPitch, qL);
+      break;
+    }
+    case "U": {
+      // Inclinación hacia arriba
+      q.setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
+      break;
+    }
+  }
+  return q;
+}
 
 function rotateReferenceToFace(face, instant = false) {
   if (!referenceCube) return;
-  const targetEuler = faceOrientations[face];
-  const targetQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(targetEuler.x, targetEuler.y, targetEuler.z, "YXZ"));
-  
+  const targetQuaternion = getTargetQuaternionForFace(face);
+
   if (referenceRotationAnimation) {
     cancelAnimationFrame(referenceRotationAnimation);
     referenceRotationAnimation = null;
   }
-  
+
   if (instant) {
     referenceCube.quaternion.copy(targetQuaternion);
     return;
@@ -492,9 +513,12 @@ function rotateReferenceToFace(face, instant = false) {
 
   function animate(now) {
     if (!referenceCube) { referenceRotationAnimation = null; return; }
-    const progress = Math.min((now - animationStart) / 800, 1);
+    const progress = Math.min((now - animationStart) / 600, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
+    
+    // Transición esférica suave sin giros extras
     referenceCube.quaternion.copy(startQuaternion).slerp(targetQuaternion, eased);
+
     if (progress < 1) {
       referenceRotationAnimation = requestAnimationFrame(animate);
     } else {
