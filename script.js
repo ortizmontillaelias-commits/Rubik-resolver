@@ -340,14 +340,14 @@ function executeMove(move) {
 }
 
 // ======================================================
-// SOLUCIONADOR Y CUBO DE REFERENCIA
+// SOLUCIONADOR Y CUBO DE REFERENCIA (SECUENCIA Y TRANSICIÓN CONTINUA)
 // ======================================================
 document.getElementById("solveButton")?.addEventListener("click", openCubeSolver);
 
 let referenceScene = null, referenceCamera = null, referenceRenderer = null, referenceCube = null;
 let referenceRotationAnimation = null, currentFaceIndex = 0, currentSelectedColor = "white", cubeInputData = {};
 
-// Secuencia normal: F -> R -> B -> L -> D -> U
+// Secuencia estándar de captura
 const solverFaces = ["F", "R", "B", "L", "D", "U"];
 const solverColors = { white: "#ffffff", yellow: "#ffff00", red: "#ff0000", orange: "#ff8800", blue: "#0066ff", green: "#00aa00" };
 
@@ -462,41 +462,33 @@ function setReferenceSticker(material, face, x, y, z) {
   if (color) material.color.set(solverColors[color]);
 }
 
-// Transición limpia paso a paso mediante rotación basada en el objetivo
-function getTargetQuaternionForFace(targetFace) {
-  const q = new THREE.Quaternion();
-  switch (targetFace) {
-    case "F":
-      q.setFromEuler(new THREE.Euler(0, 0, 0));
-      break;
-    case "R":
-      q.setFromEuler(new THREE.Euler(0, -Math.PI / 2, 0));
-      break;
-    case "B":
-      q.setFromEuler(new THREE.Euler(0, -Math.PI, 0));
-      break;
-    case "L":
-      q.setFromEuler(new THREE.Euler(0, Math.PI / 2, 0));
-      break;
-    case "D": {
-      // Inclinación directa desde la vista L
-      const qL = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 2, 0));
-      const qPitch = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-      q.multiplyQuaternions(qPitch, qL);
-      break;
-    }
-    case "U": {
-      // Inclinación hacia arriba
-      q.setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
-      break;
-    }
+// Generación de orientación continua paso a paso por multiplicación de Quaternions
+function getSequenceQuaternion(targetFaceIndex) {
+  const finalQ = new THREE.Quaternion();
+  
+  // 1. Giros horizontales progresivos (F -> R -> B -> L)
+  const numYawSteps = Math.min(targetFaceIndex, 3);
+  const qYaw = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -numYawSteps * (Math.PI / 2));
+  finalQ.copy(qYaw);
+
+  // 2. Transición L -> D (Inclinación directa hacia abajo)
+  if (targetFaceIndex === 4) {
+    const qPitchDown = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+    finalQ.premultiply(qPitchDown);
   }
-  return q;
+
+  // 3. Transición D -> U (Inclinación directa hacia arriba)
+  if (targetFaceIndex === 5) {
+    const qPitchUp = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+    finalQ.premultiply(qPitchUp);
+  }
+
+  return finalQ;
 }
 
-function rotateReferenceToFace(face, instant = false) {
+function rotateReferenceToFace(faceIndex, instant = false) {
   if (!referenceCube) return;
-  const targetQuaternion = getTargetQuaternionForFace(face);
+  const targetQuaternion = getSequenceQuaternion(faceIndex);
 
   if (referenceRotationAnimation) {
     cancelAnimationFrame(referenceRotationAnimation);
@@ -513,10 +505,9 @@ function rotateReferenceToFace(face, instant = false) {
 
   function animate(now) {
     if (!referenceCube) { referenceRotationAnimation = null; return; }
-    const progress = Math.min((now - animationStart) / 600, 1);
+    const progress = Math.min((now - animationStart) / 500, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
-    
-    // Transición esférica suave sin giros extras
+
     referenceCube.quaternion.copy(startQuaternion).slerp(targetQuaternion, eased);
 
     if (progress < 1) {
@@ -575,7 +566,7 @@ function renderCurrentFace() {
     grid.appendChild(square);
   }
   container.appendChild(grid);
-  rotateReferenceToFace(face, false);
+  rotateReferenceToFace(currentFaceIndex, false);
   updateReferenceColors();
 }
 
