@@ -340,14 +340,14 @@ function executeMove(move) {
 }
 
 // ======================================================
-// SOLUCIONADOR Y CUBO DE REFERENCIA (TRANSIÇÕES Y ORIENTACIÓN AJUSTADAS)
+// SOLUCIONADOR Y CUBO DE REFERENCIA (BAJADA DIRECTA EN CARA 4 / D)
 // ======================================================
 document.getElementById("solveButton")?.addEventListener("click", openCubeSolver);
 
 let referenceScene = null, referenceCamera = null, referenceRenderer = null, referenceCube = null;
 let referenceRotationAnimation = null, currentFaceIndex = 0, currentSelectedColor = "white", cubeInputData = {};
 
-// Secuencia exacta de caras: 1: F, 2: R, 3: B, 4: L, 5: D (Abajo), 6: U (Arriba)
+// Secuencia: 0:F, 1:R, 2:B, 3:L (Cara 4), 4:D (Cara 5 - Abajo), 5:U (Cara 6 - Arriba)
 const solverFaces = ["F", "R", "B", "L", "D", "U"];
 const solverColors = { white: "#ffffff", yellow: "#ffff00", red: "#ff0000", orange: "#ff8800", blue: "#0066ff", green: "#00aa00" };
 
@@ -462,14 +462,14 @@ function setReferenceSticker(material, face, x, y, z) {
   if (color) material.color.set(solverColors[color]);
 }
 
-// Configuración de ángulos Euler para asegurar que la cara 5 (D) baje desde L, y la cara 6 (U) suba
+// Orientación de ángulos de Euler exacta para evitar rotación de 360° al ir a la cara D
 const faceOrientations = {
   F: { x: 0, y: 0, z: 0 },
   R: { x: 0, y: -Math.PI / 2, z: 0 },
   B: { x: 0, y: -Math.PI, z: 0 },
   L: { x: 0, y: Math.PI / 2, z: 0 },
-  D: { x: -Math.PI / 2, y: 0, z: 0 }, // Inclinación directa hacia abajo
-  U: { x: Math.PI / 2, y: 0, z: 0 },  // Inclinación hacia arriba al llenar D
+  D: { x: -Math.PI / 2, y: Math.PI / 2, z: 0 }, // Alineado directamente con la cara L para bajar sin girar sobre sí mismo
+  U: { x: Math.PI / 2, y: 0, z: 0 },
 };
 
 function rotateReferenceToFace(face, instant = false) {
@@ -488,20 +488,11 @@ function rotateReferenceToFace(face, instant = false) {
   }
 
   const startQuaternion = referenceCube.quaternion.clone();
-
-  // Optimización de trayectoria Slerp para evitar giros largos o vueltas no deseadas
-  if (startQuaternion.dot(targetQuaternion) < 0) {
-    targetQuaternion.x = -targetQuaternion.x;
-    targetQuaternion.y = -targetQuaternion.y;
-    targetQuaternion.z = -targetQuaternion.z;
-    targetQuaternion.w = -targetQuaternion.w;
-  }
-
   const animationStart = performance.now();
 
   function animate(now) {
     if (!referenceCube) { referenceRotationAnimation = null; return; }
-    const progress = Math.min((now - animationStart) / 1000, 1);
+    const progress = Math.min((now - animationStart) / 800, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
     referenceCube.quaternion.copy(startQuaternion).slerp(targetQuaternion, eased);
     if (progress < 1) {
