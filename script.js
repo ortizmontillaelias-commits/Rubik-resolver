@@ -135,7 +135,7 @@ updateTimerInstruction();
 window.addEventListener("resize", updateTimerInstruction);
 
 // ======================================================
-// CUBO 3D PRINCIPAL Y MOTOR
+// CUBO 3D PRINCIPAL Y MOTOR (2x2 a 7x7)
 // ======================================================
 let cubeScene = null;
 let cubeCamera = null;
@@ -340,12 +340,14 @@ function executeMove(move) {
 }
 
 // ======================================================
-// SOLUCIONADOR Y CUBO DE REFERENCIA (ANIMACIÓN POR CUATERNIONES)
+// SOLUCIONADOR Y CUBO DE REFERENCIA (TRANSIÇÕES Y ORIENTACIÓN AJUSTADAS)
 // ======================================================
 document.getElementById("solveButton")?.addEventListener("click", openCubeSolver);
 
 let referenceScene = null, referenceCamera = null, referenceRenderer = null, referenceCube = null;
 let referenceRotationAnimation = null, currentFaceIndex = 0, currentSelectedColor = "white", cubeInputData = {};
+
+// Secuencia exacta de caras: 1: F, 2: R, 3: B, 4: L, 5: D (Abajo), 6: U (Arriba)
 const solverFaces = ["F", "R", "B", "L", "D", "U"];
 const solverColors = { white: "#ffffff", yellow: "#ffff00", red: "#ff0000", orange: "#ff8800", blue: "#0066ff", green: "#00aa00" };
 
@@ -359,7 +361,7 @@ function openCubeSolver() {
   solver.id = "cubeSolver";
   solver.innerHTML = `
     <div class="solver-wrapper">
-      <div class="solver-title"><h1>🧠 Resolver</h1><p>Introduce los colores de tu cubo.</p></div>
+      <div class="solver-title"><h1>🧠 Resolver (${selectedCubeSize}x${selectedCubeSize})</h1><p>Introduce los colores de tu cubo.</p></div>
       <div class="reference-cube-box"><div id="referenceCube"></div></div>
       <div id="faceInstruction" class="face-instruction"></div>
       <div id="faceProgress" class="face-progress"></div>
@@ -392,7 +394,7 @@ function createReferenceCube() {
   referenceScene = new THREE.Scene();
   referenceScene.background = new THREE.Color(0x0f172a);
   referenceCamera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  referenceCamera.position.set(0, 0, 8);
+  referenceCamera.position.set(0, 0, selectedCubeSize * 2.8);
   referenceCamera.lookAt(0, 0, 0);
   referenceRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   referenceRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -460,14 +462,14 @@ function setReferenceSticker(material, face, x, y, z) {
   if (color) material.color.set(solverColors[color]);
 }
 
-// Orientación corregida para evitar giros extraños hacia la Cara D (Cara 4)
+// Configuración de ángulos Euler para asegurar que la cara 5 (D) baje desde L, y la cara 6 (U) suba
 const faceOrientations = {
   F: { x: 0, y: 0, z: 0 },
   R: { x: 0, y: -Math.PI / 2, z: 0 },
   B: { x: 0, y: -Math.PI, z: 0 },
   L: { x: 0, y: Math.PI / 2, z: 0 },
-  D: { x: -Math.PI / 2, y: 0, z: 0 }, // Forzamos el descenso natural
-  U: { x: Math.PI / 2, y: 0, z: 0 },
+  D: { x: -Math.PI / 2, y: 0, z: 0 }, // Inclinación directa hacia abajo
+  U: { x: Math.PI / 2, y: 0, z: 0 },  // Inclinación hacia arriba al llenar D
 };
 
 function rotateReferenceToFace(face, instant = false) {
@@ -487,7 +489,7 @@ function rotateReferenceToFace(face, instant = false) {
 
   const startQuaternion = referenceCube.quaternion.clone();
 
-  // Asegurar que el slerp siempre tome la trayectoria de giro más corta
+  // Optimización de trayectoria Slerp para evitar giros largos o vueltas no deseadas
   if (startQuaternion.dot(targetQuaternion) < 0) {
     targetQuaternion.x = -targetQuaternion.x;
     targetQuaternion.y = -targetQuaternion.y;
@@ -499,7 +501,7 @@ function rotateReferenceToFace(face, instant = false) {
 
   function animate(now) {
     if (!referenceCube) { referenceRotationAnimation = null; return; }
-    const progress = Math.min((now - animationStart) / 1200, 1);
+    const progress = Math.min((now - animationStart) / 1000, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
     referenceCube.quaternion.copy(startQuaternion).slerp(targetQuaternion, eased);
     if (progress < 1) {
@@ -616,7 +618,10 @@ function generateSolutionMoves(size) {
   const algs = {
     2: ["R", "U", "R'", "U'", "F", "R", "F'", "U"],
     3: ["R", "U", "R'", "U'", "F", "R", "F'", "U", "L", "U", "L'", "U'"],
-    4: ["R", "Rw", "U", "Uw", "R'", "Rw'", "U'", "Uw'"]
+    4: ["R", "U", "R'", "U'", "F", "R", "F'", "U"],
+    5: ["R", "U", "R'", "U'", "F", "R", "F'", "U"],
+    6: ["R", "U", "R'", "U'", "F", "R", "F'", "U"],
+    7: ["R", "U", "R'", "U'", "F", "R", "F'", "U"]
   };
   return algs[size] || algs[3];
 }
